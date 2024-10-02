@@ -1,0 +1,79 @@
+.outer_container{
+    display: flex;
+    justify-content: space-between;
+
+    position: fixed;
+
+    padding-left: 20px;
+    padding-right: 20px;
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    background-color: rgb(255, 255, 255);
+
+    width: 100vw;
+    height: 80px;
+    align-items: center;
+
+    border-bottom: 1px solid black;
+
+
+}
+
+.middle{
+    display: flex;
+
+    gap: 75px;
+}
+
+.home{
+    color: black;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.right{
+    display: flex;
+    gap: 25px;
+
+}
+
+.try{
+    display: flex;
+    height: 40px;
+    width: 200px;
+
+    color: rgb(28, 28, 28);
+    background-color: rgb(255, 255, 255);
+
+    outline: 1px solid black;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 5px;
+
+
+
+}
+
+
+.signout{
+    display: flex;
+    height: 40px;
+    width: 100px;
+
+    color: white;
+    background-color: rgb(12, 12, 12);
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 5px;
+
+}
+
+.emph{
+    color: rgb(0, 166, 255);
+    font-weight: 700;
+}
