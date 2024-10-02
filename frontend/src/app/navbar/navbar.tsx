@@ -18,7 +18,9 @@ export default function Navbar(){
                 <div className={styles.home}>
                     Pricing
                 </div>
-
+                <div className={styles.home}>
+                    Github ⭐
+                </div>
             </div>
 
             <div className={styles.right}>
