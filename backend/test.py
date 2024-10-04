@@ -1,54 +1,78 @@
 import os
-import sys
-
-import openai
-from langchain.chains import ConversationalRetrievalChain, RetrievalQA
-from langchain.chat_models import ChatOpenAI
-from langchain.document_loaders import DirectoryLoader, TextLoader
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.indexes import VectorstoreIndexCreator
-from langchain.indexes.vectorstore import VectorStoreIndexWrapper
-from langchain.llms import OpenAI
-from langchain.vectorstores import Chroma
-
+import subprocess
+from langchain_community.document_loaders import DirectoryLoader
+from langchain_openai import OpenAI, OpenAIEmbeddings
+from langchain_chroma import Chroma
+from langchain.chains import ConversationalRetrievalChain
 import constants
 
+# Set the API key for OpenAI
 os.environ["OPENAI_API_KEY"] = constants.APIKEY
 
-# Enable to save to disk & reuse the model (for repeated queries on the same data)
-PERSIST = False
-filetypes = ['.cpp', '.py']
+# Define the repository URL and clone directory
+repo_url = 'https://github.com/kavjeydev/AlgoBowl.git'
+clone_directory = './cloned_codebase'
 
-query = None
-if len(sys.argv) > 1:
-  query = sys.argv[1]
-
-if PERSIST and os.path.exists("persist"):
-  print("Reusing index...\n")
-  vectorstore = Chroma(persist_directory="persist", embedding_function=OpenAIEmbeddings())
-  index = VectorStoreIndexWrapper(vectorstore=vectorstore)
+# Clone the repository if not already done
+if not os.path.exists(clone_directory):
+    print(f"Cloning repository from {repo_url}...")
+    subprocess.run(['git', 'clone', repo_url, clone_directory], check=True)
 else:
-  #loader = TextLoader("data/data.txt") # Use this line if you only need data.txt
-  for filetype in filetypes:
-    loader = DirectoryLoader("data/", glob=f'**/*{filetype}')
-    data_from_files = loader.load()
-    if PERSIST:
-      index = VectorstoreIndexCreator(vectorstore_kwargs={"persist_directory":"persist"}).from_loaders([loader])
-    else:
-      index = VectorstoreIndexCreator().from_loaders([loader])
-    chain = ConversationalRetrievalChain.from_llm(
-      llm=ChatOpenAI(model="gpt-4o"),
-      retriever=index.vectorstore.as_retriever(search_kwargs={"k": 1000000}),
-    )
+    print(f"Repository already cloned into {clone_directory}.")
 
-chat_history = []
+# Use DirectoryLoader to load all text files from the cloned repository
+loader = DirectoryLoader(
+    clone_directory,
+    glob='**/*.*',  # Match all files; adjust patterns to include specific file types
+    recursive=True
+)
+
+# Load documents
+documents = loader.load()
+print(f"Number of documents loaded: {len(documents)}")
+
+# Define the embedding function
+embeddings = OpenAIEmbeddings()
+
+# Set up the Chroma vector store for persistence with embedding
+vectorstore = Chroma(embedding_function=embeddings, persist_directory="chroma_storage")
+
+# Add documents to the vector store
+try:
+    vectorstore.add_documents(documents)
+    print("Documents successfully added to the vector store.")
+except Exception as e:
+    print(f"Error adding documents to vector store: {e}")
+
+# Set up the LLM
+llm = OpenAI(temperature=0)
+
+# Set up a ConversationalRetrievalChain
+retriever = vectorstore.as_retriever()
+qa_chain = ConversationalRetrievalChain.from_llm(
+    llm=llm,
+    retriever=retriever,
+    return_source_documents=True
+)
+
+# Main loop to query the AI about the codebase
+chat_history = []  # Initialize chat history
 while True:
-  if not query:
-    query = input("Prompt: ")
-  if query in ['quit', 'q', 'exit']:
-    sys.exit()
-  result = chain({"question": query, "chat_history": chat_history})
-  print(result['answer'])
+    prompt = input("Ask about the codebase (or type 'exit' to quit): ")
+    if prompt.lower() in {'exit', 'quit'}:
+        break
 
-  chat_history.append((query, result['answer']))
-  query = None
+    # Perform retrieval-based QA
+    try:
+        response = qa_chain.invoke({"question": prompt, "chat_history": chat_history})
+        print("AI Answer:", response['answer'])
+
+        # Optionally show source documents if needed
+        for doc in response['source_documents']:
+            print("--- Document Source ---")
+            print(doc.page_content[:200])  # Show a snippet for context
+
+        # Update chat_history
+        chat_history.append((prompt, response['answer']))
+    except Exception as e:
+        print(f"Error during question answering: {e}")
