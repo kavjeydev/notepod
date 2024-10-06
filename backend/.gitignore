@@ -2,3 +2,4 @@ constants.py
 data
 chroma_storage
 __pycache__
+chroma_langchain_db
