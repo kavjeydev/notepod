@@ -1,99 +1,108 @@
-from operator import itemgetter
-from langchain.indexes import VectorstoreIndexCreator
-import os, shutil
-from langchain.globals import set_llm_cache
-from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings
-from langchain.chains import ConversationalRetrievalChain, RetrievalQA
-from langchain.chat_models import ChatOpenAI
-from langchain.cache import InMemoryCache
+import os
+import openai
+import faiss
+import git
+from sklearn.preprocessing import normalize
 import constants
-from langchain_community.document_loaders import TextLoader, DirectoryLoader
-from langchain_openai import OpenAI
-import warnings
-import mimetypes
-import git  # pip install gitpython
-from os import listdir
-from os.path import isfile, join
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
+# OpenAI API Key
+openai.api_key = constants.API_KEY
 
+# Embedding function using OpenAI's updated API
+def get_embedding(text, model="text-embedding-ada-002"):
+    response = openai.embeddings.create(
+        input=text,
+        model=model
+    )
+    embedding = response.data[0].embedding  # Access the embedding
+    return embedding
 
-rootdir = "/Users/kavin_jey/Desktop/notepod/backend/data"
+# Step 1: Fetch the code from a GitHub repository
+def clone_github_repo(repo_url, clone_dir='repo'):
+    if os.path.exists(clone_dir):
+        print(f"Repository already cloned in {clone_dir}")
+    else:
+        git.Repo.clone_from(repo_url, clone_dir)
+        print(f"Cloned repository into {clone_dir}")
+    return clone_dir
 
-mypath = 'project_directory'
-folder = './data'
-
-warnings.filterwarnings('ignore')
-
-def delete_files(folder):
-    for filename in os.listdir(folder):
-        file_path = os.path.join(folder, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
-
-
-def pull_git_directory(rootdir):
-    git.Git(rootdir).clone("https://github.com/kavjeydev/AlgoBowl.git")
-
-test_loader = DirectoryLoader(rootdir)
-
-def make_all_loaders(rootdir):
-    all_loaders = []
-    for subdir, dirs, files in os.walk(rootdir):
+# Step 2: Read and process the files to chunk them into sections
+def read_files(repo_path):
+    code_chunks = []
+    for root, _, files in os.walk(repo_path):
         for file in files:
-            current_file = os.path.join(subdir, file)
-            mime = mimetypes.guess_type(current_file)
-            # print("File type: ", mime[0])
-            if mime[0] != None and mime[0].split('/')[0] == 'text':
-                # print("File type ", mime[0])
-                try:
-                    loader = TextLoader(current_file)
-                    all_loaders.append(loader)
-                except:
-                    print("Error loading ", current_file)
+            if file.endswith(('.py', '.js', '.ts', '.html', '.css', '.md')):  # Add relevant extensions
+                file_path = os.path.join(root, file)
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    # Chunk the code if it's large
+                    chunk_size = 1000  # Customize chunk size
+                    for i in range(0, len(content), chunk_size):
+                        chunk = content[i:i+chunk_size]
+                        code_chunks.append((file_path, chunk))
+    return code_chunks
 
-    return all_loaders
+# Step 3: Embed the code chunks using OpenAI embeddings
+def get_embeddings(chunks, model='text-embedding-ada-002'):
+    return [get_embedding(chunk[1], model=model) for chunk in chunks]
 
-all_loaders = make_all_loaders(rootdir)
+# Step 4: Store the embeddings in a vector store (FAISS)
+def store_in_faiss(embeddings):
+    dimension = len(embeddings[0])
+    index = faiss.IndexFlatL2(dimension)  # Create FAISS index for storing embeddings
+    normalized_embeddings = normalize(embeddings, axis=1)  # Normalize embeddings
+    index.add(normalized_embeddings)
+    return index
 
-os.environ['OPEN_API_KEY'] = constants.API_KEY
-llm = ChatOpenAI(model="gpt-4o-mini", api_key=constants.API_KEY, temperature=1, verbose=True)
+# Step 5: Query the vector store and answer questions
+def query_vector_store(index, chunks, question, model='gpt-3.5-turbo'):
+    # Step 5.1: Embed the question using OpenAI embeddings
+    question_embedding = get_embedding(question, model='text-embedding-ada-002')
+    question_embedding = normalize([question_embedding], axis=1)[0]
 
-#TODO TIME RESPONSES FOR SIMILAR QUESTIONS TO CHECK CACHING
+    # Step 5.2: Search the vector store for the most relevant code chunks
+    k = 5  # Number of relevant results to return
+    distances, indices = index.search(question_embedding.reshape(1, -1), k)
 
-embeddings = OpenAIEmbeddings(api_key=constants.API_KEY)
+    # Step 5.3: Retrieve the corresponding code chunks
+    relevant_chunks = [chunks[i] for i in indices[0]]
 
-index_creator = VectorstoreIndexCreator(embedding=embeddings)
-index = index_creator.from_loaders([test_loader])
+    # Step 5.4: Send the question along with the retrieved code to OpenAI for a detailed response
+    context = '\n'.join([chunk[1] for chunk in relevant_chunks])
 
+    # Use the correct API to get a completion
+    response = openai.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": "You are a technical documentation expert. Given a codebase, answer some questions and write some documentation"},
+            {"role": "user", "content": f"Here is some code:\n{context}\n\nQuestion: {question}"}
+        ]
+    )
 
-prompt = "Reference this folder for any questions: " + input("Prompt: ")
-while prompt != 'quit':
-    result = index.query(llm=llm, question=prompt)
-    print(result)
-    prompt = input("Prompt: ")
+    # Corrected: Access the content using object attributes, not dict subscripting
+    return response.choices[0].message.content
 
-# from langchain_core.messages import HumanMessage
+# Full pipeline: Load code, embed, store in FAISS, and query
+def code_assistant_pipeline(repo_url, question):
+    # Clone repo
+    repo_path = clone_github_repo(repo_url)
 
+    # Read and chunk the code
+    code_chunks = read_files(repo_path)
 
-# temp = input("Prompt: ")
-# while temp != 'quit':
-#     messages = [
-#         ("system", "You are an expert in this codebase: {topic}."),
-#         HumanMessage(content=temp),
-#     ]
+    # Embed the code chunks
+    embeddings = get_embeddings(code_chunks)
 
-#     print("-----Prompt from Template-----")
-#     prompt_template = ChatPromptTemplate.from_messages(messages)
+    # Store embeddings in FAISS vector store
+    index = store_in_faiss(embeddings)
 
-#     prompt = prompt_template.invoke({"topic": index.query(llm=llm, question=temp)})
-#     result = llm.invoke(prompt)
-#     print(result.content)
-#     temp = input("Prompt: ")
+    # Query the vector store with a question
+    answer = query_vector_store(index, code_chunks, question)
+
+    return answer
+
+# Example usage
+repo_url = "https://github.com/kavjeydev/AlgoBowl.git"  # Replace with the actual repo URL
+question = "What does this codebase do?"
+
+answer = code_assistant_pipeline(repo_url, question)
+print("Answer:", answer)
