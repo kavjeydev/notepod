@@ -5,8 +5,8 @@ def get_ast(full_filename):
         code = f.read()
 
     node = ast.parse(code)
-    print(node.body[0].names[0])
+    print(ast.dump(node))
 
 
 if __name__ == '__main__':
-    get_ast('./input.py')
+    get_ast('./simple.py')

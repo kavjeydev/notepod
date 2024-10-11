@@ -94,7 +94,7 @@ def query_vector_store(index, chunks, question, model='gpt-4o'):
     response = openai.chat.completions.create(
         model=model,
         messages=[
-            {"role": "system", "content": "You are a technical documentation expert. Given a codebase, answer some questions and write some documentation"},
+            {"role": "system", "content": "You are a technical documentation expert. Given a codebase, answer some questions and write some expert documentation"},
             {"role": "user", "content": f"Here is some code:\n{context}\n\nQuestion: {question}"}
         ]
     )
