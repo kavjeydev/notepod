@@ -1,6 +1,7 @@
 import styles from './navbar.module.css'
 import Image from 'next/image'
 import { Space_Grotesk } from 'next/font/google'
+import { Lato } from 'next/font/google'
 
 const space = Space_Grotesk({
     subsets: ['latin'],
@@ -9,6 +10,13 @@ const space = Space_Grotesk({
     weight: ['300', '400', '500', '600', '700']
   });
 
+const lato = Lato({
+    subsets: ['latin'],
+    display: 'swap',
+    variable: '--font-space',
+    weight: ['100', '300', '400', '700']
+  })
+
 export default function Navbar(){
     return (
         <div className={`${styles.outer_container} ${space.variable} antialiased`}>
@@ -16,7 +24,7 @@ export default function Navbar(){
                 <Image src="/logo_w_text.png" alt='logo' height={36} width={130} />
             </div>
 
-            <div className={styles.middle}>
+            <div className={`${styles.middle} ${lato.variable}`}>
                 <div className={styles.home}>
                     Product
                 </div>
@@ -27,16 +35,17 @@ export default function Navbar(){
                     Documentation
                 </div>
                 <div className={styles.home}>
-                    <span className={styles.emph}>Write Now</span>
+                    <span className={styles.emph}>Write Now&nbsp;</span>
+                    <img src="/squiggly arrow.svg" alt="" />
                 </div>
             </div>
 
             <div className={styles.right}>
                 <div className={styles.try}>
-                    Try for <span className={styles.emph}>&nbsp;Free</span>
+                    Log In
                 </div>
                 <div className={styles.signout}>
-                    Sign Out
+                    Sign Up
                 </div>
             </div>
         </div>
