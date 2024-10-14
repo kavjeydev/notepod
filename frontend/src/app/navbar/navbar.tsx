@@ -2,6 +2,9 @@ import styles from './navbar.module.css'
 import Image from 'next/image'
 import { Space_Grotesk } from 'next/font/google'
 import { Lato } from 'next/font/google'
+import { ThemeSwitcher } from '../ThemeSwitcher/themeswitcher';
+import { Button } from '@nextui-org/react';
+// import { Button } from '@/components/ui/button';
 
 const space = Space_Grotesk({
     subsets: ['latin'],
@@ -21,7 +24,7 @@ export default function Navbar(){
     return (
         <div className={`${styles.outer_container} ${space.variable} antialiased`}>
             <div className={styles.left}>
-                <Image src="/logo_w_text.png" alt='logo' height={36} width={130} />
+                <Image src="/logo_w_text.png" alt='logo' height={36} width={130} className={styles.logol}/>
             </div>
 
             <div className={`${styles.middle} ${lato.variable}`}>
@@ -35,18 +38,25 @@ export default function Navbar(){
                     Documentation
                 </div>
                 <div className={styles.home}>
-                    <span className={styles.emph}>Write Now&nbsp;</span>
-                    <img src="/squiggly arrow.svg" alt="" />
+                    <span className={styles.emph}>Write Now ⤴</span>
                 </div>
             </div>
 
             <div className={styles.right}>
-                <div className={styles.try}>
+                {/* <div className={styles.try}>
                     Log In
-                </div>
-                <div className={styles.signout}>
+                </div> */}
+                {/* <div className={styles.signout}>
                     Sign Up
-                </div>
+
+                </div> */}
+                <Button variant='light' color='default' radius='full' size='md'>
+                    Log In
+                </Button>
+                <Button color='primary' radius='full' className='bg-maincolor'>
+                    Sign Up
+                </Button>
+                {/* <ThemeSwitcher /> */}
             </div>
         </div>
     )
