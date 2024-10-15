@@ -13,6 +13,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        spaceg: ["Space Grotesk", "sans-serif"],
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

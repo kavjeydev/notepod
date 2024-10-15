@@ -34,29 +34,27 @@ export default function Navbar() {
           "border-b shadow-lg shadow-default-800/10 transition duration-400 ease-in-out",
       )}
     >
-      <div
-        className={`${styles.outer_container} ${space.variable} antialiased`}
-      >
-        <div className={styles.left}>
-          <Image
-            src="/logo_w_text.png"
-            alt="logo"
-            height={36}
-            width={130}
-            className={styles.logol}
-          />
+      <div className="flex justify-between items-center fixed z-50 pl-[115px] pr-[115px] pb-[10px] pt-[10px] w-[100vw] h-[80px] backdrop-blur-[20px]">
+        <div className="flex items-center justify-center border-r-[10] pt-[4px]">
+          <Image src="/logo_w_text.png" alt="logo" height={36} width={130} />
         </div>
 
-        <div className={`${styles.middle} ${lato.variable}`}>
-          <div className={styles.home}>Product</div>
-          <div className={styles.home}>Pricing</div>
-          <div className={styles.home}>Documentation</div>
-          <div className={styles.home}>
-            <span className={styles.emph}>Write Now ⤴</span>
+        <div className="flex gap-[60px]">
+          <div className="flex text-text-color pl-[10px] pr-[10px]">
+            Product
+          </div>
+          <div className="flex text-text-color pl-[10px] pr-[10px]">
+            Pricing
+          </div>
+          <div className="flex text-text-color pl-[10px] pr-[10px]">
+            Documentation
+          </div>
+          <div className="flex text-text-color pl-[10px] pr-[10px]">
+            <span className="text-text-color font-bold">Write Now ⤴</span>
           </div>
         </div>
 
-        <div className={styles.right}>
+        <div className="flex gap-[15px]">
           <Button
             variant="light"
             radius="full"

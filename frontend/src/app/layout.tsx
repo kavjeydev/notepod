@@ -23,19 +23,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
-        <Navbar />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-          storageKey="notepod-theme"
-        >
-          <Providers>{children}</Providers>
-        </ThemeProvider>
-      </body>
+    <html
+      lang="en"
+      style={{ colorScheme: "dark" }} // <--
+      suppressHydrationWarning
+    >
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+        storageKey="notepod-theme"
+      >
+        <body>
+          <Navbar />
+
+          {children}
+        </body>
+      </ThemeProvider>
     </html>
   );
 }

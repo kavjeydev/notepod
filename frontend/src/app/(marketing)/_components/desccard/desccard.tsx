@@ -3,7 +3,7 @@ import styles from "./desccard.module.css";
 
 export default function DescCard() {
   return (
-    <div className={styles.outer_container}>
+    <div className="flex justify-evenly mb-[100px]">
       <Card
         isFooterBlurred
         radius="lg"
