@@ -4,8 +4,8 @@
 
 :root {
   --paragraph-color: rgb(75, 75, 75);
-  --main-bg: #4643ff;
-  --text-color: #1D1128;
+  --bgcolor: white;
+  --text-color: #1d1128;
   --navbar-bg: rgba(255, 255, 255, 0.5);
   --shadow: rgba(123, 123, 123, 0.25);
 }
@@ -14,10 +14,15 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
-
   }
 }
-
+.dark {
+  --text-color: #ffffff;
+  --bgcolor: black;
+  --paragraph-color: rgb(184, 184, 184);
+  --navbar-bg: rgba(10, 10, 10, 0.5);
+  --shadow: rgba(223, 223, 223, 0.2);
+}
 
 body {
   font-family: Arial, Helvetica, sans-serif;
