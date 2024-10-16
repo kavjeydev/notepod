@@ -1,9 +1,8 @@
 import { Card, CardFooter, Button } from "@nextui-org/react";
-import styles from "./desccard.module.css";
 
 export default function DescCard() {
   return (
-    <div className="flex justify-evenly mb-[100px]">
+    <div className="flex justify-evenly pb-[100px]">
       <Card
         isFooterBlurred
         radius="lg"

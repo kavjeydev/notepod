@@ -5,9 +5,12 @@ import styles from "./page.module.css";
 import { Space_Grotesk } from "next/font/google";
 import { Lato } from "next/font/google";
 import { ReactLenis } from "@studio-freight/react-lenis";
-import { Button, NextUIProvider } from "@nextui-org/react";
+import { Button, NextUIProvider, Spinner } from "@nextui-org/react";
 import Cardy from "./_components/card/card";
 import DescCard from "./_components/desccard/desccard";
+import { useConvexAuth } from "convex/react";
+import Link from "next/link";
+import Navbar from "./_components/navbar/navbar";
 
 const space = Space_Grotesk({
   subsets: ["latin"],
@@ -24,10 +27,12 @@ const lato = Lato({
 });
 
 export default function Home() {
+  const { isAuthenticated, isLoading } = useConvexAuth();
   return (
-    <NextUIProvider>
+    <NextUIProvider className="dark:bg-[121212]">
       <ReactLenis root options={{ lerp: 0.1, duration: 1.5 }}>
-        <div className="flex relative top-[80px] w-[100vw] h-[93vh]">
+        <Navbar />
+        <div className="flex relative top-[80px] w-[100vw] h-[93vh] ">
           <div className="flex w-[50vw] ml-[100px]">
             <div className="flex flex-col gap-[25px] mt-[150px]">
               <h1 className="font-spaceg text-[4.6875rem] font-medium tracking-tighter leading-[4.6875rem] w-[624px]">
@@ -41,13 +46,26 @@ export default function Home() {
               </h6>
 
               <div className="mt-[20px] flex gap-[20px]">
-                <Button
-                  className="bg-maincolor text-white min-w-[150px]"
-                  size="lg"
-                  radius="full"
-                >
-                  Try For Free
-                </Button>
+                {isLoading && <Spinner size="md" />}
+                {isAuthenticated && !isLoading && (
+                  <Button
+                    className="bg-maincolor text-white min-w-[150px]"
+                    size="lg"
+                    radius="full"
+                  >
+                    <Link href="/documents">Enter Notepod</Link>
+                  </Button>
+                )}
+                {!isAuthenticated && !isLoading && (
+                  <Button
+                    className="bg-maincolor text-white min-w-[150px]"
+                    size="lg"
+                    radius="full"
+                  >
+                    Try for free
+                  </Button>
+                )}
+
                 <Button
                   className="text-text-color bg-bgcolor min-w-[150px]"
                   size="lg"

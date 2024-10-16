@@ -14,16 +14,15 @@
 
 @media (prefers-color-scheme: light) {
   :root {
-    --background: #0a0a0a;
+    --background: #121212;
     --foreground: #ededed;
   }
 }
 .dark {
   --text-color: #ffffff;
-  --bgcolor: black;
+  --bgcolor: #121212;
   --paragraph-color: rgb(184, 184, 184);
-  --navbar-bg: rgba(10, 10, 10, 0.5);
-  --shadow: rgba(223, 223, 223, 0.2);
+  --shadow: rgba(184, 184, 184, 0.2);
 }
 
 body {
