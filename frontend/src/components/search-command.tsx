@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { File } from "lucide-react";
+import { File, Folder } from "lucide-react";
 import { useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/clerk-react";
@@ -44,8 +44,12 @@ export const SearchCommand = () => {
     };
   }, [toggle]);
 
-  const onSelect = (id: string) => {
+  const onSelectFile = (id: string) => {
     router.push(`/documents/${id}`);
+
+    onClose();
+  };
+  const onSelectFolder = (id: string) => {
     onClose();
   };
 
@@ -60,20 +64,31 @@ export const SearchCommand = () => {
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Documents">
           {documents?.map((doc) => (
-            <CommandItem
-              key={doc._id}
-              value={`${doc._id}-${doc.title}`}
-              title={doc.title}
-              onSelect={onSelect}
-            >
-              {doc?.icon ? (
-                <p className="mr-2 text-[18px]">{doc?.icon}</p>
-              ) : (
-                <File className="m-2 h-4 w-4" />
-              )}
+            <div>
+              {doc.isFolder ? (
+                <CommandItem
+                  key={doc._id}
+                  value={`${doc._id}-${doc.title}`}
+                  title={doc.title}
+                  onSelect={onSelectFolder}
+                >
+                  <Folder className="m-2 h-4 w-4" />
 
-              <span>{doc.title}</span>
-            </CommandItem>
+                  <span>{doc.title}</span>
+                </CommandItem>
+              ) : (
+                <CommandItem
+                  key={doc._id}
+                  value={`${doc._id}-${doc.title}`}
+                  title={doc.title}
+                  onSelect={onSelectFile}
+                >
+                  <File className="m-2 h-4 w-4" />
+
+                  <span>{doc.title}</span>
+                </CommandItem>
+              )}
+            </div>
           ))}
         </CommandGroup>
       </CommandList>

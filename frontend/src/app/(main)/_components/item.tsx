@@ -7,6 +7,8 @@ import {
   MoreHorizontal,
   Plus,
   Trash,
+  FolderPlusIcon,
+  FilePlus2,
 } from "lucide-react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { LargeNumberLike } from "crypto";
@@ -38,6 +40,7 @@ interface ItemProps {
   label: string;
   onClick?: () => void;
   icon: LucideIcon;
+  isFolder?: boolean;
 }
 
 export const Item = ({
@@ -51,8 +54,10 @@ export const Item = ({
   label,
   onClick,
   icon: Icon,
+  isFolder,
 }: ItemProps) => {
-  const create = useMutation(api.documents.create);
+  const createFile = useMutation(api.documents.createFile);
+  const createFolder = useMutation(api.documents.createFolder);
   const router = useRouter();
 
   const handleExpand = (
@@ -62,12 +67,14 @@ export const Item = ({
     onExpand?.();
   };
 
-  const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const onCreateFile = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
     event.stopPropagation();
     if (!id) {
       return;
     }
-    const promise = create({ title: "untitled", parentDocument: id }).then(
+    const promise = createFile({ title: "untitled", parentDocument: id }).then(
       (documentId) => {
         if (!expanded) {
           onExpand?.();
@@ -81,6 +88,31 @@ export const Item = ({
       loading: "Creating a new Pod...",
       success: "New Pod created!",
       error: "Failed to create new Pod",
+    });
+  };
+
+  const onCreateFolder = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    event.stopPropagation();
+    if (!id) {
+      return;
+    }
+    const promise = createFolder({
+      title: "untitled",
+      parentDocument: id,
+    }).then((documentId) => {
+      if (!expanded) {
+        onExpand?.();
+      }
+
+      // router.push(`/documents/${documentId}`); # set up later
+    });
+
+    toast.promise(promise, {
+      loading: "Creating a new folder...",
+      success: "New folder created!",
+      error: "Failed to create new folder",
     });
   };
 
@@ -116,7 +148,11 @@ export const Item = ({
           className="g-full rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 mr-1"
           onClick={handleExpand}
         >
-          <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+          {isFolder ? (
+            <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+          ) : (
+            <div className="h-2 w-2 shrink-0 text-muted-foreground/50"></div>
+          )}
         </div>
       )}
       {documentIcon ? (
@@ -166,13 +202,26 @@ export const Item = ({
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
-          <div
-            role="button"
-            onClick={onCreate}
-            className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
-          >
-            <Plus className="h-4 w-4 text-muted-foreground" />
-          </div>
+          {isFolder ? (
+            <div className="flex gap-1">
+              <div
+                role="button"
+                onClick={onCreateFile}
+                className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
+              >
+                <FilePlus2 className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div
+                role="button"
+                onClick={onCreateFolder}
+                className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
+              >
+                <FolderPlusIcon className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </div>
+          ) : (
+            <div></div>
+          )}
         </div>
       )}
     </div>

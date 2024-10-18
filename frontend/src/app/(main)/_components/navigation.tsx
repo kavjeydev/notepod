@@ -34,7 +34,9 @@ export default function Navigation() {
   const pathname = usePathname();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const search = useSearch();
-  const create = useMutation(api.documents.create);
+  const createFile = useMutation(api.documents.createFile);
+
+  const createFolder = useMutation(api.documents.createFolder);
 
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ElementRef<"aside">>(null);
@@ -125,8 +127,18 @@ export default function Navigation() {
     }
   };
 
-  const handleCreate = () => {
-    const promise = create({ title: "untitled" });
+  const handleCreateFile = () => {
+    const promise = createFile({ title: "untitled" });
+
+    toast.promise(promise, {
+      loading: "Creating a new Pod...",
+      success: "New Pod created!",
+      error: "Failed to create new Pod",
+    });
+  };
+
+  const handleCreateFolder = () => {
+    const promise = createFolder({ title: "untitled" });
 
     toast.promise(promise, {
       loading: "Creating a new Pod...",
@@ -160,11 +172,21 @@ export default function Navigation() {
           <UserItem />
           <Item onClick={search.onOpen} label="Search" icon={Search} isSearch />
           <Item onClick={() => {}} label="Settings" icon={Settings} />
-          <Item onClick={handleCreate} label="New page" icon={PlusCircle} />
+          <div className="flex gap-1 p-1 items-center justify-center rounded-3xl">
+            <div className="flex">
+              <Item onClick={handleCreateFile} label="Page" icon={PlusCircle} />
+            </div>
+            <Item
+              onClick={handleCreateFolder}
+              label="Folder"
+              icon={PlusCircle}
+            />
+          </div>
         </div>
         <div className="mt-4">
           <DocumentList />
-          <Item onClick={handleCreate} icon={Plus} label="Add a Pod" />
+          <Item onClick={handleCreateFile} icon={Plus} label="Add a Pod" />
+          <Item onClick={handleCreateFolder} label="Add a Folder" icon={Plus} />
           <Popover>
             <PopoverTrigger className="w-full mt-4">
               <Item label="Trash" icon={Trash} />

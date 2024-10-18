@@ -7,7 +7,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Item } from "./item";
 import { cn } from "@/lib/utils";
-import { FileIcon } from "lucide-react";
+import { FileIcon, FolderIcon } from "lucide-react";
 
 interface DocumentListProps {
   parentDocumentId?: Id<"documents">;
@@ -68,14 +68,17 @@ export const DocumentList = ({
         <div key={doc._id}>
           <Item
             id={doc._id}
-            onClick={() => onRedirect(doc._id)}
+            onClick={
+              doc.isFolder ? () => onExpand(doc._id) : () => onRedirect(doc._id)
+            }
             label={doc.title}
-            icon={FileIcon}
+            icon={doc.isFolder ? FolderIcon : FileIcon}
             documentIcon={doc.icon}
             active={params.documentId === doc._id}
             level={level}
             onExpand={() => onExpand(doc._id)}
             expanded={expanded[doc._id]}
+            isFolder={doc.isFolder}
           />
           {expanded[doc._id] && (
             <DocumentList parentDocumentId={doc._id} level={level + 1} />

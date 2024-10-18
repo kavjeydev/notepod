@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 export default function documentsPage() {
   const { user } = useUser();
-  const create = useMutation(api.documents.create);
+  const create = useMutation(api.documents.createFile);
 
   const onCreate = () => {
     const promise = create({ title: "untitled" });
