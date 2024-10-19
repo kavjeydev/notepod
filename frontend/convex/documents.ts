@@ -3,6 +3,43 @@ import { mutation, query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 import { error } from "console";
 
+export const moveFile = mutation({
+  args: {
+    id: v.id("documents"),
+    parentId: v.id("documents"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated.");
+    }
+
+    const userId = identity.subject;
+
+    const existingDocument = await ctx.db.get(args.id);
+    const destinationDocument = await ctx.db.get(args.parentId);
+
+    if (!existingDocument) {
+      throw new Error("Document does not exist");
+    }
+    if (existingDocument.userId !== userId) {
+      throw new Error("Not authorized");
+    }
+    if (!destinationDocument) {
+      throw new Error("Document does not exist");
+    }
+    if (destinationDocument.userId !== userId) {
+      throw new Error("Not authorized");
+    }
+
+    if (destinationDocument?.isFolder) {
+      await ctx.db.patch(args.id, {
+        parentDocument: args.parentId,
+      });
+    }
+  },
+});
+
 export const archive = mutation({
   args: {
     id: v.id("documents"),
@@ -97,6 +134,7 @@ export const createFile = mutation({
       isArchived: false,
       published: false,
       isFolder: false,
+      isActive: false,
     });
 
     return document;
@@ -122,6 +160,7 @@ export const createFolder = mutation({
       isArchived: false,
       published: false,
       isFolder: true,
+      isActive: false,
     });
 
     return document;

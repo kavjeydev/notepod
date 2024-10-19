@@ -28,6 +28,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { arch } from "os";
+import { ElementRef, useRef, useState } from "react";
 
 interface ItemProps {
   id?: Id<"documents">;
@@ -39,8 +40,10 @@ interface ItemProps {
   onExpand?: () => void;
   label: string;
   onClick?: () => void;
-  icon: LucideIcon;
+  icon?: LucideIcon;
   isFolder?: boolean;
+  height: number;
+  width: number;
 }
 
 export const Item = ({
@@ -55,6 +58,8 @@ export const Item = ({
   onClick,
   icon: Icon,
   isFolder,
+  height,
+  width,
 }: ItemProps) => {
   const createFile = useMutation(api.documents.createFile);
   const createFolder = useMutation(api.documents.createFolder);
@@ -117,6 +122,7 @@ export const Item = ({
   };
 
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
+  const color = expanded ? "blue" : undefined;
   const { user } = useUser();
 
   const archive = useMutation(api.documents.archive);
@@ -139,26 +145,38 @@ export const Item = ({
       style={{ paddingLeft: level ? `${level * 12 + 12}px` : "12px" }}
       className={cn(
         "group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium",
-        active && "bg-primary/5 text-primary",
+        active && "bg-primary/5 text-primary ",
       )}
     >
       {!!id && (
         <div
           role="button"
-          className="g-full rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 mr-1"
+          className={`g-full rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 mr-1`}
           onClick={handleExpand}
         >
           {isFolder ? (
-            <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+            <ChevronIcon
+              className={`h-4 w-4 shrink-0 text-muted-foreground/50`}
+            />
           ) : (
-            <div className="h-2 w-2 shrink-0 text-muted-foreground/50"></div>
+            <div className=""></div>
           )}
         </div>
       )}
       {documentIcon ? (
         <div className="shrink-0 mr-2 text-[18px]">{documentIcon}</div>
       ) : (
-        <Icon className="shrink-0 h-[18px] mr-2 text-muted-foreground" />
+        <div>
+          {Icon ? (
+            <Icon
+              className="shrink-0 h-[18px] mr-2 text-muted-foreground"
+              height={height}
+              width={width}
+            />
+          ) : (
+            <div className="mr-[2px]"></div>
+          )}
+        </div>
       )}
 
       <span className="truncate">{label}</span>

@@ -170,26 +170,58 @@ export default function Navigation() {
         </div>
         <div>
           <UserItem />
-          <Item onClick={search.onOpen} label="Search" icon={Search} isSearch />
-          <Item onClick={() => {}} label="Settings" icon={Settings} />
-          <div className="flex gap-1 p-1 items-center justify-center rounded-3xl">
-            <div className="flex">
-              <Item onClick={handleCreateFile} label="Page" icon={PlusCircle} />
-            </div>
-            <Item
-              onClick={handleCreateFolder}
-              label="Folder"
-              icon={PlusCircle}
-            />
-          </div>
+          <Item
+            onClick={search.onOpen}
+            label="Search"
+            icon={Search}
+            isSearch
+            height={16}
+            width={16}
+          />
+          <Item
+            onClick={() => {}}
+            label="Settings"
+            icon={Settings}
+            height={16}
+            width={16}
+          />
+          <Item
+            onClick={handleCreateFile}
+            label="New Pod"
+            icon={PlusCircle}
+            height={16}
+            width={16}
+          />
+
+          <Item
+            onClick={handleCreateFolder}
+            label="New Folder"
+            icon={PlusCircle}
+            height={16}
+            width={16}
+          />
         </div>
+
         <div className="mt-4">
           <DocumentList />
-          <Item onClick={handleCreateFile} icon={Plus} label="Add a Pod" />
-          <Item onClick={handleCreateFolder} label="Add a Folder" icon={Plus} />
+          <div className="h-4 w-full"></div>
+          <Item
+            onClick={handleCreateFile}
+            icon={Plus}
+            label="Add a Pod"
+            height={16}
+            width={16}
+          />
+          <Item
+            onClick={handleCreateFolder}
+            label="Add a Folder"
+            icon={Plus}
+            height={16}
+            width={16}
+          />
           <Popover>
             <PopoverTrigger className="w-full mt-4">
-              <Item label="Trash" icon={Trash} />
+              <Item label="Trash" icon={Trash} height={16} width={16} />
             </PopoverTrigger>
             <PopoverContent
               side={isMobile ? "bottom" : "right"}

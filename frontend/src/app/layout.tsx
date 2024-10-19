@@ -6,6 +6,8 @@ import { Providers } from "../components/providers/providers";
 import { ThemeProvider } from "../components/providers/theme-provider";
 import { ConvexClientProvider } from "@/components/providers/convex-provider";
 import { Toaster } from "sonner";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 export const metadata: Metadata = {
   title: "Notepod",

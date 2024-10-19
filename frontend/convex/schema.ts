@@ -12,16 +12,8 @@ export default defineSchema({
     icon: v.optional(v.string()),
     published: v.boolean(),
     isFolder: v.boolean(),
+    isActive: v.boolean(),
   })
     .index("by_user", ["userId"])
     .index("by_user_parent", ["userId", "parentDocument"]),
-
-  folders: defineTable({
-    title: v.string(),
-    userId: v.string(),
-    isArchived: v.boolean(),
-    parentFolder: v.optional(v.id("folders")),
-    coverImage: v.optional(v.string()),
-    icon: v.optional(v.string()),
-  }),
 });
