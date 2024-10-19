@@ -29,6 +29,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import TrashBox from "./trash-box";
+import { DragProvider } from "./drag-context";
+import { DraggingItem } from "./dragging-item";
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -177,6 +179,7 @@ export default function Navigation() {
             isSearch
             height={16}
             width={16}
+            id_str={""}
           />
           <Item
             onClick={() => {}}
@@ -184,6 +187,7 @@ export default function Navigation() {
             icon={Settings}
             height={16}
             width={16}
+            id_str={""}
           />
           <Item
             onClick={handleCreateFile}
@@ -191,6 +195,7 @@ export default function Navigation() {
             icon={PlusCircle}
             height={16}
             width={16}
+            id_str={""}
           />
 
           <Item
@@ -199,11 +204,15 @@ export default function Navigation() {
             icon={PlusCircle}
             height={16}
             width={16}
+            id_str={""}
           />
         </div>
 
         <div className="mt-4">
-          <DocumentList />
+          <DragProvider>
+            <DocumentList />
+            {/* <DraggingItem /> */}
+          </DragProvider>
           <div className="h-4 w-full"></div>
           <Item
             onClick={handleCreateFile}
@@ -211,6 +220,7 @@ export default function Navigation() {
             label="Add a Pod"
             height={16}
             width={16}
+            id_str={""}
           />
           <Item
             onClick={handleCreateFolder}
@@ -218,10 +228,17 @@ export default function Navigation() {
             icon={Plus}
             height={16}
             width={16}
+            id_str={""}
           />
           <Popover>
             <PopoverTrigger className="w-full mt-4">
-              <Item label="Trash" icon={Trash} height={16} width={16} />
+              <Item
+                label="Trash"
+                icon={Trash}
+                height={16}
+                width={16}
+                id_str={""}
+              />
             </PopoverTrigger>
             <PopoverContent
               side={isMobile ? "bottom" : "right"}

@@ -6,7 +6,7 @@ import { error } from "console";
 export const moveFile = mutation({
   args: {
     id: v.id("documents"),
-    parentId: v.id("documents"),
+    parentId: v.optional(v.id("documents")),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -17,7 +17,15 @@ export const moveFile = mutation({
     const userId = identity.subject;
 
     const existingDocument = await ctx.db.get(args.id);
-    const destinationDocument = await ctx.db.get(args.parentId);
+
+    const destId = args.parentId;
+    let destinationDocument: typeof existingDocument | undefined;
+
+    if (destId) {
+      destinationDocument = await ctx.db.get(destId);
+    } else {
+      destinationDocument = undefined;
+    }
 
     if (!existingDocument) {
       throw new Error("Document does not exist");
@@ -25,14 +33,20 @@ export const moveFile = mutation({
     if (existingDocument.userId !== userId) {
       throw new Error("Not authorized");
     }
-    if (!destinationDocument) {
-      throw new Error("Document does not exist");
-    }
-    if (destinationDocument.userId !== userId) {
-      throw new Error("Not authorized");
-    }
+    // if (!destinationDocument) {
+    //   throw new Error("Document does not exist");
+    // }
+    // if (destinationDocument.userId !== userId) {
+    //   throw new Error("Not authorized");
+    // }
 
-    if (destinationDocument?.isFolder) {
+    if (!destinationDocument) {
+      await ctx.db.patch(args.id, {
+        parentDocument: undefined,
+      });
+    } else if (!destinationDocument?.isFolder) {
+      throw new Error("Not a folder");
+    } else if (destinationDocument?.isFolder) {
       await ctx.db.patch(args.id, {
         parentDocument: args.parentId,
       });

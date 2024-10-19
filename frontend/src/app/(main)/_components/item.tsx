@@ -27,11 +27,12 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { arch } from "os";
-import { ElementRef, useRef, useState } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { UniqueIdentifier } from "@dnd-kit/core";
 
 interface ItemProps {
   id?: Id<"documents">;
+  id_str?: string;
   documentIcon?: string;
   active?: boolean;
   expanded?: boolean;
@@ -60,6 +61,7 @@ export const Item = ({
   isFolder,
   height,
   width,
+  id_str,
 }: ItemProps) => {
   const createFile = useMutation(api.documents.createFile);
   const createFolder = useMutation(api.documents.createFolder);
@@ -144,8 +146,9 @@ export const Item = ({
       role="button"
       style={{ paddingLeft: level ? `${level * 12 + 12}px` : "12px" }}
       className={cn(
-        "group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium",
-        active && "bg-primary/5 text-primary ",
+        "group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium select-none",
+        active &&
+          "bg-primary/5 text-primary outline outline-neutral-300 outline-1 dark:outline-neutral-600",
       )}
     >
       {!!id && (
