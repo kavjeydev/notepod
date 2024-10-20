@@ -148,7 +148,7 @@ export const Item = ({
       className={cn(
         "group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium select-none",
         active &&
-          "bg-primary/5 text-primary outline outline-neutral-300 outline-1 dark:outline-neutral-600",
+          "bg-primary/15 text-primary border-neutral-400 border-1 dark:border-neutral-500",
       )}
     >
       {!!id && (

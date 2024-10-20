@@ -22,6 +22,15 @@ interface DragContextType {
   setCursorPosition: React.Dispatch<
     React.SetStateAction<{ x: number; y: number }>
   >;
+  autoScroll: { up: boolean; down: boolean; left: boolean; right: boolean };
+  setAutoScroll: React.Dispatch<
+    React.SetStateAction<{
+      up: boolean;
+      down: boolean;
+      left: boolean;
+      right: boolean;
+    }>
+  >;
 }
 const DragContext = createContext<DragContextType | undefined>(undefined);
 
@@ -48,6 +57,14 @@ export const DragProvider: React.FC<DragProviderProps> = ({ children }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragTitle, setDragTitle] = useState("");
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+
+  const [autoScroll, setAutoScroll] = useState({
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+  });
+
   return (
     <DragContext.Provider
       value={{
@@ -63,6 +80,8 @@ export const DragProvider: React.FC<DragProviderProps> = ({ children }) => {
         setDragTitle,
         cursorPosition,
         setCursorPosition,
+        autoScroll,
+        setAutoScroll,
       }}
     >
       {children}

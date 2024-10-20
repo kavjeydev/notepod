@@ -30,14 +30,14 @@ import {
 } from "@/components/ui/popover";
 import TrashBox from "./trash-box";
 import { DragProvider } from "./drag-context";
-import { DraggingItem } from "./dragging-item";
+import { useSettings } from "../../../../hooks/use-settings";
 
 export default function Navigation() {
   const pathname = usePathname();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const search = useSearch();
   const createFile = useMutation(api.documents.createFile);
-
+  const settings = useSettings();
   const createFolder = useMutation(api.documents.createFolder);
 
   const isResizingRef = useRef(false);
@@ -63,7 +63,6 @@ export default function Navigation() {
   const handleMouseDown = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
-    console.log("here");
     event.preventDefault();
     event.stopPropagation();
 
@@ -182,7 +181,7 @@ export default function Navigation() {
             id_str={""}
           />
           <Item
-            onClick={() => {}}
+            onClick={settings.onOpen}
             label="Settings"
             icon={Settings}
             height={16}
@@ -207,46 +206,48 @@ export default function Navigation() {
             id_str={""}
           />
         </div>
+        <div className="flex flex-col mt-4 h-[calc(100%-300px)] overflow-y-scroll hover:scrollbar-default [&::-webkit-scrollbar-thumb]:bg-default-300 dark:[&::-webkit-scrollbar-thumb]:bg-default-200">
+          <div className="flex flex-col h-[100%]">
+            <DragProvider>
+              <DocumentList />
+            </DragProvider>
+          </div>
 
-        <div className="mt-4">
-          <DragProvider>
-            <DocumentList />
-            {/* <DraggingItem /> */}
-          </DragProvider>
-          <div className="h-4 w-full"></div>
-          <Item
-            onClick={handleCreateFile}
-            icon={Plus}
-            label="Add a Pod"
-            height={16}
-            width={16}
-            id_str={""}
-          />
-          <Item
-            onClick={handleCreateFolder}
-            label="Add a Folder"
-            icon={Plus}
-            height={16}
-            width={16}
-            id_str={""}
-          />
-          <Popover>
-            <PopoverTrigger className="w-full mt-4">
-              <Item
-                label="Trash"
-                icon={Trash}
-                height={16}
-                width={16}
-                id_str={""}
-              />
-            </PopoverTrigger>
-            <PopoverContent
-              side={isMobile ? "bottom" : "right"}
-              className="p-0 w-72"
-            >
-              <TrashBox />
-            </PopoverContent>
-          </Popover>
+          <div className="absolute bottom-0 w-full h-[125px] pb-2 border-t-1 dark:border-default-300 border-default-300 pt-2">
+            <Item
+              onClick={handleCreateFile}
+              icon={Plus}
+              label="Add a Pod"
+              height={16}
+              width={16}
+              id_str={""}
+            />
+            <Item
+              onClick={handleCreateFolder}
+              label="Add a Folder"
+              icon={Plus}
+              height={16}
+              width={16}
+              id_str={""}
+            />
+            <Popover>
+              <PopoverTrigger className="w-full mt-4">
+                <Item
+                  label="Trash"
+                  icon={Trash}
+                  height={16}
+                  width={16}
+                  id_str={""}
+                />
+              </PopoverTrigger>
+              <PopoverContent
+                side={isMobile ? "bottom" : "right"}
+                className="p-0 w-72"
+              >
+                <TrashBox />
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
         <div
           onMouseDown={(event) => {

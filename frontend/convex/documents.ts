@@ -45,7 +45,15 @@ export const moveFile = mutation({
         parentDocument: undefined,
       });
     } else if (!destinationDocument?.isFolder) {
-      throw new Error("Not a folder");
+      if (destinationDocument.parentDocument) {
+        await ctx.db.patch(args.id, {
+          parentDocument: destinationDocument.parentDocument,
+        });
+      } else {
+        await ctx.db.patch(args.id, {
+          parentDocument: undefined,
+        });
+      }
     } else if (destinationDocument?.isFolder) {
       await ctx.db.patch(args.id, {
         parentDocument: args.parentId,
