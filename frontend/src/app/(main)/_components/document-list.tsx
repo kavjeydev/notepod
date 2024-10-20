@@ -227,6 +227,7 @@ export const DocumentList = ({
                   onMouseMove={(event) => handleMouseMove(event, doc._id)}
                   onMouseDown={(event) => {
                     handleMouseDown(event, doc._id, doc.title);
+                    console.log();
                   }}
                   onMouseUp={handleMouseUp}
                 >
