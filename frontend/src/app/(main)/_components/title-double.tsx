@@ -51,7 +51,7 @@ export default function TitleDouble({
 
   return (
     <div className="flex items-center gap-x-1">
-      {!!initialData && <p>{initialData.icon}</p>}
+      {/* {!!initialData && <p>{initialData.icon}</p>} */}
 
       {isEditing ? (
         <Input

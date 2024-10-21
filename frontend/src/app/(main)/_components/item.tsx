@@ -210,23 +210,23 @@ export const Item = ({
         >
           {isFolder && (
             <ChevronIcon
-              className={`h-4 w-4 shrink-0 text-muted-foreground/50`}
+              className={`h-4 w-4 shrink-0 text-muted-foreground/50 mr-[3px]`}
             />
           )}
         </div>
       )}
       {documentIcon ? (
-        <div className="shrink-0 mr-2 text-[18px]"></div>
+        <div className="mr-[6px]">{documentIcon}</div>
       ) : (
         <div>
           {Icon ? (
             <Icon
-              className="shrink-0 h-[18px] mr-2 text-muted-foreground"
+              className="shrink-0 h-[18px] mr-[9px] text-muted-foreground"
               height={height}
               width={width}
             />
           ) : (
-            <div className="mr-[2px]"></div>
+            <div className=""></div>
           )}
         </div>
       )}

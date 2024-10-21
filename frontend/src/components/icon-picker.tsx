@@ -26,7 +26,7 @@ export default function IconPicker({
   return (
     <Popover>
       <PopoverTrigger asChild={asChild}>{children}</PopoverTrigger>
-      <PopoverContent className="p-0 w-full border-none shadow-none">
+      <PopoverContent className="p-0 w-full border-none shadow-none ">
         <EmojiPicker
           height={350}
           theme={theme}

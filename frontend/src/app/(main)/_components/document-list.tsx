@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { FileIcon, FolderIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useDragContext } from "./drag-context";
+import Follow from "./follow";
 
 interface DocumentListProps {
   parentDocumentId?: Id<"documents">;
@@ -65,7 +66,6 @@ export const DocumentList = ({
       const isNearBottom = bottom - event.clientY <= SCROLL_THRESHOLD;
       const isNearLeft = event.clientX - left <= SCROLL_THRESHOLD;
       const isNearRight = right - event.clientX <= SCROLL_THRESHOLD;
-      console.log(autoScroll.up, autoScroll.down);
       setAutoScroll({
         up: isNearTop,
         down: isNearBottom,
@@ -90,14 +90,12 @@ export const DocumentList = ({
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     event.stopPropagation();
-    console.log(clickId, hoverId);
     if (clickId && clickId !== hoverId) {
-      console.log("here");
       onMoveFile(event);
     }
     setIsDragging(false);
     setHoverId(clickId);
-    setClickId(clickId);
+    setClickId(undefined);
     setDragTitle("");
 
     setAutoScroll({ up: false, down: false, left: false, right: false });
@@ -127,11 +125,9 @@ export const DocumentList = ({
       if (isDragging) {
         if (containerRef.current) {
           if (autoScroll.up) {
-            console.log("erfiuheirfghrefiu woohoo");
             containerRef.current.scrollTop -= SCROLL_SPEED;
           }
           if (autoScroll.down) {
-            console.log("erfiuheirfghrefiu woohoo");
             containerRef.current.scrollTop += SCROLL_SPEED;
           }
           if (autoScroll.left) {
@@ -227,10 +223,11 @@ export const DocumentList = ({
                   onMouseMove={(event) => handleMouseMove(event, doc._id)}
                   onMouseDown={(event) => {
                     handleMouseDown(event, doc._id, doc.title);
-                    console.log();
                   }}
                   onMouseUp={handleMouseUp}
                 >
+                  {isDragging && <Follow title={dragTitle} />}
+
                   <Item
                     id={doc._id}
                     onClick={
@@ -255,7 +252,6 @@ export const DocumentList = ({
                     height={10}
                     width={10}
                   />
-
                   {expanded[doc._id] && (
                     <DocumentList
                       parentDocumentId={doc._id}
