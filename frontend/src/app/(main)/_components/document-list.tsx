@@ -314,16 +314,18 @@ export const DocumentList = ({
 
           {level === 0 ? (
             <div
-              className={cn("grow min-h-[25px]")}
+              className={cn(
+                "grow min-h-[25px] bg-[#F5F5F5] dark:bg-[#262626]",
+                isDragging && "hover:dark:bg-[#363636] hover:bg-[#E5E5E5]",
+              )}
               ref={outsideRef}
               onMouseMove={(event) => {
-                handleMouseMove(event, undefined);
+                if (isDragging) {
+                  handleMouseMove(event, undefined);
+                }
 
                 if (!outsideRef.current) {
                   return;
-                }
-                if (isDragging) {
-                  outsideRef.current.style.backgroundColor = "#363636";
                 }
               }}
               onMouseUp={(e) => {
@@ -333,7 +335,7 @@ export const DocumentList = ({
                   return;
                 }
 
-                outsideRef.current.style.backgroundColor = "#262626";
+                // outsideRef.current.style.backgroundColor = "#262626";
               }}
             ></div>
           ) : (

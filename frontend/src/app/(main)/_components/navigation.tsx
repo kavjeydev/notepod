@@ -13,7 +13,7 @@ import {
   UserIcon,
 } from "lucide-react";
 import { Truculenta } from "next/font/google";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import UserItem from "./user-item";
@@ -31,6 +31,7 @@ import {
 import TrashBox from "./trash-box";
 import { DragProvider } from "./drag-context";
 import { useSettings } from "../../../../hooks/use-settings";
+import NavbarDoc from "./navbar-doc";
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -39,6 +40,8 @@ export default function Navigation() {
   const createFile = useMutation(api.documents.createFile);
   const settings = useSettings();
   const createFolder = useMutation(api.documents.createFolder);
+
+  const params = useParams();
 
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ElementRef<"aside">>(null);
@@ -267,15 +270,19 @@ export default function Navigation() {
           isMobile && "left-0 w-full",
         )}
       >
-        <nav className="bg-transparent px-3 py-2 w-full">
-          {isCollapsed && (
-            <MenuIcon
-              onClick={resetWidth}
-              role="button"
-              className="h-6 w-6 text-muted-foreground"
-            />
-          )}
-        </nav>
+        {!!params.documentId ? (
+          <NavbarDoc isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+        ) : (
+          <nav className="bg-transparent px-3 py-2 w-full">
+            {isCollapsed && (
+              <MenuIcon
+                onClick={resetWidth}
+                role="button"
+                className="h-6 w-6 text-muted-foreground"
+              />
+            )}
+          </nav>
+        )}
       </div>
     </>
   );

@@ -9,12 +9,13 @@ import {
   Trash,
   FolderPlusIcon,
   FilePlus2,
+  Pen,
 } from "lucide-react";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { LargeNumberLike } from "crypto";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -29,6 +30,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSortable } from "@dnd-kit/sortable";
 import { UniqueIdentifier } from "@dnd-kit/core";
+import Title from "./title";
+import TitleDouble from "./title-double";
+import { useRef, useState } from "react";
 
 interface ItemProps {
   id?: Id<"documents">;
@@ -67,11 +71,58 @@ export const Item = ({
   const createFolder = useMutation(api.documents.createFolder);
   const router = useRouter();
 
+  let document = undefined;
+
+  if (id) {
+    document = useQuery(api.documents.getById, {
+      documentId: id,
+    });
+  }
+
+  const update = useMutation(api.documents.update);
+  const [isEditing, setIsEditing] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [title, setTitle] = useState(document?.title || "untitled");
+
+  const enableInput = () => {
+    if (document?.title) {
+      setTitle(document?.title);
+    }
+
+    setIsEditing(true);
+    setTimeout(() => {
+      inputRef?.current?.focus();
+      inputRef?.current?.setSelectionRange(0, inputRef.current.value.length);
+    }, 0);
+  };
+
+  const disableInput = () => {
+    setIsEditing(false);
+  };
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+    if (document?._id) {
+      update({
+        id: document?._id,
+        title: event.target.value || "untitled",
+      });
+    }
+  };
+
+  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      disableInput();
+    }
+  };
+
   const handleExpand = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     event.stopPropagation();
-    onExpand?.();
+    if (!isEditing) {
+      onExpand?.();
+    }
   };
 
   const onCreateFile = (
@@ -157,17 +208,15 @@ export const Item = ({
           className={`g-full rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 mr-1`}
           onClick={handleExpand}
         >
-          {isFolder ? (
+          {isFolder && (
             <ChevronIcon
               className={`h-4 w-4 shrink-0 text-muted-foreground/50`}
             />
-          ) : (
-            <div className=""></div>
           )}
         </div>
       )}
       {documentIcon ? (
-        <div className="shrink-0 mr-2 text-[18px]">{documentIcon}</div>
+        <div className="shrink-0 mr-2 text-[18px]"></div>
       ) : (
         <div>
           {Icon ? (
@@ -182,7 +231,23 @@ export const Item = ({
         </div>
       )}
 
-      <span className="truncate">{label}</span>
+      <span className="truncate">
+        {!!document ? (
+          <div
+            onDoubleClick={enableInput}
+            onBlur={disableInput}
+            onChange={onChange}
+            onKeyDown={onKeyDown}
+          >
+            <TitleDouble
+              initialData={document as Doc<"documents">}
+              isEditing={isEditing}
+            />
+          </div>
+        ) : (
+          <span className="truncate">{label}</span>
+        )}
+      </span>
       {isSearch && (
         <kbd
           className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded
@@ -217,6 +282,12 @@ export const Item = ({
                 <Trash className="h-4 w-4 mr-2" />
                 Delete
               </DropdownMenuItem>
+
+              <DropdownMenuItem onClick={enableInput}>
+                <Pen className="h-4 w-4 mr-2" />
+                Rename
+              </DropdownMenuItem>
+
               <DropdownMenuSeparator />
               <div className="text-xs text-muted-foreground p-2">
                 Last edited by: {user?.fullName}
