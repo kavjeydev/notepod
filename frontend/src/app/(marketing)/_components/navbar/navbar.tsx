@@ -12,6 +12,7 @@ import { useConvexAuth } from "convex/react";
 import { SignInButton, UserButton } from "@clerk/clerk-react";
 import { Spinner } from "@nextui-org/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const space = Space_Grotesk({
   subsets: ["latin"],
@@ -31,6 +32,11 @@ export default function Navbar() {
   var currentTheme: string = "light";
   const scrolled = useScrollTop();
   const { isAuthenticated, isLoading } = useConvexAuth();
+
+  const router = useRouter();
+  const gotoDocuments = () => {
+    router.push("/documents");
+  };
   return (
     <div
       className={cn(
@@ -104,6 +110,7 @@ export default function Navbar() {
                 color="primary"
                 radius="full"
                 className="bg-maincolor text-white"
+                onClick={gotoDocuments}
               >
                 <Link href="/documents">Enter Notepod</Link>
               </Button>

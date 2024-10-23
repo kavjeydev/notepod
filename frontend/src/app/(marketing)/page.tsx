@@ -11,6 +11,7 @@ import DescCard from "./_components/desccard/desccard";
 import { useConvexAuth } from "convex/react";
 import Link from "next/link";
 import Navbar from "./_components/navbar/navbar";
+import { useRouter } from "next/navigation";
 
 const space = Space_Grotesk({
   subsets: ["latin"],
@@ -27,6 +28,11 @@ const lato = Lato({
 });
 
 export default function Home() {
+  const router = useRouter();
+
+  const gotoDocuments = () => {
+    router.push("/documents");
+  };
   const { isAuthenticated, isLoading } = useConvexAuth();
   return (
     <NextUIProvider className="dark:bg-[121212]">
@@ -52,6 +58,7 @@ export default function Home() {
                     className="bg-maincolor text-white min-w-[150px]"
                     size="lg"
                     radius="full"
+                    onClick={gotoDocuments}
                   >
                     <Link href="/documents">Enter Notepod</Link>
                   </Button>
