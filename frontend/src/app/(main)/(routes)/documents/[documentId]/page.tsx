@@ -26,11 +26,11 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   }
 
   return (
-    <div className="pb-0">
-      <div className="h-[10vh]"></div>
+    <div className="pb-0 overflow-scroll max-h-[90vh]">
+      <div className="h-[10vh] max-h-[100%] overflow-hidden"></div>
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
         <Toolbar initialData={document} />
-        <Editor />
+        <Editor content={document.content} />
       </div>
     </div>
   );

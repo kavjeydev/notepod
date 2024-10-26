@@ -156,7 +156,7 @@ export default function Navigation() {
       <aside
         ref={sidebarRef}
         className={cn(
-          "group/sidebar h-[100vh] bg-secondary overflow-y-auto relative flex w-60 flex-col z-[99999]",
+          "relative group/sidebar h-[100vh] bg-secondary overflow-y-auto flex w-60 flex-col z-[99999]",
           isResetting && "transition-all ease-in-out duration-300",
           isMobile && "w-0",
         )}

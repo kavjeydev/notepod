@@ -21,9 +21,9 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     return redirect("/");
   }
   return (
-    <div className="flex dark:bg-[#121212]">
+    <div className="flex dark:bg-[#121212] ">
       <Navigation />
-      <main className="flex-1 h-full overflow-y-auto">
+      <main className="flex-1 h-full">
         <SearchCommand />
         {children}
       </main>

@@ -26,7 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning className="dark:bg-[#121212] h-full">
+      <body
+        suppressHydrationWarning
+        className="dark:bg-[#121212] h-full overflow-hidden"
+      >
         <ConvexClientProvider>
           <ThemeProvider
             attribute="class"
