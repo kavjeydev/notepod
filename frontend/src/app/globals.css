@@ -10,6 +10,7 @@
   --text-color: #1d1128;
   --navbar-bg: rgba(255, 255, 255, 0.5);
   --shadow: rgba(123, 123, 123, 0.25);
+  --border-color: rgba(0, 0, 0, 0.2);
 }
 
 @media (prefers-color-scheme: light) {
@@ -20,9 +21,10 @@
 }
 .dark {
   --text-color: #ffffff;
-  --bgcolor: #070707;
+  --bgcolor: #222222;
   --paragraph-color: rgb(184, 184, 184);
   --shadow: rgba(184, 184, 184, 0.2);
+  --border-color: rgba(255, 255, 255, 0.2);
 }
 
 body {

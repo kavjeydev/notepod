@@ -5,6 +5,7 @@ import { EditorProvider, useCurrentEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import React, { useEffect } from "react";
 import styles from "./editor.module.scss";
+import { Button } from "@nextui-org/react";
 
 const MenuBar = () => {
   const { editor } = useCurrentEditor();
@@ -15,161 +16,222 @@ const MenuBar = () => {
 
   return (
     <div className="control-group">
-      <div className="button-group">
-        <button
+      <div
+        className="button-group flex gap-2 flex-wrap leading-4 p-6 dark:bg-[#222222] bg-white rounded-tl-md
+      rounded-tr-md border-t border-l border-r dark:border-white/20 border-black/20"
+      >
+        <Button
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={!editor.can().chain().focus().toggleBold().run()}
-          className={editor.isActive("bold") ? "is-active" : ""}
+          className={
+            editor.isActive("bold") ? "is-active bg-maincolor text-white" : ""
+          }
+          variant="flat"
+          size="sm"
         >
           Bold
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => editor.chain().focus().toggleItalic().run()}
           disabled={!editor.can().chain().focus().toggleItalic().run()}
-          className={editor.isActive("italic") ? "is-active" : ""}
+          className={
+            editor.isActive("italic") ? "is-active bg-maincolor text-white" : ""
+          }
+          variant="flat"
+          size="sm"
         >
           Italic
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => editor.chain().focus().toggleStrike().run()}
           disabled={!editor.can().chain().focus().toggleStrike().run()}
-          className={editor.isActive("strike") ? "is-active" : ""}
+          className={
+            editor.isActive("strike") ? "is-active bg-maincolor text-white" : ""
+          }
+          variant="flat"
+          size="sm"
         >
           Strike
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => editor.chain().focus().toggleCode().run()}
           disabled={!editor.can().chain().focus().toggleCode().run()}
-          className={editor.isActive("code") ? "is-active" : ""}
+          className={
+            editor.isActive("code") ? "is-active bg-maincolor text-white" : ""
+          }
+          variant="flat"
+          size="sm"
         >
           Code
-        </button>
-        <button onClick={() => editor.chain().focus().unsetAllMarks().run()}>
+        </Button>
+        <Button
+          onClick={() => editor.chain().focus().unsetAllMarks().run()}
+          variant="flat"
+          size="sm"
+        >
           Clear marks
-        </button>
-        <button onClick={() => editor.chain().focus().clearNodes().run()}>
+        </Button>
+        <Button
+          onClick={() => editor.chain().focus().clearNodes().run()}
+          variant="flat"
+          size="sm"
+        >
           Clear nodes
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => editor.chain().focus().setParagraph().run()}
           className={editor.isActive("paragraph") ? "is-active" : ""}
+          variant="flat"
+          size="sm"
         >
           Paragraph
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 1 }).run()
           }
           className={
             editor.isActive("heading", { level: 1 }) ? "is-active" : ""
           }
+          variant="flat"
+          size="sm"
         >
           H1
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
           className={
             editor.isActive("heading", { level: 2 }) ? "is-active" : ""
           }
+          variant="flat"
+          size="sm"
         >
           H2
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 3 }).run()
           }
           className={
             editor.isActive("heading", { level: 3 }) ? "is-active" : ""
           }
+          variant="flat"
+          size="sm"
         >
           H3
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 4 }).run()
           }
           className={
             editor.isActive("heading", { level: 4 }) ? "is-active" : ""
           }
+          variant="flat"
+          size="sm"
         >
           H4
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 5 }).run()
           }
           className={
             editor.isActive("heading", { level: 5 }) ? "is-active" : ""
           }
+          variant="flat"
+          size="sm"
         >
           H5
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 6 }).run()
           }
           className={
             editor.isActive("heading", { level: 6 }) ? "is-active" : ""
           }
+          variant="flat"
+          size="sm"
         >
           H6
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={editor.isActive("bulletList") ? "is-active" : ""}
+          variant="flat"
+          size="sm"
         >
           Bullet list
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={editor.isActive("orderedList") ? "is-active" : ""}
+          variant="flat"
+          size="sm"
         >
           Ordered list
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
           className={editor.isActive("codeBlock") ? "is-active" : ""}
+          variant="flat"
+          size="sm"
         >
           Code block
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={editor.isActive("blockquote") ? "is-active" : ""}
+          variant="flat"
+          size="sm"
         >
           Blockquote
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
+          variant="flat"
+          size="sm"
         >
           Horizontal rule
-        </button>
-        <button onClick={() => editor.chain().focus().setHardBreak().run()}>
+        </Button>
+        <Button
+          onClick={() => editor.chain().focus().setHardBreak().run()}
+          variant="flat"
+          size="sm"
+        >
           Hard break
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().chain().focus().undo().run()}
+          variant="flat"
+          size="sm"
         >
           Undo
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().chain().focus().redo().run()}
+          variant="flat"
+          size="sm"
         >
           Redo
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => editor.chain().focus().setColor("#958DF1").run()}
           className={
             editor.isActive("textStyle", { color: "#958DF1" })
               ? "is-active"
               : ""
           }
+          variant="flat"
+          size="sm"
         >
           Purple
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -224,11 +286,13 @@ const content = `
 export default () => {
   return (
     <div className={styles.editor}>
-      <EditorProvider
-        slotBefore={<MenuBar />}
-        extensions={extensions}
-        content={content}
-      ></EditorProvider>
+      <div className="overflow-hidden">
+        <EditorProvider
+          slotBefore={<MenuBar />}
+          extensions={extensions}
+          content={content}
+        ></EditorProvider>
+      </div>
     </div>
   );
 };
