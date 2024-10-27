@@ -270,7 +270,7 @@ const MenuBar = () => {
       <>
         {editor && (
           <BubbleMenu
-            className="bubble-menu flex gap-4 outline outline-1 outline-[#EEEEEE] bg-background pr-3 pl-3 pt-1 pb-1 rounded-md"
+            className="bubble-menu flex gap-4 outline outline-1 outline-[#EEEEEE] dark:outline-[#222222] bg-background pr-3 pl-3 pt-1 pb-1 rounded-md"
             tippyOptions={{ duration: 100 }}
             editor={editor}
           >
