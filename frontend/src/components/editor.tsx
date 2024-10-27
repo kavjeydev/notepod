@@ -6,6 +6,14 @@ import StarterKit from "@tiptap/starter-kit";
 import React, { useEffect } from "react";
 import styles from "./editor.module.scss";
 import { Button } from "@nextui-org/react";
+import TextAlign from "@tiptap/extension-text-align";
+
+import {
+  BubbleMenu,
+  EditorContent,
+  FloatingMenu,
+  useEditor,
+} from "@tiptap/react";
 
 const MenuBar = () => {
   const { editor } = useCurrentEditor();
@@ -232,7 +240,104 @@ const MenuBar = () => {
         >
           Purple
         </Button>
+        <Button
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          className={editor.isActive({ textAlign: "left" }) ? "is-active" : ""}
+          variant="flat"
+          size="sm"
+        >
+          Left
+        </Button>
+        <Button
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          className={
+            editor.isActive({ textAlign: "center" }) ? "is-active" : ""
+          }
+          variant="flat"
+          size="sm"
+        >
+          Center
+        </Button>
+        <Button
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          className={editor.isActive({ textAlign: "right" }) ? "is-active" : ""}
+          variant="flat"
+          size="sm"
+        >
+          Right
+        </Button>
       </div>
+      <>
+        {editor && (
+          <BubbleMenu
+            className="bubble-menu flex gap-4 outline outline-1 outline-[#EEEEEE] bg-background pr-3 pl-3 pt-1 pb-1 rounded-md"
+            tippyOptions={{ duration: 100 }}
+            editor={editor}
+          >
+            <Button
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              className={editor.isActive("bold") ? "is-active" : ""}
+              variant="light"
+              size="sm"
+            >
+              B
+            </Button>
+            <Button
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              className={editor.isActive("italic") ? "is-active" : "max-w-1"}
+              variant="light"
+              size="sm"
+            >
+              Italic
+            </Button>
+            <Button
+              onClick={() => editor.chain().focus().toggleStrike().run()}
+              className={editor.isActive("strike") ? "is-active" : ""}
+              variant="light"
+              size="sm"
+            >
+              Strike
+            </Button>
+          </BubbleMenu>
+        )}
+
+        {editor && (
+          <FloatingMenu
+            className="floating-menu"
+            tippyOptions={{ duration: 100 }}
+            editor={editor}
+          >
+            <button
+              onClick={() =>
+                editor.chain().focus().toggleHeading({ level: 1 }).run()
+              }
+              className={
+                editor.isActive("heading", { level: 1 }) ? "is-active" : ""
+              }
+            >
+              H1
+            </button>
+            <button
+              onClick={() =>
+                editor.chain().focus().toggleHeading({ level: 2 }).run()
+              }
+              className={
+                editor.isActive("heading", { level: 2 }) ? "is-active" : ""
+              }
+            >
+              H2
+            </button>
+            <button
+              onClick={() => editor.chain().focus().toggleBulletList().run()}
+              className={editor.isActive("bulletList") ? "is-active" : ""}
+            >
+              Bullet list
+            </button>
+          </FloatingMenu>
+        )}
+
+        <EditorContent editor={editor} />
+      </>
     </div>
   );
 };
@@ -243,12 +348,16 @@ const extensions = [
   StarterKit.configure({
     bulletList: {
       keepMarks: true,
-      keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+      keepAttributes: false,
     },
     orderedList: {
       keepMarks: true,
-      keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+      keepAttributes: false,
     },
+  }),
+  TextAlign.configure({
+    alignments: ["left", "right", "center"],
+    types: ["heading", "paragraph"],
   }),
 ];
 

@@ -5,6 +5,7 @@ import { Id } from "../../../../../../convex/_generated/dataModel";
 import { api } from "../../../../../../convex/_generated/api";
 import Toolbar from "@/components/toolbar";
 import Editor from "@/components/editor";
+import Tiptap from "../../../_components/tiptap";
 
 interface DocumentIdPageProps {
   params: {
@@ -30,6 +31,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
       <div className="h-[10vh] max-h-[100%] overflow-hidden"></div>
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
         {/* <Toolbar initialData={document} /> */}
+
         <Editor />
       </div>
     </div>
