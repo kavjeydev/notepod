@@ -20,7 +20,7 @@
 }
 .dark {
   --text-color: #ffffff;
-  --bgcolor: #121212;
+  --bgcolor: #070707;
   --paragraph-color: rgb(184, 184, 184);
   --shadow: rgba(184, 184, 184, 0.2);
 }
