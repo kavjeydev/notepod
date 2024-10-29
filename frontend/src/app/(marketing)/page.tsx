@@ -46,7 +46,7 @@ export default function Home() {
                 <span className="text-maincolor z-0">any codebase</span> in
                 seconds.
               </h1>
-              <h6 className="text-default-500 text-[20px] leading-[30px] w-[500px]">
+              <h6 className="text-default-500 text-[16px] leading-[30px] w-[500px]">
                 Our AI learns about any codebase, answers any questions, and
                 writes industry standard technical documents for you!
               </h6>

@@ -46,8 +46,8 @@ export default function Navbar() {
       )}
     >
       <div className="flex justify-between items-center fixed z-50 pl-[115px] pr-[115px] pb-[10px] pt-[10px] w-[100vw] h-[80px] backdrop-blur-[20px]">
-        <div className="flex items-center justify-center border-r-[10] pt-[4px]">
-          <Image
+        <div className="flex items-center justify-center border-r-[10] pt-[4px] font-bold text-[20px]">
+          {/* <Image
             src="/logo_w_text.svg"
             alt="logo"
             height={40}
@@ -61,20 +61,40 @@ export default function Navbar() {
             height={40}
             width={130}
             className="hidden dark:block"
-          />
+          /> */}
+          notepod
         </div>
 
-        <div className="flex gap-[60px]">
-          <div className="flex text-text-color pl-[10px] pr-[10px]">
+        <div className="flex gap-[60px] justify-center items-center">
+          <div
+            className="flex text-text-color pl-[10px] pr-[10px] text-sm font-light rounded-full hover:text-muted-foreground transition cursor-pointer"
+            // size="sm"
+            // variant="light"
+          >
             Product
           </div>
-          <div className="flex text-text-color pl-[10px] pr-[10px]">
+          <div
+            className="flex text-text-color pl-[10px] pr-[10px] text-sm rounded-full hover:text-muted-foreground cursor-pointer"
+            // size="sm"
+            // variant="light"
+          >
             Pricing
           </div>
-          <div className="flex text-text-color pl-[10px] pr-[10px]">
+          <div
+            className="flex text-text-color pl-[10px] pr-[10px] text-sm rounded-full hover:text-muted-foreground cursor-pointer"
+            // size="sm"
+            // variant="light"
+          >
             Documentation
           </div>
-          <div className="flex text-text-color pl-[10px] pr-[10px]">
+          <div
+            className="flex text-text-color pl-[10px] pr-[10px] text-sm hover:text-muted-foreground rounded-full justify-center items-center cursor-pointer"
+            // size="sm"
+            // variant="light"
+            onClick={() => {
+              router.push("/documents");
+            }}
+          >
             <span className="text-text-color font-bold">Write Now ⤴</span>
           </div>
         </div>
