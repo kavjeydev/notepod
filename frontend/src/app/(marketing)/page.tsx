@@ -41,7 +41,7 @@ export default function Home() {
         <div className="flex relative top-[80px] w-[100vw] h-[93vh] ">
           <div className="flex w-[50vw] ml-[100px]">
             <div className="flex flex-col gap-[25px] mt-[150px]">
-              <h1 className="font-spaceg text-[4.6875rem] font-medium tracking-tighter leading-[4.6875rem] w-[624px]">
+              <h1 className="font-spaceg text-[4.6875rem] font-normal tracking-tighter leading-[4.6875rem] w-[624px]">
                 Technical docs for{" "}
                 <span className="text-maincolor z-0">any codebase</span> in
                 seconds.

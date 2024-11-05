@@ -8,7 +8,7 @@ import { Toaster } from "sonner";
 import { ModalProvider } from "@/components/providers/modal-provider";
 
 export const metadata: Metadata = {
-  title: "Notepod",
+  title: "Notepod - Technical Docs in Seconds",
   description: "Write documentation faster",
   icons: {
     icon: [
