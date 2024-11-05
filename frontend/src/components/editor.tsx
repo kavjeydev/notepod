@@ -8,15 +8,34 @@ import styles from "./editor.module.scss";
 import { Button } from "@nextui-org/react";
 import TextAlign from "@tiptap/extension-text-align";
 
-import {
-  BubbleMenu,
-  EditorContent,
-  FloatingMenu,
-  useEditor,
-} from "@tiptap/react";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import Document from "@tiptap/extension-document";
+import Paragraph from "@tiptap/extension-paragraph";
+import Text from "@tiptap/extension-text";
+import css from "highlight.js/lib/languages/css";
+import js from "highlight.js/lib/languages/javascript";
+import ts from "highlight.js/lib/languages/typescript";
+import html from "highlight.js/lib/languages/xml";
+// load all languages with "all" or common languages with "common"
+import { all, createLowlight } from "lowlight";
+
+// create a lowlight instance with all languages loaded
+
+const lowlight = createLowlight(all);
+
+// This is only an example, all supported languages are already loaded above
+// but you can also register only specific languages to reduce bundle-size
+// lowlight.register("html", html);
+// lowlight.register("css", css);
+// lowlight.register("js", js);
+// lowlight.register("ts", ts);
+// eslint-disable-next-line
+import { BubbleMenu, EditorContent } from "@tiptap/react";
 
 const MenuBar = () => {
   const { editor } = useCurrentEditor();
+
+  // you can also register individual languages
 
   if (!editor) {
     return null;
@@ -359,38 +378,12 @@ const extensions = [
     alignments: ["left", "right", "center"],
     types: ["heading", "paragraph"],
   }),
+  CodeBlockLowlight.configure({
+    lowlight,
+  }),
 ];
 
-const content = `
-<h2>
-  Hi there,
-</h2>
-<p>
-  this is a <em>basic</em> example of <strong>Tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
-</p>
-<ul>
-  <li>
-    That’s a bullet list with one …
-  </li>
-  <li>
-    … or two list items.
-  </li>
-</ul>
-<p>
-  Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
-</p>
-<pre><code class="language-css">body {
-  display: none;
-}</code></pre>
-<p>
-  I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
-</p>
-<blockquote>
-  Wow, that’s amazing. Good work, boy! 👏
-  <br />
-  — Mom
-</blockquote>
-`;
+const content = `Begin writing...`;
 
 export default () => {
   return (

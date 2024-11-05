@@ -100,11 +100,64 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="font-spaceg flex items-center justify-center h-[75px] w-[100vw] text-[36px] font-medium mt-[80px] mb-[100px]">
-          Writing documentation has never been easier.
+        <div className="flex items-center justify-center">
+          <div
+            className="font-spaceg flex flex-col items-center justify-center h-full w-[70vw]
+          text-[36px] font-normal mt-[80px] mb-[100px] text-center gap-8"
+          >
+            {/* <span>
+              AI trained on documentation written by industry leaders.
+            </span> */}
+            <div className="flex flex-row h-[400px] w-[70vw] bg-[#222021] dark:bg-white rounded-2xl">
+              <div
+                className="flex flex-col text-left font-spaceg text-sm text-white
+              dark:text-black h-full w-[35vw] pl-24 justify-center gap-4"
+              >
+                <span>DATA VALIDATION</span>
+                <span className="text-4xl font-sans">
+                  AI trained on industry grade documentation.
+                </span>
+                <span className="font-md font-sans text-muted-foreground">
+                  Curated from a diverse range of high-quality sources, it
+                  ensures comprehensive coverage while maintaining rigorous
+                  standards.
+                </span>
+              </div>
+              <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-wrap h-[100px] w-[35vw] justify-center items-center gap-20">
+                  <img
+                    className=" h-[50px] w-[50px] bg-slate-100 dark:bg-gray-900 rounded-sm"
+                    src="./X_logo.jpg"
+                  ></img>
+                  <img
+                    className=" h-[50px] w-[50px] bg-slate-100 dark:bg-gray-900 rounded-sm"
+                    src="./reddit.png"
+                  ></img>
+                  <img
+                    className=" h-[50px] w-[50px] bg-slate-100 dark:bg-gray-900 rounded-sm"
+                    src="./stripe.png"
+                  ></img>
+                </div>
+                <div className="flex flex-wrap h-[100px] w-[35vw] justify-center items-center gap-20">
+                  <img
+                    className=" h-[50px] w-[50px] bg-slate-100 dark:bg-gray-900 rounded-sm"
+                    src="./github.png"
+                  ></img>
+                  <img
+                    className=" h-[50px] w-[50px] bg-slate-100 dark:bg-gray-900 rounded-sm"
+                    src="./docker.jpg"
+                  ></img>
+                  <img
+                    className=" h-[50px] w-[50px] bg-slate-100 dark:bg-gray-900 rounded-sm"
+                    src="./nextjs.jpg"
+                  ></img>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <DescCard />
+        {/* <DescCard /> */}
       </ReactLenis>
     </NextUIProvider>
   );

@@ -29,7 +29,8 @@
     "src/app/(main)/_components/CommandsList.js",
     "src/app/(main)/_components/commands.js",
     "src/app/(main)/_components/items.js",
-    "src/app/(main)/_components/renderItems.js"
+    "src/app/(main)/_components/renderItems.js",
+    "src/app/(main)/_components/CodeBlockComponent.tsx"
   ],
   "exclude": ["node_modules"]
 }
