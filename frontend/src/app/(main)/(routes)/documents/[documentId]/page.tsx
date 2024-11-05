@@ -1,9 +1,9 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { Id } from "../../../../../../convex/_generated/dataModel";
 import { api } from "../../../../../../convex/_generated/api";
-import Editor from "@/components/editor";
+import { Editor } from "@/components/editor";
 
 interface DocumentIdPageProps {
   params: {
@@ -15,6 +15,15 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   const document = useQuery(api.documents.getById, {
     documentId: params.documentId,
   });
+
+  const update = useMutation(api.documents.update);
+
+  const onChange = (content: string) => [
+    update({
+      id: params.documentId,
+      content,
+    }),
+  ];
 
   if (document === undefined) {
     return <div>Loading</div>;
@@ -30,7 +39,11 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
         {/* <Toolbar initialData={document} /> */}
 
-        <Editor />
+        <Editor
+          onChange={() => {}}
+          initialContent={document.content}
+          docId={params.documentId}
+        />
       </div>
     </div>
   );

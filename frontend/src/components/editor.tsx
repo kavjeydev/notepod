@@ -23,14 +23,10 @@ import { all, createLowlight } from "lowlight";
 
 const lowlight = createLowlight(all);
 
-// This is only an example, all supported languages are already loaded above
-// but you can also register only specific languages to reduce bundle-size
-// lowlight.register("html", html);
-// lowlight.register("css", css);
-// lowlight.register("js", js);
-// lowlight.register("ts", ts);
-// eslint-disable-next-line
 import { BubbleMenu, EditorContent } from "@tiptap/react";
+import { useMutation, useQueries, useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import { Id } from "../../convex/_generated/dataModel";
 
 const MenuBar = () => {
   const { editor } = useCurrentEditor();
@@ -383,16 +379,40 @@ const extensions = [
   }),
 ];
 
-const content = `Begin writing...`;
+interface EditorProps {
+  onChange: (props: string) => void;
+  initialContent?: string;
+  editable?: boolean;
+  docId: Id<"documents">;
+}
 
-export default () => {
+export const Editor = ({ initialContent, editable, docId }: EditorProps) => {
+  const update = useMutation(api.documents.update);
+  const document = useQuery(api.documents.getById, {
+    documentId: docId,
+  });
+
+  const onChange = (content: string) => [
+    console.log(docId),
+    update({
+      id: docId,
+      content,
+    }),
+  ];
   return (
     <div className={styles.editor}>
       <div className="overflow-hidden">
         <EditorProvider
           slotBefore={<MenuBar />}
           extensions={extensions}
-          content={content}
+          content={document?.content}
+          onUpdate={({ editor }) => {
+            onChange(editor.getHTML());
+          }}
+          // onUpdate={(editor) => {
+          //   editor.transaction
+          //   onChange(content);
+          // }}
         ></EditorProvider>
       </div>
     </div>
