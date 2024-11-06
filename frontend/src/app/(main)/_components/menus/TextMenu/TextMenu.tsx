@@ -71,7 +71,7 @@ export const TextMenu = ({ editor }: TextMenuProps) => {
           onTone={commands.onTone}
           onTranslate={commands.onTranslate}
         /> */}
-        <Toolbar.Divider />
+        {/* <Toolbar.Divider /> */}
         <MemoContentTypePicker options={blockOptions} />
         <MemoFontFamilyPicker
           onChange={commands.onSetFont}
