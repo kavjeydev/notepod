@@ -13,6 +13,9 @@ import type { EditorUser } from "../_components/BlockEditor/types";
 import { initialContent } from "../lib/data/initialContent";
 import { Ai } from "../extensions/Ai";
 import { AiImage, AiWriter } from "../extensions";
+import { Id } from "../../../../convex/_generated/dataModel";
+import { useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
 
 declare global {
   interface Window {
@@ -26,33 +29,38 @@ export const useBlockEditor = ({
   provider,
   userId,
   userName = "Maxi",
+  docId,
 }: {
   aiToken?: string;
   ydoc: YDoc;
   provider?: TiptapCollabProvider | null | undefined;
   userId?: string;
   userName?: string;
+  docId: Id<"documents">;
 }) => {
   const [collabState, setCollabState] = useState<WebSocketStatus>(
     provider ? WebSocketStatus.Connecting : WebSocketStatus.Disconnected,
   );
-
+  const document = useQuery(api.documents.getById, {
+    documentId: docId,
+  });
   const editor = useEditor(
     {
       immediatelyRender: true,
       shouldRerenderOnTransaction: false,
       autofocus: true,
+      content: document?.content,
       onCreate: (ctx) => {
         if (provider && !provider.isSynced) {
           provider.on("synced", () => {
             setTimeout(() => {
-              if (ctx.editor.isEmpty) {
-                ctx.editor.commands.setContent(initialContent);
-              }
+              // if (ctx.editor.isEmpty) {
+              //   ctx.editor.commands.setContent(initialContent);
+              // }
             }, 0);
           });
         } else if (ctx.editor.isEmpty) {
-          ctx.editor.commands.setContent(initialContent);
+          // ctx.editor.commands.setContent(initialContent);
           ctx.editor.commands.focus("start", { scrollIntoView: true });
         }
       },

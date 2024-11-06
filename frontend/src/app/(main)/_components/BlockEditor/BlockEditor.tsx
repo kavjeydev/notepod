@@ -17,16 +17,22 @@ import { ContentItemMenu } from "../menus/ContentItemMenu";
 import { useSidebar } from "../../hooks/useSidebar";
 import * as Y from "yjs";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
+import { update } from "../../../../../convex/documents";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
 
 export const BlockEditor = ({
   aiToken,
   ydoc,
   provider,
+  docId,
 }: {
   aiToken?: string;
   hasCollab: boolean;
   ydoc: Y.Doc;
   provider?: TiptapCollabProvider | null | undefined;
+  docId: Id<"documents">;
 }) => {
   const menuContainerRef = useRef(null);
 
@@ -35,11 +41,23 @@ export const BlockEditor = ({
     aiToken,
     ydoc,
     provider,
+    docId,
   });
 
   if (!editor || !users) {
     return null;
   }
+  const update = useMutation(api.documents.update);
+  const document = useQuery(api.documents.getById, {
+    documentId: docId,
+  });
+
+  const onChange = (content: string) => [
+    update({
+      id: docId,
+      content,
+    }),
+  ];
 
   return (
     <div className="flex h-full" ref={menuContainerRef}>
@@ -48,7 +66,7 @@ export const BlockEditor = ({
         onClose={leftSidebar.close}
         editor={editor}
       /> */}
-      <div className="relative flex flex-col flex-1 h-full overflow-hidden">
+      <div className="relative flex flex-col flex-1 h-full  overflow-hidden">
         {/* <EditorHeader
           editor={editor}
           collabState={collabState}
@@ -56,7 +74,14 @@ export const BlockEditor = ({
           isSidebarOpen={leftSidebar.isOpen}
           toggleSidebar={leftSidebar.toggle}
         /> */}
-        <EditorContent editor={editor} className="flex-1 overflow-y-auto" />
+        <EditorContent
+          editor={editor}
+          className="flex-1 overflow-y-auto"
+          content={document?.content}
+          onKeyUp={() => {
+            onChange(editor.getHTML());
+          }}
+        />
         <ContentItemMenu editor={editor} />
         <LinkMenu editor={editor} appendTo={menuContainerRef} />
         <TextMenu editor={editor} />

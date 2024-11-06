@@ -50,7 +50,12 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
           initialContent={document.content}
           docId={params.documentId}
         /> */}
-        <BlockEditor aiToken={undefined} hasCollab={false} ydoc={ydoc} />
+        <BlockEditor
+          aiToken={undefined}
+          hasCollab={false}
+          ydoc={ydoc}
+          docId={params.documentId}
+        />
       </div>
     </div>
   );

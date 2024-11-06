@@ -41,9 +41,9 @@ export const AIDropdown = ({
 
   return (
     <Dropdown.Root>
-      <Dropdown.Trigger asChild>
+      <Dropdown.Trigger asChild disabled className="z-[99999]">
         <Toolbar.Button
-          className="text-purple-500 hover:text-purple-600 active:text-purple-600 dark:text-purple-400 dark:hover:text-purple-300 dark:active:text-purple-400"
+          className="text-purple-500 hover:text-purple-600 active:text-purple-600 dark:text-purple-400 dark:hover:text-purple-300 dark:active:text-purple-400 text-xs"
           activeClassname="text-purple-600 hover:text-purple-600 dark:text-purple-400 dark:hover:text-purple-200"
         >
           <Icon name="Sparkles" className="mr-1" />
