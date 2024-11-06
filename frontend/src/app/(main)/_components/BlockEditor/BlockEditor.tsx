@@ -61,19 +61,21 @@ export const BlockEditor = ({
 
   return (
     <div className="flex h-full" ref={menuContainerRef}>
-      {/* <Sidebar
-        isOpen={leftSidebar.isOpen}
-        onClose={leftSidebar.close}
-        editor={editor}
-      /> */}
-      <div className="relative flex flex-col flex-1 h-full  overflow-hidden">
-        {/* <EditorHeader
+      <div className="fixed top-2.5 right-4 bg-transparent z-[99999] pointer-events-none">
+        <EditorHeader
           editor={editor}
           collabState={collabState}
           users={users}
           isSidebarOpen={leftSidebar.isOpen}
           toggleSidebar={leftSidebar.toggle}
-        /> */}
+        />
+      </div>
+      <Sidebar
+        isOpen={leftSidebar.isOpen}
+        onClose={leftSidebar.close}
+        editor={editor}
+      />
+      <div className="relative flex flex-col flex-1 h-full  overflow-visible">
         <EditorContent
           editor={editor}
           className="flex-1 overflow-y-auto"
