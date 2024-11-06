@@ -64,11 +64,11 @@
     @apply h-auto w-full max-w-full;
   }
 
-  [data-type='horizontalRule'] {
-    @apply my-8 py-4 transition-all duration-100 ease-in-out cursor-pointer;
+  [data-type="horizontalRule"] {
+    @apply my-8 py-4 transition-all bg-default-100 dark:bg-[#121212] duration-100 ease-in-out cursor-pointer;
 
     &.ProseMirror-selectednode {
-      @apply bg-black/5 dark:bg-white/10;
+      @apply bg-default-100 dark:bg-[#121212];
 
       hr {
         @apply border-t-black/30 dark:border-t-white/30;
@@ -86,7 +86,7 @@
     }
   }
 
-  [data-type='emoji'] {
+  [data-type="emoji"] {
     display: inline-block;
 
     img {
