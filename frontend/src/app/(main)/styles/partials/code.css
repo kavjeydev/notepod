@@ -8,14 +8,15 @@
   }
 
   pre {
-    @apply caret-white bg-neutral-200 text-black dark:text-white rounded my-12 p-4 border border-neutral-300 dark:bg-neutral-900 dark:border-neutral-800;
+    @apply caret-white bg-neutral-200 text-black dark:text-white rounded my-12 p-4 border
+    border-neutral-300 dark:bg-neutral-900 dark:border-neutral-800;
 
     *::selection {
-      @apply bg-white/20;
+      @apply bg-black/15 dark:bg-white/20;
     }
 
     code {
-      @apply bg-inherit text-inherit p-0 shadow-none;
+      @apply bg-inherit text-inherit p-0 shadow-none text-sm;
     }
 
     .hljs-comment,
