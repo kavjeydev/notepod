@@ -40,7 +40,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   }
 
   return (
-    <div className="overflow-scroll max-h-[95vh] min-h-[95vh] bg-[#f4f4f4] dark:bg-[#121212] pb-5">
+    <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-[#f4f4f4] dark:bg-[#121212] pb-5">
       <div className="h-[10vh] max-h-[100%] overflow-hidden"></div>
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
         {/* <Toolbar initialData={document} /> */}
