@@ -27,12 +27,14 @@ export const BlockEditor = ({
   ydoc,
   provider,
   docId,
+  editable,
 }: {
   aiToken?: string;
   hasCollab: boolean;
   ydoc: Y.Doc;
   provider?: TiptapCollabProvider | null | undefined;
   docId: Id<"documents">;
+  editable: boolean;
 }) => {
   const menuContainerRef = useRef(null);
 
@@ -42,6 +44,7 @@ export const BlockEditor = ({
     ydoc,
     provider,
     docId,
+    editable,
   });
 
   if (!editor || !users) {
@@ -61,7 +64,7 @@ export const BlockEditor = ({
 
   return (
     <div className="flex h-full" ref={menuContainerRef}>
-      <div className="fixed top-2.5 right-4 bg-transparent z-[99999] pointer-events-none">
+      <div className="fixed bg-red-400 bottom-8 right-2 bg-transparent z-[99999] pointer-events-none">
         <EditorHeader
           editor={editor}
           collabState={collabState}
@@ -84,7 +87,8 @@ export const BlockEditor = ({
             onChange(editor.getHTML());
           }}
         />
-        <ContentItemMenu editor={editor} />
+        {editable && <ContentItemMenu editor={editor} />}
+
         <LinkMenu editor={editor} appendTo={menuContainerRef} />
         <TextMenu editor={editor} />
         <ColumnsMenu editor={editor} appendTo={menuContainerRef} />

@@ -9,6 +9,8 @@ import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { Doc as YDoc } from "yjs";
 import { useSearchParams } from "next/navigation";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
+import Toolbar from "@/components/toolbar";
+import { Spinner } from "@/app/(main)/_components/ui/Spinner";
 
 interface DocumentIdPageProps {
   params: {
@@ -32,7 +34,11 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   ];
 
   if (document === undefined) {
-    return <div>Loading</div>;
+    return (
+      <div className="flex items-center justify-center h-[100vh] w-[100vw]">
+        <Spinner />
+      </div>
+    );
   }
 
   if (document === null) {
@@ -40,7 +46,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   }
 
   return (
-    <div className="overflow-scroll max-h-[95vh] min-h-[95vh] bg-[#f4f4f4] dark:bg-[#121212] pb-5">
+    <div className="overflow-scroll max-h-[100vh] min-h-[100vvh] bg-[#f4f4f4] dark:bg-[#121212] pb-5">
       <div className="h-[10vh] max-h-[100%] overflow-hidden"></div>
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
         {/* <Toolbar initialData={document} /> */}
@@ -55,7 +61,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
           hasCollab={false}
           ydoc={ydoc}
           docId={params.documentId}
-          editable={true}
+          editable={false}
         />
       </div>
     </div>

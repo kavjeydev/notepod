@@ -34,7 +34,7 @@ export const EditorHeader = ({
 
   return (
     <div
-      className="flex flex-row items-center justify-between flex-none py-2 pl-6 pr-3 text-
+      className="flex flex-row items-center flex-none text-
      bg-transparent dark:text-white"
     >
       <div className="flex flex-row gap-x-1.5 items-center">

@@ -30,6 +30,7 @@ export const useBlockEditor = ({
   userId,
   userName = "Maxi",
   docId,
+  editable,
 }: {
   aiToken?: string;
   ydoc: YDoc;
@@ -37,6 +38,7 @@ export const useBlockEditor = ({
   userId?: string;
   userName?: string;
   docId: Id<"documents">;
+  editable: boolean;
 }) => {
   const [collabState, setCollabState] = useState<WebSocketStatus>(
     provider ? WebSocketStatus.Connecting : WebSocketStatus.Disconnected,
@@ -46,6 +48,7 @@ export const useBlockEditor = ({
   });
   const editor = useEditor(
     {
+      editable: editable,
       immediatelyRender: true,
       shouldRerenderOnTransaction: false,
       autofocus: true,
