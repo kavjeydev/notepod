@@ -4,6 +4,11 @@ import { useMutation, useQuery } from "convex/react";
 import { Id } from "../../../../../../convex/_generated/dataModel";
 import { api } from "../../../../../../convex/_generated/api";
 import { Editor } from "@/components/editor";
+import { BlockEditor } from "@/app/(main)/_components/BlockEditor/BlockEditor";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { Doc as YDoc } from "yjs";
+import { useSearchParams } from "next/navigation";
+import { TiptapCollabProvider } from "@hocuspocus/provider";
 
 interface DocumentIdPageProps {
   params: {
@@ -12,6 +17,7 @@ interface DocumentIdPageProps {
 }
 
 export default function DocumentIdPage({ params }: DocumentIdPageProps) {
+  const ydoc = useMemo(() => new YDoc(), []);
   const document = useQuery(api.documents.getById, {
     documentId: params.documentId,
   });
@@ -39,11 +45,12 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
         {/* <Toolbar initialData={document} /> */}
 
-        <Editor
+        {/* <Editor
           onChange={() => {}}
           initialContent={document.content}
           docId={params.documentId}
-        />
+        /> */}
+        <BlockEditor aiToken={undefined} hasCollab={false} ydoc={ydoc} />
       </div>
     </div>
   );

@@ -105,10 +105,7 @@ export default function Home() {
             className="font-spaceg flex flex-col items-center justify-center h-full w-[70vw]
           text-[36px] font-normal mt-[80px] mb-[100px] text-center gap-8"
           >
-            {/* <span>
-              AI trained on documentation written by industry leaders.
-            </span> */}
-            <div className="flex flex-row h-[400px] w-[70vw] bg-[#222021] dark:bg-white rounded-2xl">
+            <div className="flex flex-row h-[400px] w-[70vw] bg-[#242327] dark:bg-[#ececff] rounded-2xl">
               <div
                 className="flex flex-col text-left font-spaceg text-sm text-white
               dark:text-black h-full w-[35vw] pl-24 justify-center gap-4"
