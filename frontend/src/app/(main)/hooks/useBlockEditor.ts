@@ -5,6 +5,7 @@ import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import { TiptapCollabProvider, WebSocketStatus } from "@hocuspocus/provider";
 import type { Doc as YDoc } from "yjs";
+import History from "@tiptap/extension-history";
 
 import { ExtensionKit } from "../extensions/extension-kit";
 import { userColors, userNames } from "../lib/constants";
@@ -57,17 +58,18 @@ export const useBlockEditor = ({
         if (provider && !provider.isSynced) {
           provider.on("synced", () => {
             setTimeout(() => {
-              // if (ctx.editor.isEmpty) {
-              //   ctx.editor.commands.setContent(initialContent);
-              // }
+              if (ctx.editor.isEmpty) {
+                ctx.editor.commands.setContent(initialContent);
+              }
             }, 0);
           });
         } else if (ctx.editor.isEmpty) {
-          // ctx.editor.commands.setContent(initialContent);
+          ctx.editor.commands.setContent(initialContent);
           ctx.editor.commands.focus("start", { scrollIntoView: true });
         }
       },
       extensions: [
+        History,
         ...ExtensionKit({
           provider,
         }),
