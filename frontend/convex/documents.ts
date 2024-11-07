@@ -417,3 +417,20 @@ export const removeIcon = mutation({
     return document;
   },
 });
+
+export const getAllPublished = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated.");
+    }
+
+    const documents = ctx.db
+      .query("documents")
+      .filter((q) => q.eq(q.field("isArchived"), false))
+      .filter((q) => q.eq(q.field("published"), true))
+      .collect();
+
+    return documents;
+  },
+});
