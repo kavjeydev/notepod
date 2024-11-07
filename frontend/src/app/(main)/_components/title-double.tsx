@@ -28,7 +28,7 @@ export default function TitleDouble({
     setTimeout(() => {
       inputRef?.current?.focus();
       inputRef?.current?.setSelectionRange(0, inputRef.current.value.length);
-    }, 0);
+    }, 10);
   };
 
   const disableInput = () => {
@@ -57,7 +57,7 @@ export default function TitleDouble({
         <Input
           className="h-7 px-2 focus-visible:ring-transparent"
           ref={inputRef}
-          onDoubleClick={enableInput}
+          onClick={enableInput}
           onBlur={disableInput}
           onChange={onChange}
           onKeyDown={onKeyDown}
@@ -65,7 +65,7 @@ export default function TitleDouble({
         />
       ) : (
         <Button
-          onDoubleClick={enableInput}
+          onClick={enableInput}
           variant="ghost"
           size="sm"
           className="font-normal h-[20px] p-1"

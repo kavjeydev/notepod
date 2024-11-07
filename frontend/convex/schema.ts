@@ -13,6 +13,8 @@ export default defineSchema({
     published: v.boolean(),
     isFolder: v.boolean(),
     isActive: v.boolean(),
+    userProfile: v.optional(v.string()),
+    publishedUserName: v.optional(v.string()),
   })
     .index("by_user", ["userId"])
     .index("by_user_parent", ["userId", "parentDocument"]),

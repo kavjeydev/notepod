@@ -173,6 +173,7 @@ export const createFile = mutation({
       published: false,
       isFolder: false,
       isActive: false,
+      userProfile: identity.pictureUrl,
     });
 
     return document;

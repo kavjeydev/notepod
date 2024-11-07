@@ -39,8 +39,21 @@ export default function CommunityPage() {
             }}
             className="hover:cursor-pointer"
           >
-            <div className="h-[275px] w-[215px] bg-slate-400"></div>
-            <div>{document.title}</div>
+            <div className="flex h-[275px] w-[215px] dark:bg-white/20 bg-black/20 rounded-md items-end p-1">
+              <div className="flex gap-2 p-1">
+                <img
+                  src={document.userProfile}
+                  className="h-4 w-4 mt-[0.0625rem] rounded-full"
+                />
+
+                <div className="flex flex-col">
+                  <div className="text-sm">{document.title}</div>
+                  <div className="text-xs text-muted-foreground font-bold">
+                    0 likes
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         ))}
       </div>
