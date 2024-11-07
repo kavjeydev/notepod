@@ -420,10 +420,10 @@ export const removeIcon = mutation({
 
 export const getAllPublished = query({
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Not authenticated.");
-    }
+    // const identity = await ctx.auth.getUserIdentity();
+    // if (!identity) {
+    //   throw new Error("Not authenticated.");
+    // }
 
     const documents = ctx.db
       .query("documents")
