@@ -92,10 +92,10 @@ export default function Navbar() {
             // size="sm"
             // variant="light"
             onClick={() => {
-              router.push("/documents");
+              router.push("/community");
             }}
           >
-            <span className="text-text-color font-bold">Write Now ⤴</span>
+            <span className="text-text-color font-bold">Community ⤴</span>
           </div>
         </div>
 
