@@ -174,7 +174,10 @@ export const createFile = mutation({
       isFolder: false,
       isActive: false,
       userProfile: identity.pictureUrl,
+      publishedUserName: identity.nickname,
     });
+
+    console.log(identity);
 
     return document;
   },

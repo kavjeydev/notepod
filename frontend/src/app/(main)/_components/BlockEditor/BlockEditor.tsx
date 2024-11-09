@@ -83,7 +83,10 @@ export const BlockEditor = ({
           editor={editor}
           className="flex-1 overflow-y-auto"
           content={document?.content}
-          onKeyUp={() => {
+          onInput={() => {
+            onChange(editor.getHTML());
+          }}
+          onBlur={() => {
             onChange(editor.getHTML());
           }}
         />

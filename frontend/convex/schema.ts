@@ -1,5 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { UserIdentity } from "convex/server";
 
 export default defineSchema({
   documents: defineTable({
@@ -15,6 +16,7 @@ export default defineSchema({
     isActive: v.boolean(),
     userProfile: v.optional(v.string()),
     publishedUserName: v.optional(v.string()),
+    // identity: v.optional(v.object())
   })
     .index("by_user", ["userId"])
     .index("by_user_parent", ["userId", "parentDocument"]),
