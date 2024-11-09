@@ -136,16 +136,16 @@ export const GROUPS: Group[] = [
             .run();
         },
       },
-      {
-        name: "image",
-        label: "Image",
-        iconName: "Image",
-        description: "Insert an image",
-        aliases: ["img"],
-        action: (editor) => {
-          editor.chain().focus().setImageUpload().run();
-        },
-      },
+      // {
+      //   name: "image",
+      //   label: "Image",
+      //   iconName: "Image",
+      //   description: "Insert an image",
+      //   aliases: ["img"],
+      //   action: (editor) => {
+      //     editor.chain().focus().setImageUpload().run();
+      //   },
+      // },
       {
         name: "columns",
         label: "Columns",

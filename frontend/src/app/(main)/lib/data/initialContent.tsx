@@ -350,7 +350,7 @@ export const initialContent = {
     {
       type: "imageBlock",
       attrs: {
-        src: "/logo.jpg",
+        src: "/nextjs.jpg",
         width: "100%",
         align: "center",
       },

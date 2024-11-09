@@ -4,7 +4,7 @@ export class API {
       "Image upload is disabled in the demo... Please implement the API.uploadImage method in your project.",
     );
     await new Promise((r) => setTimeout(r, 500));
-    return "/logo.jpg";
+    return "/o.jpg";
   };
 }
 
