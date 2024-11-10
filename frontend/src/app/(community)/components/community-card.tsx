@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { useState } from "react";
-import { Heart } from "lucide-react";
+import { File, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -53,11 +53,6 @@ export default function CommunityCard({ document }: CardProps) {
     });
   };
 
-  //   const toggleLike = (docId: Id<"documents">) => {
-  //     const promise = increaseLike({ id: docId });
-  //     setIsLiked(!isLiked);
-  //   };
-
   const visitGitHub = (gitUsername: string) => {
     const url = `https://www.github.com/${gitUsername}`;
     window.open(url, "_blank");
@@ -81,7 +76,7 @@ export default function CommunityCard({ document }: CardProps) {
       <div
         className="flex flex-col h-[13.931vw] w-[20.97vw] dark:bg-white/5 bg-black/5
             rounded-lg p-3 truncate hover:outline outline-maincolor/30 dark:outline-purple-500/50
-            transition-all ease-linear duration-150 outline-2"
+             outline-2 bg-gradient-to-b dark:from-white/5 dark:to-black/30 from-transparent to-white/30 transition-all duration-150"
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
@@ -91,7 +86,7 @@ export default function CommunityCard({ document }: CardProps) {
               size="sm"
               variant="ghost"
               className="h-8 w-8 bg-white dark:bg-black outline dark:outline-default-200
-              outline-default-300 outline-1  rounded-full z-[99999]"
+              outline-default-300 outline-1  rounded-full z-[99999] "
               onClick={(e) => {
                 if (likeItem) {
                   onUnlike(document._id, likeItem._id);
@@ -109,7 +104,7 @@ export default function CommunityCard({ document }: CardProps) {
             </Button>
           </div>
         )}
-        <div className="flex gap-2 p-1 h-full items-end">
+        <div className="flex gap-2 p-1 h-full items-end ">
           <img
             src={document.userProfile}
             className="h-5 w-5 mb-[2.2rem] rounded-full z-[99999]"
@@ -121,7 +116,7 @@ export default function CommunityCard({ document }: CardProps) {
           />
 
           <div className="flex flex-col truncate gap-0.5">
-            <div className="text-sm truncate pr-1 text-default-800 dark:text-default-800 font-semibold">
+            <div className="text-sm truncate pr-1 text-default-800 dark:text-default-800 font-semibold ">
               {document.title}
             </div>
             <div

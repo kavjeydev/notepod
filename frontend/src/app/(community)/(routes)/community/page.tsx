@@ -8,6 +8,7 @@ import { Doc } from "../../../../../convex/_generated/dataModel";
 import { useState } from "react";
 import { Heart } from "lucide-react";
 import CommunityCard from "../../components/community-card";
+import CommunityNavbar from "../../components/navbar";
 
 export default function CommunityPage() {
   const allPublishedDocs = useQuery(api.documents.getAllPublished);
@@ -26,7 +27,8 @@ export default function CommunityPage() {
 
   return (
     <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-[#f4f4f4] dark:bg-[#121212] pb-5">
-      <div className="p-12 flex gap-2 flex-wrap-reverse">
+      <CommunityNavbar />
+      <div className="pr-12 pl-12 pt-1 pb-1 flex gap-2 flex-wrap-reverse">
         {allPublishedDocs.map((document) => (
           <CommunityCard document={document} />
         ))}
