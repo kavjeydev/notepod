@@ -3,8 +3,9 @@ import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { useState } from "react";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import { toast } from "sonner";
 
 interface CardProps {
   document: Doc<"documents">;
@@ -12,26 +13,44 @@ interface CardProps {
 
 export default function CommunityCard({ document }: CardProps) {
   const [isInteractionVisible, setIsInteractionVisible] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
 
   const router = useRouter();
 
+  const likeItem = useQuery(api.likeData.getLikeFromUser, {
+    documentId: document._id,
+  });
+
   const increaseLike = useMutation(api.documents.increaseLike);
+  const addLikeToStorage = useMutation(api.likeData.addLikeFromUser);
+
   const decreaseLike = useMutation(api.documents.decreaseLike);
+  const removeLikeFromStorage = useMutation(api.likeData.removeLikeFromUser);
 
   const visitPod = (initialData: Doc<"documents">) => {
     const url = `/preview/${initialData._id}`;
     window.open(url, "_blank");
   };
 
-  const onUnlike = (docId: Id<"documents">) => {
-    const promise = decreaseLike({ id: docId });
-    setIsLiked(false);
+  const onUnlike = (docId: Id<"documents">, likeId: Id<"likeData">) => {
+    const promiseDoc = decreaseLike({ id: docId });
+    const promiseStore = removeLikeFromStorage({ id: likeId });
+
+    toast.promise(promiseStore, {
+      loading: "Unliking Pod...",
+      success: "Pod removed from likes",
+      error: "Failed to unlike Pod",
+    });
   };
 
   const onLike = (docId: Id<"documents">) => {
     const promise = increaseLike({ id: docId });
-    setIsLiked(true);
+    const promiseStore = addLikeToStorage({ id: docId });
+
+    toast.promise(promiseStore, {
+      loading: "Liking Pod...",
+      success: "Pod added to likes",
+      error: "Failed to like Pod",
+    });
   };
 
   //   const toggleLike = (docId: Id<"documents">) => {
@@ -74,15 +93,15 @@ export default function CommunityCard({ document }: CardProps) {
               className="h-8 w-8 bg-white dark:bg-black outline dark:outline-default-200
               outline-default-300 outline-1  rounded-full z-[99999]"
               onClick={(e) => {
-                if (isLiked) {
-                  onUnlike(document._id);
+                if (likeItem) {
+                  onUnlike(document._id, likeItem._id);
                 } else {
                   onLike(document._id);
                 }
                 e.stopPropagation();
               }}
             >
-              {isLiked ? (
+              {likeItem ? (
                 <Heart className="absolute h-12 w-12 text-muted-foreground z-[99999] fill-red-500 text-red-500" />
               ) : (
                 <Heart className="absolute h-12 w-12 text-muted-foreground z-[99999] hover:text-red-500" />

@@ -1,7 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
-import { error } from "console";
 
 export const moveFile = mutation({
   args: {
@@ -426,10 +425,10 @@ export const removeIcon = mutation({
 
 export const getAllPublished = query({
   handler: async (ctx) => {
-    // const identity = await ctx.auth.getUserIdentity();
-    // if (!identity) {
-    //   throw new Error("Not authenticated.");
-    // }
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated.");
+    }
 
     const documents = ctx.db
       .query("documents")

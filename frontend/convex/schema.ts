@@ -22,4 +22,9 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_user_parent", ["userId", "parentDocument"]),
+
+  likeData: defineTable({
+    userId: v.string(),
+    documentId: v.id("documents"),
+  }),
 });

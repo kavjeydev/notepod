@@ -16,6 +16,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as documents from "../documents.js";
+import type * as likeData from "../likeData.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -27,6 +28,7 @@ import type * as documents from "../documents.js";
  */
 declare const fullApi: ApiFromModules<{
   documents: typeof documents;
+  likeData: typeof likeData;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
