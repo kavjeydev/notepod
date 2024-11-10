@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import {
   ChevronLeft,
   ChevronsLeft,
+  House,
   MenuIcon,
   Plus,
   PlusCircle,
@@ -11,9 +12,10 @@ import {
   Settings,
   Trash,
   UserIcon,
+  Users,
 } from "lucide-react";
 import { Truculenta } from "next/font/google";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import UserItem from "./user-item";
@@ -41,6 +43,7 @@ export default function Navigation() {
   const settings = useSettings();
   const createFolder = useMutation(api.documents.createFolder);
 
+  const router = useRouter();
   const params = useParams();
 
   const isResizingRef = useRef(false);
@@ -174,6 +177,27 @@ export default function Navigation() {
         </div>
         <div>
           <UserItem />
+          <Item
+            onClick={() => {
+              router.push("/");
+            }}
+            label="Home"
+            icon={House}
+            height={16}
+            width={16}
+            id_str={""}
+          />
+          <Item
+            onClick={() => {
+              window.open("/community", "_blank");
+            }}
+            label="Community"
+            icon={Users}
+            height={16}
+            width={16}
+            id_str={""}
+          />
+          <br />
           <Item
             onClick={search.onOpen}
             label="Search"
