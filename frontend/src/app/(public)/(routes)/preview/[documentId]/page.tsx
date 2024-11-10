@@ -3,13 +3,9 @@
 import { useMutation, useQuery } from "convex/react";
 import { Id } from "../../../../../../convex/_generated/dataModel";
 import { api } from "../../../../../../convex/_generated/api";
-import { Editor } from "@/components/editor";
 import { BlockEditor } from "@/app/(main)/_components/BlockEditor/BlockEditor";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Doc as YDoc } from "yjs";
-import { useSearchParams } from "next/navigation";
-import { TiptapCollabProvider } from "@hocuspocus/provider";
-import Toolbar from "@/components/toolbar";
 import { Spinner } from "@/app/(main)/_components/ui/Spinner";
 
 interface DocumentIdPageProps {
@@ -20,9 +16,62 @@ interface DocumentIdPageProps {
 
 export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   const ydoc = useMemo(() => new YDoc(), []);
-  const document = useQuery(api.documents.getById, {
+  const documentPage = useQuery(api.documents.getById, {
     documentId: params.documentId,
   });
+  const [viewed, setViewed] = useState(false);
+
+  const increaseView = useMutation(api.documents.increaseView);
+
+  const viewedPod = () => {
+    const promise = increaseView({ id: params.documentId });
+  };
+
+  const [activeTime, setActiveTime] = useState(0); // State to track active time in seconds
+  const intervalRef = useRef<number | NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    // Function to increment the active time every second
+    const incrementActiveTime = () => {
+      setActiveTime((prevTime) => prevTime + 1);
+    };
+
+    // Start the interval when the component mounts
+    const startInterval = () => {
+      intervalRef.current = setInterval(incrementActiveTime, 1000);
+    };
+
+    // Clear the interval
+    const clearActiveInterval = () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+
+    // Start counting active time
+    startInterval();
+
+    // Handle page visibility change
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        // Pause timer when the page becomes inactive
+        clearActiveInterval();
+      } else {
+        // Resume timer when the page becomes active again
+        startInterval();
+      }
+    };
+
+    // Add event listener for visibility change
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Cleanup function when component unmounts
+    return () => {
+      clearActiveInterval(); // Stop the interval
+      document.removeEventListener("visibilitychange", handleVisibilityChange); // Remove event listener
+    };
+  }, []);
 
   const update = useMutation(api.documents.update);
 
@@ -33,7 +82,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
     }),
   ];
 
-  if (document === undefined) {
+  if (documentPage === undefined) {
     return (
       <div className="flex items-center justify-center h-[100vh] w-[100vw]">
         <Spinner />
@@ -41,8 +90,13 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
     );
   }
 
-  if (document === null) {
+  if (documentPage === null) {
     return null;
+  }
+
+  if (activeTime >= 10 && !viewed) {
+    viewedPod();
+    setViewed(true);
   }
 
   return (
@@ -63,6 +117,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
           docId={params.documentId}
           editable={false}
         />
+        {/* <div>Time Spent: {activeTime}</div> */}
       </div>
     </div>
   );

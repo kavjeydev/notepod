@@ -18,11 +18,9 @@ export default function CommunityCard({ document }: CardProps) {
 
   const increaseLike = useMutation(api.documents.increaseLike);
   const decreaseLike = useMutation(api.documents.decreaseLike);
-  const increaseView = useMutation(api.documents.increaseView);
 
   const visitPod = (initialData: Doc<"documents">) => {
     const url = `/preview/${initialData._id}`;
-    const promise = increaseView({ id: initialData._id });
     window.open(url, "_blank");
   };
 
