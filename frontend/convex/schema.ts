@@ -16,6 +16,8 @@ export default defineSchema({
     isActive: v.boolean(),
     userProfile: v.optional(v.string()),
     publishedUserName: v.optional(v.string()),
+    likes: v.optional(v.number()),
+    views: v.optional(v.number()),
     // identity: v.optional(v.object())
   })
     .index("by_user", ["userId"])

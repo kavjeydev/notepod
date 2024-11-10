@@ -175,6 +175,8 @@ export const createFile = mutation({
       isActive: false,
       userProfile: identity.pictureUrl,
       publishedUserName: identity.nickname,
+      views: 0,
+      likes: 0,
     });
 
     console.log(identity);
@@ -436,5 +438,68 @@ export const getAllPublished = query({
       .collect();
 
     return documents;
+  },
+});
+
+export const increaseLike = mutation({
+  args: { id: v.id("documents") },
+  handler: async (ctx, args) => {
+    // Fetch the existing document
+    const existingDocument = await ctx.db.get(args.id);
+    if (!existingDocument) {
+      throw new Error("Document not found.");
+    }
+
+    // Increment the likes count
+    const newLikes = (existingDocument.likes || 0) + 1;
+
+    // Update the document with the new likes count
+    const updatedDocument = await ctx.db.patch(args.id, {
+      likes: newLikes,
+    });
+
+    return updatedDocument;
+  },
+});
+
+export const decreaseLike = mutation({
+  args: { id: v.id("documents") },
+  handler: async (ctx, args) => {
+    // Fetch the existing document
+    const existingDocument = await ctx.db.get(args.id);
+    if (!existingDocument) {
+      throw new Error("Document not found.");
+    }
+
+    // Increment the likes count
+    const newLikes = (existingDocument.likes || 0) - 1;
+
+    // Update the document with the new likes count
+    const updatedDocument = await ctx.db.patch(args.id, {
+      likes: newLikes,
+    });
+
+    return updatedDocument;
+  },
+});
+
+export const increaseView = mutation({
+  args: { id: v.id("documents") },
+  handler: async (ctx, args) => {
+    // Fetch the existing document
+    const existingDocument = await ctx.db.get(args.id);
+    if (!existingDocument) {
+      throw new Error("Document not found.");
+    }
+
+    // Increment the likes count
+    const newViews = (existingDocument.views || 0) + 1;
+
+    // Update the document with the new likes count
+    const updatedDocument = await ctx.db.patch(args.id, {
+      views: newViews,
+    });
+
+    return updatedDocument;
   },
 });
