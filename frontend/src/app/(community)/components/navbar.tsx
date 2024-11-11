@@ -5,7 +5,7 @@ import { SearchIcon } from "lucide-react";
 
 export default function CommunityNavbar() {
   return (
-    <div className="flex justify-between w-full h-20 bg-default-100 dark:bg-[#121212]">
+    <div className="fixed flex justify-between w-full h-20 bg-gradient-to-b from-default-100 to-transparent dark:from-[#121212]">
       <div
         className={cn(
           `flex gap-8 h-20 items-center cursor-pointer pl-12 pr-12`,

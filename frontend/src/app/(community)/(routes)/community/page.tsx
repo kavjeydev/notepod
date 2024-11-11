@@ -3,10 +3,6 @@
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { Spinner } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
-import { Doc } from "../../../../../convex/_generated/dataModel";
-import { useState } from "react";
-import { Heart } from "lucide-react";
 import CommunityCard from "../../components/community-card";
 import CommunityNavbar from "../../components/navbar";
 
@@ -28,7 +24,7 @@ export default function CommunityPage() {
   return (
     <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-[#f4f4f4] dark:bg-[#121212] pb-5">
       <CommunityNavbar />
-      <div className="pr-12 pl-12 pt-1 pb-1 flex gap-2 flex-wrap-reverse">
+      <div className="pr-12 pl-12 pt-1 pb-1 flex gap-2 flex-wrap-reverse mt-20">
         {allPublishedDocs.map((document) => (
           <CommunityCard document={document} />
         ))}
