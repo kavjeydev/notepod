@@ -176,6 +176,8 @@ export const createFile = mutation({
       publishedUserName: identity.nickname,
       views: 0,
       likes: 0,
+      words: 0,
+      characters: 0,
     });
 
     console.log(identity);
@@ -368,6 +370,8 @@ export const update = mutation({
     coverImage: v.optional(v.string()),
     icon: v.optional(v.string()),
     published: v.optional(v.boolean()),
+    words: v.optional(v.number()),
+    characters: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();

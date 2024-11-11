@@ -5,6 +5,8 @@ import { WebSocketStatus } from "@hocuspocus/provider";
 import { Toolbar } from "../../../_components/ui/Toolbar";
 import { Editor } from "@tiptap/core";
 import { useEditorState } from "@tiptap/react";
+import { useMutation } from "convex/react";
+import { api } from "../../../../../../convex/_generated/api";
 
 export type EditorHeaderProps = {
   isSidebarOpen?: boolean;
@@ -28,6 +30,7 @@ export const EditorHeader = ({
         characters: () => 0,
         words: () => 0,
       };
+
       return { characters: characters(), words: words() };
     },
   });

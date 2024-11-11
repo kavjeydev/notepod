@@ -5,9 +5,18 @@ import { api } from "../../../../../convex/_generated/api";
 import { Spinner } from "@nextui-org/react";
 import CommunityCard from "../../components/community-card";
 import CommunityNavbar from "../../components/navbar";
+import { useUser } from "@clerk/clerk-react";
+import { useRouter } from "next/navigation";
 
 export default function CommunityPage() {
   const allPublishedDocs = useQuery(api.documents.getAllPublished);
+  const router = useRouter();
+
+  const { user } = useUser();
+
+  if (!user) {
+    router.push("/");
+  }
 
   if (allPublishedDocs === undefined) {
     return (
