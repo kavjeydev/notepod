@@ -15,7 +15,11 @@ export default function CommunityPage() {
   const { user } = useUser();
 
   if (!user) {
-    router.push("/");
+    return (
+      <div className="flex w-[100vw] h-[100vh] bg-default-100 dark:bg-[#121212]">
+        <Spinner />
+      </div>
+    );
   }
 
   if (allPublishedDocs === undefined) {
