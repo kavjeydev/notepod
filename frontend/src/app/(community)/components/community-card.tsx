@@ -121,11 +121,16 @@ export default function CommunityCard({ document }: CardProps) {
         />
 
         <div className="flex flex-col truncate gap-0.5">
-          <div className="text-sm truncate pr-1 text-default-800 dark:text-default-800 font-semibold ">
+          <div
+            className="text-sm truncate pr-1 text-default-800 dark:text-default-800 font-semibold cursor-pointer"
+            onClick={() => {
+              visitPod(document);
+            }}
+          >
             {document.title}
           </div>
           <div
-            className="text-xs truncate pr-1 text-muted-foreground hover:underline"
+            className="text-xs truncate pr-1 text-muted-foreground hover:underline cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
               if (document.publishedUserName)
