@@ -10,7 +10,7 @@ from sklearn.preprocessing import normalize
 openai.api_key = constants.API_KEY
 
 repo_url = "https://github.com/kavjeydev/AlgoBowl.git"
-repo_path = "/repo"
+repo_path = "/repos"
 
 
 # Find filepath when @file is used

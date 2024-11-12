@@ -12,6 +12,12 @@ import { useConvexAuth } from "convex/react";
 import Link from "next/link";
 import Navbar from "./_components/navbar/navbar";
 import { useRouter } from "next/navigation";
+import { AnimatedBeam } from "@/components/ui/animated-beam";
+import { AnimatedBeamDemo } from "./_components/animated-beam/animated-beam";
+import { GridPatternDemo } from "./_components/grid-pattern/grid-pattern";
+import { AnimatedGridPatternDemo } from "./_components/animated-grid/animated-grid";
+import { ParticlesDemo } from "./_components/particles/particles";
+import { BentoDemo } from "./_components/bento-grid/bento-grid";
 
 const space = Space_Grotesk({
   subsets: ["latin"],
@@ -35,18 +41,26 @@ export default function Home() {
   };
   const { isAuthenticated, isLoading } = useConvexAuth();
   return (
-    <NextUIProvider className="dark:bg-[121212]">
+    <NextUIProvider className="dark:bg-black">
       <ReactLenis root options={{ lerp: 0.1, duration: 1.5 }}>
         <Navbar />
+        <div className="fixed top-0 h-full w-full pointer-events-none">
+          <ParticlesDemo />
+        </div>
+
         <div className="flex relative top-[80px] w-[100vw] h-[93vh] ">
           <div className="flex w-[50vw] ml-[100px]">
-            <div className="flex flex-col gap-[25px] mt-[150px]">
-              <h1 className="font-spaceg text-[4.6875rem] font-normal tracking-tighter leading-[4.6875rem] w-[624px]">
-                Technical docs for{" "}
-                <span className="text-maincolor z-0">any codebase</span> in
-                seconds.
+            <div className="flex flex-col pl-8 gap-[25px] mt-[150px]">
+              <h1
+                className="font-spaceg text-[4.2875rem] font-semibold tracking-tighter leading-[4.2875rem] w-[624px]
+              bg-gradient-to-t dark:from-default-400 dark:via-default-600 dark:to-white
+              from-default-600 via-default-800 to-black
+              inline-block text-transparent bg-clip-text"
+              >
+                Technical docs for any codebase{" "}
+                <span className="">in seconds.</span>
               </h1>
-              <h6 className="text-default-500 text-[16px] leading-[30px] w-[500px]">
+              <h6 className="text-default-500 text-lg leading-[30px] w-[500px]">
                 Our AI learns about any codebase, answers any questions, and
                 writes industry standard technical documents for you!
               </h6>
@@ -94,13 +108,17 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex items-center justify-center w-[50vw] mt[-15px] h-[90vh]">
-            <Cardy />
+          <div className="flex items-center justify-center w-[50vw]  h-[90vh] mr-20">
+            {/* <Cardy /> */}
+            <div className="absolute w-full h-[100vh] top-8 opacity-80">
+              <AnimatedGridPatternDemo />
+            </div>
+            <AnimatedBeamDemo />
             {/* <Image src="/placeholder.png" alt="something" height={409} width={571}/> */}
           </div>
         </div>
 
-        <div className="flex items-center justify-center">
+        {/* <div className="flex items-center justify-center">
           <div
             className="font-spaceg flex flex-col items-center justify-center h-full w-[70vw]
           text-[36px] font-normal mt-[80px] mb-[100px] text-center gap-8"
@@ -152,6 +170,10 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div> */}
+
+        <div className=" pl-24 pr-24">
+          <BentoDemo />
         </div>
 
         {/* <DescCard /> */}

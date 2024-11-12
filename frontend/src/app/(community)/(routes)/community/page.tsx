@@ -9,15 +9,17 @@ import { useUser } from "@clerk/clerk-react";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@clerk/clerk-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function CommunityPage() {
+  const [searchQuery, setSearchQuery] = useState();
   // const allPublishedDocs = useQuery(api.documents.getAllPublished);
   const { results, status, loadMore } = usePaginatedQuery(
     api.documents.getFullPage,
     {},
     { initialNumItems: 3 },
   );
+
   const router = useRouter();
   const { isSignedIn } = useAuth();
 
