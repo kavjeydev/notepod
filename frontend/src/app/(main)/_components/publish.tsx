@@ -72,7 +72,11 @@ export default function Publish({ initialData }: PublishProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button size="sm" variant="ghost" className="font-semibold text-sm">
+        <Button
+          size="sm"
+          variant="ghost"
+          className="font-semibold text-sm dark:hover:bg-default-100 hover:bg-default-300"
+        >
           Publish
           {initialData.published && <Globe className="text-sky-500 w-4 h-4 " />}
         </Button>

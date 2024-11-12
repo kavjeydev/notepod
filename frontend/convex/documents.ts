@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
+import { paginationOptsValidator } from "convex/server";
 
 export const moveFile = mutation({
   args: {
@@ -430,6 +431,7 @@ export const removeIcon = mutation({
 export const getAllPublished = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
+    console.log("identity", identity);
     if (!identity) {
       throw new Error("Not authenticated.");
     }
@@ -506,3 +508,24 @@ export const increaseView = mutation({
     return updatedDocument;
   },
 });
+
+// export const getFullPage = query({
+//   args: { paginationOpts: paginationOptsValidator },
+//   handler: async (ctx, args) => {
+//     const identity = await ctx.auth.getUserIdentity();
+//     if (!identity) {
+//       throw new Error("Not authenticated.");
+//     }
+
+//     const documents = ctx.db
+//       .query("documents")
+//       .filter((q) => q.eq(q.field("isArchived"), false))
+//       .filter((q) => q.eq(q.field("published"), true))
+//       // .withIndex("by_likes")
+//       .order("desc")
+//       .paginate(args.paginationOpts);
+//     // .collect();
+
+//     return documents;
+//   },
+// });

@@ -1,7 +1,9 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "@nextui-org/input";
-import { SearchIcon } from "lucide-react";
+import { Plus, SearchIcon } from "lucide-react";
 
 export default function CommunityNavbar() {
   return (
@@ -50,9 +52,12 @@ export default function CommunityNavbar() {
       <div className="flex gap-8 h-20 items-center pr-12">
         <Button
           size="default"
-          className="bg-maincolor rounded-full text-white w-32 hover:bg-maincolor/80 hover:text-muted-foreground"
+          className="bg-maincolor/80 rounded-full text-white w-28 hover:bg-maincolor"
         >
-          Publish
+          <div className="flex gap-1 items-center">
+            <Plus />
+            <p className="text-[0.8rem]">Publish</p>
+          </div>
         </Button>
       </div>
     </div>

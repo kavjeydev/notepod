@@ -23,7 +23,8 @@ export default defineSchema({
     // identity: v.optional(v.object())
   })
     .index("by_user", ["userId"])
-    .index("by_user_parent", ["userId", "parentDocument"]),
+    .index("by_user_parent", ["userId", "parentDocument"])
+    .index("by_likes", ["likes"]),
 
   likeData: defineTable({
     userId: v.string(),

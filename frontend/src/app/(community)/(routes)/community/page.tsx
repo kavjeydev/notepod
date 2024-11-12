@@ -8,19 +8,19 @@ import CommunityNavbar from "../../components/navbar";
 import { useUser } from "@clerk/clerk-react";
 import { useRouter } from "next/navigation";
 
+import { useAuth } from "@clerk/clerk-react";
+import { useEffect } from "react";
+
 export default function CommunityPage() {
   const allPublishedDocs = useQuery(api.documents.getAllPublished);
   const router = useRouter();
+  const { isSignedIn } = useAuth();
 
-  const { user } = useUser();
-
-  if (!user) {
-    return (
-      <div className="flex w-[100vw] h-[100vh] bg-default-100 dark:bg-[#121212]">
-        <Spinner />
-      </div>
-    );
-  }
+  // useEffect(() => {
+  //   if (!isSignedIn) {
+  //     router.push("/");
+  //   }
+  // }, [isSignedIn]);
 
   if (allPublishedDocs === undefined) {
     return (

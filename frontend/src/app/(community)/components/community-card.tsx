@@ -1,12 +1,15 @@
+"use client";
+
 import { useRouter } from "next/navigation";
-import { Doc, Id } from "../../../../convex/_generated/dataModel";
+
 import { useState } from "react";
 import { File, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { api } from "../../../../convex/_generated/api";
+import { Doc, Id } from "../../../../convex/_generated/dataModel";
 
 interface CardProps {
   document: Doc<"documents">;
@@ -73,7 +76,7 @@ export default function CommunityCard({ document }: CardProps) {
           e.stopPropagation();
           visitPod(document);
         }}
-        className={cn(`hover:cursor-pointer bg-[url('/no_image.png')] rounded-lg bg-cover
+        className={cn(`hover:cursor-pointer dark:bg-[url('/no_image.png')] bg-[url('/no_image_dark.png')] rounded-lg bg-cover
         bg-center bg-no-repeat`)}
       >
         <div
@@ -112,7 +115,7 @@ export default function CommunityCard({ document }: CardProps) {
       <div className="flex gap-2 p-1 h-full items-end ">
         <img
           src={document.userProfile}
-          className="h-5 w-5 mb-[2.2rem] rounded-full z-[99999] "
+          className="h-5 w-5 mb-[2.2rem] rounded-full z-[99999] cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
             if (document.publishedUserName)
