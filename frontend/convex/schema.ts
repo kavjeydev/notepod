@@ -24,7 +24,8 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_user_parent", ["userId", "parentDocument"])
-    .index("by_likes", ["likes"]),
+    .index("by_likes", ["likes"])
+    .index("by_views", ["views"]),
 
   likeData: defineTable({
     userId: v.string(),

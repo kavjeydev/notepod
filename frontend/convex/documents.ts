@@ -509,23 +509,24 @@ export const increaseView = mutation({
   },
 });
 
-// export const getFullPage = query({
-//   args: { paginationOpts: paginationOptsValidator },
-//   handler: async (ctx, args) => {
-//     const identity = await ctx.auth.getUserIdentity();
-//     if (!identity) {
-//       throw new Error("Not authenticated.");
-//     }
+export const getFullPage = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated.");
+    }
 
-//     const documents = ctx.db
-//       .query("documents")
-//       .filter((q) => q.eq(q.field("isArchived"), false))
-//       .filter((q) => q.eq(q.field("published"), true))
-//       // .withIndex("by_likes")
-//       .order("desc")
-//       .paginate(args.paginationOpts);
-//     // .collect();
+    const documents = ctx.db
+      .query("documents")
+      .withIndex("by_likes")
+      .filter((q) => q.eq(q.field("isArchived"), false))
+      .filter((q) => q.eq(q.field("published"), true))
 
-//     return documents;
-//   },
-// });
+      .order("desc")
+      .paginate(args.paginationOpts);
+    // .collect();
+
+    return documents;
+  },
+});
