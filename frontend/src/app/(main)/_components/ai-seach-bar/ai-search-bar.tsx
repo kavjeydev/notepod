@@ -3,6 +3,10 @@ import { NodeViewWrapper, ReactNodeViewRenderer } from "@tiptap/react";
 import { useState } from "react";
 import { Node, Command, NodeViewProps, Editor } from "@tiptap/core";
 import React from "react";
+import MarkdownIt from "markdown-it";
+import { useMutation } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
 
 export interface QueryProps {
   query: string;
@@ -10,9 +14,19 @@ export interface QueryProps {
 }
 
 export function AISearch(props: NodeViewProps) {
-  const { editor, deleteNode } = props;
-
+  const { editor, deleteNode, extension } = props;
+  const markdownIt = new MarkdownIt();
   const [codeQuery, setCodeQuery] = useState("");
+  const update = useMutation(api.documents.update);
+  const documentId = extension.options.documentId;
+  console.log("document changing", documentId);
+
+  const onChange = (content: string) => [
+    update({
+      id: documentId,
+      content,
+    }),
+  ];
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -29,9 +43,14 @@ export function AISearch(props: NodeViewProps) {
 
     // Remove the current node
     deleteNode();
+    const htmlContent = markdownIt.render(result.response);
 
     // Insert the new content into the editor
-    editor.commands.insertContent(result.response);
+    editor.commands.insertContent(htmlContent);
+
+    const editorContent = editor.getHTML();
+
+    onChange(editorContent);
 
     console.log(result);
   };
@@ -71,6 +90,7 @@ const ReactComponentExtension = Node.create({
   addOptions() {
     return {
       onQuery: () => {},
+      documentId: null,
     };
   },
   //   addAttributes() {

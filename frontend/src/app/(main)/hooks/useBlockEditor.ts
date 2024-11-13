@@ -70,7 +70,10 @@ export const useBlockEditor = ({
         }
       },
       extensions: [
-        ReactComponentExtension,
+        ReactComponentExtension.configure({
+          onQuery: () => {},
+          documentId: docId,
+        }),
         History,
         ...ExtensionKit({
           provider,
