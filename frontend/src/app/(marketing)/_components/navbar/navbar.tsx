@@ -54,16 +54,16 @@ export default function Navbar() {
           <Image
             src="/new_logo_black.png"
             alt="logo"
-            height={40}
-            width={130}
+            height={30}
+            width={110}
             className="dark:hidden"
           />
 
           <Image
             src="/new_logo_white.png"
             alt="logo"
-            height={40}
-            width={130}
+            height={30}
+            width={110}
             className="hidden dark:block"
           />
           {/* notepod */}

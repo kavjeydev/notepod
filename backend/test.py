@@ -9,8 +9,8 @@ from sklearn.preprocessing import normalize
 # OpenAI API Key
 openai.api_key = constants.API_KEY
 
-repo_url = "https://github.com/kavjeydev/AlgoBowl.git"
-repo_path = "/repos"
+repo_url = "https://github.com/kavjeydev/bitwise-longest-repeating.git"
+repo_path = "/repo"
 
 
 # Find filepath when @file is used
@@ -46,7 +46,7 @@ def read_files(repo_path):
     for root, _, files in os.walk(repo_path):
         for file in files:
             if file.endswith(
-                (".py", ".js", ".ts", ".html", ".css", ".md")
+                (".py", ".js", ".ts", ".html", ".css", ".md", ".cpp")
             ):  # Add relevant extensions
                 file_path = os.path.join(root, file)
                 with open(file_path, "r", encoding="utf-8") as f:

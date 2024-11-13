@@ -175,7 +175,7 @@ export default function Home() {
           </div>
         </div> */}
 
-        <div className=" pl-24 pr-24">
+        <div className=" pl-24 pr-24 pb-24">
           <BentoDemo />
         </div>
 
