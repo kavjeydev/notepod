@@ -4,7 +4,30 @@ import constants
 import faiss
 import git
 import openai
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from sklearn.preprocessing import normalize
+
+origins = ["*"]
+
+
+class QueryItem(BaseModel):
+    query: str
+    response: str | None = None
+    # documentId: str
+    # documentTitle: str
+
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # OpenAI API Key
 openai.api_key = constants.API_KEY
@@ -142,19 +165,21 @@ def code_assistant_pipeline(repo_url, question, file=None):
 
 
 # Example usage
-
-question = input("Prompt: ")
-
-
-while question != "quit":
+async def AIQuery(question):
     if question.split(" ")[0] == "@file":
         filepath = find_file(repo_path, question.split(" ")[1])
         answer = code_assistant_pipeline(
             repo_url, " ".join(question.split(" ")[2:]), filepath
         )
-        print("Answer:", answer)
-        question = input("Prompt: ")
+        return answer
     else:
         answer = code_assistant_pipeline(repo_url, question)
-        print("Answer:", answer)
-        question = input("Prompt: ")
+        return answer
+
+
+@app.post("/apirun")
+async def respond(queryItem: QueryItem):
+    response = await AIQuery(queryItem.query)
+    queryItem.response = response
+
+    return queryItem

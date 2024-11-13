@@ -9,6 +9,7 @@ import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { Doc as YDoc } from "yjs";
 import { useSearchParams } from "next/navigation";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
+import AISearch from "@/app/(main)/_components/ai-seach-bar/ai-search-bar";
 
 interface DocumentIdPageProps {
   params: {
@@ -42,7 +43,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   return (
     <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-[#f4f4f4] dark:bg-[#121212] pb-5">
       <div className="h-[10vh] max-h-[100%] overflow-hidden"></div>
-      <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
+      <div className="flex flex-col md:max-w-3xl lg:max-w-4xl mx-auto items-center">
         {/* <Toolbar initialData={document} /> */}
 
         {/* <Editor
@@ -50,6 +51,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
           initialContent={document.content}
           docId={params.documentId}
         /> */}
+        <AISearch />
         <BlockEditor
           aiToken={undefined}
           hasCollab={false}
