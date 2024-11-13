@@ -13,6 +13,7 @@ import { SignInButton, UserButton } from "@clerk/clerk-react";
 import { Spinner } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { FloatingDockDemo } from "../floating-dock/floating-dock";
 
 const space = Space_Grotesk({
   subsets: ["latin"],
@@ -45,10 +46,13 @@ export default function Navbar() {
           "border-b shadow-sm shadow-default-800/10 transition duration-400 ease-in-out",
       )}
     >
-      <div className="flex justify-between items-center fixed z-50 pl-[115px] pr-[115px] pb-[10px] pt-[10px] w-[100vw] h-[80px] backdrop-blur-[20px]">
-        <div className="flex items-center justify-center border-r-[10] pt-[4px] font-bold text-[20px]">
-          {/* <Image
-            src="/logo_w_text.svg"
+      <div
+        className="flex justify-between items-center fixed z-50 pl-[115px]
+      pr-[115px] pb-[10px] pt-[10px] w-[100vw] h-[80px] backdrop-blur-[20px] "
+      >
+        <div className="flex items-center justify-center border-r-[10] font-bold text-[20px]">
+          <Image
+            src="/new_logo_black.png"
             alt="logo"
             height={40}
             width={130}
@@ -56,16 +60,16 @@ export default function Navbar() {
           />
 
           <Image
-            src="/logo_w_text_dark.svg"
+            src="/new_logo_white.png"
             alt="logo"
             height={40}
             width={130}
             className="hidden dark:block"
-          /> */}
-          notepod
+          />
+          {/* notepod */}
         </div>
 
-        <div className="flex gap-[60px] justify-center items-center">
+        <div className="flex gap-12 justify-center items-center">
           <div
             className="flex text-text-color pl-[10px] pr-[10px] text-sm font-light rounded-full hover:text-muted-foreground transition cursor-pointer"
             // size="sm"
@@ -98,6 +102,9 @@ export default function Navbar() {
             <span className="text-text-color font-bold">Community ⤴</span>
           </div>
         </div>
+        {/* <div className="block items-center justify-center">
+          <FloatingDockDemo />
+        </div> */}
 
         <div className="flex gap-[15px]">
           {isLoading && <Spinner size="sm" />}

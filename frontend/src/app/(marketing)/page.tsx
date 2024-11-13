@@ -18,6 +18,7 @@ import { GridPatternDemo } from "./_components/grid-pattern/grid-pattern";
 import { AnimatedGridPatternDemo } from "./_components/animated-grid/animated-grid";
 import { ParticlesDemo } from "./_components/particles/particles";
 import { BentoDemo } from "./_components/bento-grid/bento-grid";
+import { FloatingDockDemo } from "./_components/floating-dock/floating-dock";
 
 const space = Space_Grotesk({
   subsets: ["latin"],
@@ -40,10 +41,12 @@ export default function Home() {
     router.push("/documents");
   };
   const { isAuthenticated, isLoading } = useConvexAuth();
+
   return (
     <NextUIProvider className="dark:bg-black">
       <ReactLenis root options={{ lerp: 0.1, duration: 1.5 }}>
         <Navbar />
+
         <div className="fixed top-0 h-full w-full pointer-events-none">
           <ParticlesDemo />
         </div>

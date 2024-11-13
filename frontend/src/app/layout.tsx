@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/curved.svg",
+        url: "/webheading.svg",
       },
     ],
   },
