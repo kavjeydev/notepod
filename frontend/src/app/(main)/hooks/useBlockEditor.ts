@@ -17,6 +17,7 @@ import { AiImage, AiWriter } from "../extensions";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import ReactComponentExtension from "../_components/ai-seach-bar/ai-search-bar";
 
 declare global {
   interface Window {
@@ -69,6 +70,7 @@ export const useBlockEditor = ({
         }
       },
       extensions: [
+        ReactComponentExtension,
         History,
         ...ExtensionKit({
           provider,

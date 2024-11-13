@@ -17,6 +17,11 @@ interface DocumentIdPageProps {
   };
 }
 
+interface QueryProps {
+  query: string;
+  response: string;
+}
+
 export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   const ydoc = useMemo(() => new YDoc(), []);
   const document = useQuery(api.documents.getById, {
@@ -24,6 +29,15 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   });
 
   const update = useMutation(api.documents.update);
+
+  const [queryInfo, setQueryInfo] = useState<QueryProps>({
+    query: "",
+    response: "",
+  });
+
+  const handleQuery = (queryObj: QueryProps) => {
+    setQueryInfo(queryObj);
+  };
 
   const onChange = (content: string) => [
     update({
@@ -45,13 +59,13 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
       <div className="h-[10vh] max-h-[100%] overflow-hidden"></div>
       <div className="flex flex-col md:max-w-3xl lg:max-w-4xl mx-auto items-center">
         {/* <Toolbar initialData={document} /> */}
-
         {/* <Editor
           onChange={() => {}}
           initialContent={document.content}
           docId={params.documentId}
         /> */}
-        <AISearch />
+        {/* <AISearch onQuery={handleQuery} /> */}
+        Response: {queryInfo.response}
         <BlockEditor
           aiToken={undefined}
           hasCollab={false}

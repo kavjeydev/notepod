@@ -78,7 +78,7 @@ export const BlockEditor = ({
         onClose={leftSidebar.close}
         editor={editor}
       />
-      <div className="relative flex flex-col flex-1 h-full  overflow-visible">
+      <div className="relative flex flex-col flex-1 h-full w-[50vw] overflow-visible">
         <EditorContent
           editor={editor}
           className="flex-1 overflow-y-auto"
@@ -93,6 +93,7 @@ export const BlockEditor = ({
         {editable && <ContentItemMenu editor={editor} />}
 
         <LinkMenu editor={editor} appendTo={menuContainerRef} />
+
         <TextMenu editor={editor} />
         <ColumnsMenu editor={editor} appendTo={menuContainerRef} />
         <TableRowMenu editor={editor} appendTo={menuContainerRef} />

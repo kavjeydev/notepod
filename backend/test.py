@@ -128,7 +128,8 @@ def query_vector_store(index, chunks, question, model="gpt-4o"):
         messages=[
             {
                 "role": "system",
-                "content": "You are a technical documentation expert. Given a codebase, answer some questions and write some expert documentation",
+                "content": "You are a technical documentation expert. Given a codebase, answer some questions and write some expert documentation.\
+                    make sure to format every word of your in proper HTML",
             },
             {
                 "role": "user",
@@ -181,5 +182,6 @@ async def AIQuery(question):
 async def respond(queryItem: QueryItem):
     response = await AIQuery(queryItem.query)
     queryItem.response = response
+    print(response)
 
     return queryItem
