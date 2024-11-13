@@ -16,6 +16,7 @@ const config: Config = {
       fontFamily: {
         spaceg: ["Space Grotesk", "sans-serif"],
       },
+
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -65,13 +66,26 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       animation: {
+        text: "text 5s ease infinite",
         "shimmer-slide":
           "shimmer-slide var(--speed) ease-in-out infinite alternate",
         "spin-around": "spin-around calc(var(--speed) * 2) infinite linear",
         marquee: "marquee var(--duration) infinite linear",
         "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
+        "shiny-text": "shiny-text 8s infinite",
+        shine: "shine 3s linear infinite",
       },
       keyframes: {
+        text: {
+          "0%, 100%": {
+            "background-size": "200% 200%",
+            "background-position": "left center",
+          },
+          "50%": {
+            "background-size": "200% 200%",
+            "background-position": "right center",
+          },
+        },
         "shimmer-slide": {
           to: {
             transform: "translate(calc(100cqw - 100%), 0)",
@@ -106,6 +120,18 @@ const config: Config = {
           to: {
             transform: "translateY(calc(-100% - var(--gap)))",
           },
+        },
+        "shiny-text": {
+          "0%, 90%, 100%": {
+            "background-position": "calc(-100% - var(--shiny-width)) 0",
+          },
+          "30%, 60%": {
+            "background-position": "calc(100% + var(--shiny-width)) 0",
+          },
+        },
+        shine: {
+          "0%": { backgroundPosition: "200% 0%" },
+          "100%": { backgroundPosition: "-200% 0%" },
         },
       },
     },
