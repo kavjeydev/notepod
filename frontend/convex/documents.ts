@@ -530,3 +530,19 @@ export const getFullPage = query({
     return documents;
   },
 });
+
+export const setGithubRepo = mutation({
+  args: { id: v.id("documents"), repoName: v.string() },
+  handler: async (ctx, args) => {
+    const existingDocument = await ctx.db.get(args.id);
+    if (!existingDocument) {
+      throw new Error("Document not found.");
+    }
+
+    const updatedDocument = await ctx.db.patch(args.id, {
+      githubRepo: args.repoName,
+    });
+
+    return updatedDocument;
+  },
+});

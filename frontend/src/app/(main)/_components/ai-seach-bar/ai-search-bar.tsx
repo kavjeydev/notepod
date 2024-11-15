@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Node, Command, NodeViewProps, Editor } from "@tiptap/core";
 import React from "react";
 import MarkdownIt from "markdown-it";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { toast } from "sonner";
 // import { AnimatedShinyTextDemo } from "";
@@ -12,6 +12,7 @@ import { toast } from "sonner";
 export interface QueryProps {
   query: string;
   response: string;
+  repoUrl: string;
 }
 
 export function AISearch(props: NodeViewProps) {
@@ -23,6 +24,11 @@ export function AISearch(props: NodeViewProps) {
 
   const update = useMutation(api.documents.update);
   const documentId = extension.options.documentId;
+
+  const document = useQuery(api.documents.getById, {
+    documentId: documentId,
+  });
+
   console.log("document changing", documentId);
 
   const onChange = (content: string) => [
@@ -42,7 +48,10 @@ export function AISearch(props: NodeViewProps) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query: codeQuery }),
+        body: JSON.stringify({
+          query: codeQuery,
+          repoUrl: document?.githubRepo,
+        }),
       });
 
       const result: QueryProps = await response.json();

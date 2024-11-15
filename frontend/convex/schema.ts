@@ -20,6 +20,7 @@ export default defineSchema({
     views: v.optional(v.number()),
     words: v.optional(v.number()),
     characters: v.optional(v.number()),
+    githubRepo: v.optional(v.string()),
     // identity: v.optional(v.object())
   })
     .index("by_user", ["userId"])
