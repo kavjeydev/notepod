@@ -571,6 +571,7 @@ async def respond(queryItem: QueryItem):
     try:
         start_t = time.time()
         response = await query_codebase(queryItem.query, queryItem.repoUrl)
+        await generate_ast(queryItem.repoUrl)
         end_t = time.time()
         print("TOTAL TIME:", end_t - start_t)
         queryItem.response = response
