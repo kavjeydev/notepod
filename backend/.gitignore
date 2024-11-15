@@ -4,3 +4,9 @@ chroma_storage
 __pycache__
 chroma_langchain_db
 embedding_cache.json
+repo
+embedding_cache.db
+embedding_cache.db-journal
+asts
+build
+cloned_repo

@@ -1,13 +1,14 @@
-import subprocess
-from tree_sitter import Language
-from tree_sitter import Language, Parser
-import os
-from tree_sitter import Language, Parser
 import json
+import os
+import subprocess
+
+from tree_sitter import Language, Parser
+
 
 def clone_repo(repo_url, repo_dir="repository"):
     """Clone a GitHub repository to a specified directory."""
     subprocess.run(["git", "clone", repo_url, repo_dir])
+
 
 # Example usage:
 repo_url = "https://github.com/kavjeydev/AlgoBowl.git"
@@ -22,27 +23,29 @@ extension_to_language = {
     ".rb": "ruby",
     ".go": "go",
     ".php": "php",
+    ".ts": "typescript",
     # Add more mappings as needed...
 }
 
 
-
 # Build the shared object file for the languages
-Language.build_library(
-    'build/my-languages.so',  # Output shared object file
-    [
-        'tree-sitter-python',
-        'tree-sitter-javascript',
-        'tree-sitter-java',
-        # Add more language grammars here...
-    ]
-)
+# Language.build_library(
+#     "build/my-languages.so",  # Output shared object file
+#     [
+#         "tree-sitter-python",
+#         "tree-sitter-javascript",
+#         "tree-sitter-java",
+#         "tree-sitter-typescript",
+#         # Add more language grammars here...
+#     ],
+# )
 
 
 # Load the compiled languages
-PYTHON_LANGUAGE = Language('build/my-languages.so', 'python')
-JAVASCRIPT_LANGUAGE = Language('build/my-languages.so', 'javascript')
-JAVA_LANGUAGE = Language('build/my-languages.so', 'java')
+PYTHON_LANGUAGE = Language("build/my-languages.so", "python")
+JAVASCRIPT_LANGUAGE = Language("build/my-languages.so", "javascript")
+JAVA_LANGUAGE = Language("build/my-languages.so", "java")
+TYPESCRIPT_LANGUAGE = Language("build/my-languages.so", "typescript")
 
 # Create parsers for each language
 python_parser = Parser()
@@ -64,19 +67,27 @@ javascript_parser.set_language(JAVASCRIPT_LANGUAGE)
 java_parser = Parser()
 java_parser.set_language(JAVA_LANGUAGE)
 
+typescript_parser = Parser()
+typescript_parser.set_language(TYPESCRIPT_LANGUAGE)
+
 # Extension to parser mapping
 extension_to_parser = {
     ".py": python_parser,
     ".js": javascript_parser,
     ".java": java_parser,
+    ".ts": typescript_parser,
+    ".jsx": javascript_parser,
+    ".tsx": typescript_parser,
     # Add more mappings for other languages...
 }
 
+
 # Function to parse a code file and return the AST
 def parse_code(file_path, parser):
-    with open(file_path, 'r') as file:
+    with open(file_path, "r") as file:
         code = file.read()
-    return parser.parse(bytes(code, 'utf8')).root_node
+    return parser.parse(bytes(code, "utf8")).root_node
+
 
 # Traverse the repository and generate ASTs
 def generate_asts_for_repo(repo_dir):
@@ -91,6 +102,7 @@ def generate_asts_for_repo(repo_dir):
                 asts[file_path] = ast
     return asts
 
+
 # Example usage:
 repo_dir = "./repository"
 asts = generate_asts_for_repo(repo_dir)
@@ -99,10 +111,12 @@ asts = generate_asts_for_repo(repo_dir)
 for file_path, ast in asts.items():
     print(f"AST for {file_path}:\n{ast}\n")
 
+
 def traverse_tree(node, depth=0):
-    print('  ' * depth + node.type, node.start_point, node.end_point)
+    print("  " * depth + node.type, node.start_point, node.end_point)
     for child in node.children:
         traverse_tree(child, depth + 1)
+
 
 # Example: Traverse the AST of a Python file
 for file_path, ast in asts.items():
@@ -113,17 +127,19 @@ for file_path, ast in asts.items():
 def ast_to_dict(node):
     """Recursively convert AST nodes to a dictionary."""
     return {
-        'type': node.type,
-        'start_point': node.start_point,
-        'end_point': node.end_point,
-        'children': [ast_to_dict(child) for child in node.children]
+        "type": node.type,
+        "start_point": node.start_point,
+        "end_point": node.end_point,
+        "children": [ast_to_dict(child) for child in node.children],
     }
+
 
 # Example: Convert and save ASTs to a JSON file
 def save_asts_to_file(asts, output_file="asts.json"):
     ast_dicts = {file_path: ast_to_dict(ast) for file_path, ast in asts.items()}
-    with open(output_file, 'w') as file:
+    with open(output_file, "w") as file:
         json.dump(ast_dicts, file, indent=2)
+
 
 # Example usage
 save_asts_to_file(asts)

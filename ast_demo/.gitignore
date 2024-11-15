@@ -3,4 +3,5 @@ build
 tree-sitter-java
 tree-sitter-javascript
 tree-sitter-python
+tree-sitter-typescript
 asts.json
