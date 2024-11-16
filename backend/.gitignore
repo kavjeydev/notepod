@@ -8,5 +8,11 @@ repo
 embedding_cache.db
 embedding_cache.db-journal
 asts
-build
+build_tree
 cloned_repo
+__pycache__
+requirements.txt
+venv
+vercel.json
+.vercel
+.python-version

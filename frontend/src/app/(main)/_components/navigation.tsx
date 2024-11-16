@@ -240,7 +240,7 @@ export default function Navigation() {
             </DragProvider>
           </div>
 
-          <div className="absolute bottom-0 w-full h-[125px] pb-2 border-t-1 dark:border-default-300 border-default-300 pt-2">
+          <div className="absolute dark:bg-[#313131] bg-white bottom-0 w-full h-[125px] pb-2 border-t-1 dark:border-default-300 border-default-300 pt-2 z-[99999]">
             <Item
               onClick={handleCreateFile}
               icon={Plus}

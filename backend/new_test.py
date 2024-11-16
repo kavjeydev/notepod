@@ -439,12 +439,12 @@ async def AIQuery(question, repo_url):
         return answer
 
 
-def build_language_parsers(languages, output_path="build/my-languages.so"):
-    if not os.path.exists("build"):
-        os.mkdir("build")
+def build_language_parsers(languages, output_path="build_tree/my-languages.so"):
+    if not os.path.exists("build_tree"):
+        os.mkdir("build_tree")
     language_so_paths = []
     for lang, repo in languages.items():
-        lang_dir = f"build/tree-sitter-{lang}"
+        lang_dir = f"build_tree/tree-sitter-{lang}"
         if not os.path.exists(lang_dir):
             print(f"Cloning grammar for {lang}")
             git.Repo.clone_from(repo, lang_dir)
