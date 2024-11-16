@@ -7,7 +7,6 @@ import shutil
 import sqlite3
 import time
 
-import constants
 import faiss
 import git
 import numpy as np
@@ -18,6 +17,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from tenacity import retry, stop_after_attempt, wait_random_exponential
 from tree_sitter import Language, Parser
+
+import backend.api.constants as constants
 
 # from sklearn.preprocessing import normalize
 

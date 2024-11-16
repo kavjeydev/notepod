@@ -11,7 +11,6 @@ asts
 build_tree
 cloned_repo
 __pycache__
-requirements.txt
 venv
 vercel.json
 .vercel

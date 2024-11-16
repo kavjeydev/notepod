@@ -41,9 +41,9 @@ export function AISearch(props: NodeViewProps) {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-
+    // "http://127.0.0.1:8000/apirun" OLD ROUTE
     try {
-      const response = await fetch("http://127.0.0.1:8000/apirun", {
+      const response = await fetch("http://18.116.61.111/apirun", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -55,6 +55,7 @@ export function AISearch(props: NodeViewProps) {
       });
 
       const result: QueryProps = await response.json();
+      console.log("res", result);
 
       // Remove the current node
       deleteNode();

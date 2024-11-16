@@ -7,7 +7,6 @@ import shutil
 import sqlite3
 import time
 
-import constants
 import faiss
 import git
 import numpy as np
@@ -18,6 +17,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from tenacity import retry, stop_after_attempt, wait_random_exponential
 from tree_sitter import Language, Parser
+
+import backend.api.constants as constants
 
 # from sklearn.preprocessing import normalize
 
@@ -439,18 +440,18 @@ async def AIQuery(question, repo_url):
         return answer
 
 
-def build_language_parsers(languages, output_path="build_tree/my-languages.so"):
-    if not os.path.exists("build_tree"):
-        os.mkdir("build_tree")
-    language_so_paths = []
-    for lang, repo in languages.items():
-        lang_dir = f"build_tree/tree-sitter-{lang}"
-        if not os.path.exists(lang_dir):
-            print(f"Cloning grammar for {lang}")
-            git.Repo.clone_from(repo, lang_dir)
-        language_so_paths.append(f"{lang_dir}")
-    Language.build_library(output_path, language_so_paths)
-    return output_path
+# def build_language_parsers(languages, output_path="build_tree/my-languages.so"):
+#     if not os.path.exists("build_tree"):
+#         os.mkdir("build_tree")
+#     language_so_paths = []
+#     for lang, repo in languages.items():
+#         lang_dir = f"build_tree/tree-sitter-{lang}"
+#         if not os.path.exists(lang_dir):
+#             print(f"Cloning grammar for {lang}")
+#             git.Repo.clone_from(repo, lang_dir)
+#         language_so_paths.append(f"{lang_dir}")
+#     Language.build_library(output_path, language_so_paths)
+#     return output_path
 
 
 def get_all_files(repo_path):
@@ -508,56 +509,56 @@ def node_to_dict(node, code):
 
 
 # Main function
-async def generate_ast(repos_url):
-    start_time = time.time()
-    # repo_url = repos_url  # Replace with your repository URL
-    # repo_path_ast = repo_path
+# async def generate_ast(repos_url):
+#     start_time = time.time()
+#     # repo_url = repos_url  # Replace with your repository URL
+#     # repo_path_ast = repo_path
 
-    # Languages to support
-    LANGUAGES = {
-        "python": "https://github.com/tree-sitter/tree-sitter-python",
-        "javascript": "https://github.com/tree-sitter/tree-sitter-javascript",
-        "cpp": "https://github.com/tree-sitter/tree-sitter-cpp",
-        # Add more as needed
-    }
+#     # Languages to support
+#     LANGUAGES = {
+#         "python": "https://github.com/tree-sitter/tree-sitter-python",
+#         "javascript": "https://github.com/tree-sitter/tree-sitter-javascript",
+#         "cpp": "https://github.com/tree-sitter/tree-sitter-cpp",
+#         # Add more as needed
+#     }
 
-    # Build language parsers
-    library_path = build_language_parsers(LANGUAGES)
+#     # Build language parsers
+#     library_path = build_language_parsers(LANGUAGES)
 
-    # Load the compiled languages
-    LANGUAGE_MAP = {}
-    for lang in LANGUAGES.keys():
-        LANGUAGE_MAP[lang] = Language(library_path, lang)
+#     # Load the compiled languages
+#     LANGUAGE_MAP = {}
+#     for lang in LANGUAGES.keys():
+#         LANGUAGE_MAP[lang] = Language(library_path, lang)
 
-    # Get all files
-    all_files = get_all_files(repo_path)
+#     # Get all files
+#     all_files = get_all_files(repo_path)
 
-    # Parse files and save ASTs
-    for file_path in all_files:
-        language = detect_language(file_path)
-        if language:
-            print(f"Parsing {file_path} as {language}")
-            tree, code = parse_file(file_path, language, LANGUAGE_MAP)
+#     # Parse files and save ASTs
+#     for file_path in all_files:
+#         language = detect_language(file_path)
+#         if language:
+#             print(f"Parsing {file_path} as {language}")
+#             tree, code = parse_file(file_path, language, LANGUAGE_MAP)
 
-            # Convert AST to dict
-            ast_dict = node_to_dict(tree.root_node, code)
+#             # Convert AST to dict
+#             ast_dict = node_to_dict(tree.root_node, code)
 
-            # Define output path
-            relative_path = os.path.relpath(file_path, repo_path)
-            json_output_path = os.path.join("asts", f"{relative_path}.json")
+#             # Define output path
+#             relative_path = os.path.relpath(file_path, repo_path)
+#             json_output_path = os.path.join("asts", f"{relative_path}.json")
 
-            # Ensure the output directory exists
-            os.makedirs(os.path.dirname(json_output_path), exist_ok=True)
+#             # Ensure the output directory exists
+#             os.makedirs(os.path.dirname(json_output_path), exist_ok=True)
 
-            # Save AST to JSON file
-            with open(json_output_path, "w", encoding="utf-8") as json_file:
-                json.dump(ast_dict, json_file, indent=2, ensure_ascii=False)
+#             # Save AST to JSON file
+#             with open(json_output_path, "w", encoding="utf-8") as json_file:
+#                 json.dump(ast_dict, json_file, indent=2, ensure_ascii=False)
 
-            print(f"Saved AST to {json_output_path}")
+#             print(f"Saved AST to {json_output_path}")
 
-    end_time = time.time()
+#     end_time = time.time()
 
-    print("total time:", end_time - start_time)
+#     print("total time:", end_time - start_time)
 
 
 @app.on_event("startup")
@@ -571,7 +572,7 @@ async def respond(queryItem: QueryItem):
     try:
         start_t = time.time()
         response = await query_codebase(queryItem.query, queryItem.repoUrl)
-        await generate_ast(queryItem.repoUrl)
+        # await generate_ast(queryItem.repoUrl)
         end_t = time.time()
         print("TOTAL TIME:", end_t - start_t)
         queryItem.response = response

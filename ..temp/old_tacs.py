@@ -2,18 +2,24 @@ import concurrent.futures
 import hashlib
 import json
 import os
-import shutil
-import time
 
-import constants
+# import shutil
+import time
+import zipfile
+from io import BytesIO
+
 import faiss
-import git
+
+# import git
 import numpy as np
 import openai
+import requests
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from tenacity import retry, stop_after_attempt, wait_random_exponential
+
+import backend.api.constants as constants
 
 # from sklearn.preprocessing import normalize
 
@@ -129,20 +135,37 @@ def get_embedding(text, model="text-embedding-ada-002"):
     return embedding
 
 
-# Step 1: Fetch the code from a GitHub repository
+# TEMPORARY SOLUTION
 @timing_decorator
 def clone_github_repo(repo_url, clone_dir="repo"):
-    try:
-        shutil.rmtree(clone_dir)
-    except FileNotFoundError:
-        print(f"Directory not found: {clone_dir}")
+    # Convert GitHub repo URL to ZIP URL
+    if repo_url.endswith(".git"):
+        repo_url = repo_url[:-4]
+    zip_url = f"{repo_url}/archive/refs/heads/main.zip"  # Adjust branch if needed
 
-    if os.path.exists(clone_dir):
-        print(f"Repository already cloned in {clone_dir}")
-    else:
-        git.Repo.clone_from(repo_url, clone_dir)
-        print(f"Cloned repository into {clone_dir}")
+    response = requests.get(zip_url)
+    if response.status_code != 200:
+        raise Exception(f"Failed to download repository: {response.status_code}")
+
+    with zipfile.ZipFile(BytesIO(response.content)) as zip_ref:
+        zip_ref.extractall(clone_dir)
+
+    print(f"Cloned repository into {clone_dir}")
     return clone_dir
+
+
+# def clone_github_repo(repo_url, clone_dir="repo"):
+#     try:
+#         shutil.rmtree(clone_dir)
+#     except FileNotFoundError:
+#         print(f"Directory not found: {clone_dir}")
+
+#     if os.path.exists(clone_dir):
+#         print(f"Repository already cloned in {clone_dir}")
+#     else:
+#         git.Repo.clone_from(repo_url, clone_dir)
+#         print(f"Cloned repository into {clone_dir}")
+#     return clone_dir
 
 
 # Step 2: Read and process the files to chunk them into sections
@@ -307,3 +330,8 @@ async def respond(queryItem: QueryItem):
     print(queryItem.repoUrl)
 
     return queryItem
+
+
+@app.get("/")
+async def success():
+    return {"success": "success"}
