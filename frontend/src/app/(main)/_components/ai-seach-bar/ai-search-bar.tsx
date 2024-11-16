@@ -1,6 +1,6 @@
-import { Input } from "@nextui-org/react";
+import { Button, Input, Textarea } from "@nextui-org/react";
 import { NodeViewWrapper, ReactNodeViewRenderer } from "@tiptap/react";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Node, Command, NodeViewProps, Editor } from "@tiptap/core";
 import React from "react";
 import MarkdownIt from "markdown-it";
@@ -21,9 +21,12 @@ export function AISearch(props: NodeViewProps) {
 
   const [codeQuery, setCodeQuery] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isLengthValid, setIsLengthValid] = useState(true);
 
   const update = useMutation(api.documents.update);
   const documentId = extension.options.documentId;
+
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   const document = useQuery(api.documents.getById, {
     documentId: documentId,
@@ -40,10 +43,17 @@ export function AISearch(props: NodeViewProps) {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (codeQuery.length < 2) {
+      toast.error("Query too short.");
+      setIsLengthValid(false);
+      return;
+    }
+    setIsLengthValid(true);
     setLoading(true);
-    // "http://127.0.0.1:8000/apirun" OLD ROUTE
+    // "http://127.0.0.1:8000/apirun" TEST ROUTE
     try {
-      const response = await fetch("http://18.116.61.111/apirun", {
+      const response = await fetch("http://127.0.0.1:8000/apirun", {
+        //"http://18.116.61.111/apirun", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -74,14 +84,108 @@ export function AISearch(props: NodeViewProps) {
     }
   };
 
+  const onTextareaKeyDown = useCallback(
+    (event: any) => {
+      if (event.keyCode === 13 && event.shiftKey === false) {
+        event.preventDefault();
+        formRef.current?.requestSubmit();
+      }
+    },
+    [formRef],
+  );
+
   return (
     <NodeViewWrapper>
       <div>
         <form
-          className="flex w-96 flex-wrap md:flex-nowrap gap-4"
+          className="flex flex-col w-full flex-wrap md:flex-nowrap gap-4"
           onSubmit={handleSubmit}
+          ref={formRef}
         >
-          <Input
+          <div className="relative w-full">
+            <Textarea
+              name="idea"
+              aria-label="idea"
+              label="Notepod AI"
+              placeholder="Ask any questions."
+              onKeyDown={(event) => onTextareaKeyDown(event)}
+              onChange={(e) => setCodeQuery(e.target.value)}
+              classNames={{
+                label: "text-black/50 dark:text-white/90",
+                input: [
+                  "bg-transparent",
+                  "text-black/90 dark:text-white/90",
+                  "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+                  "pr-16", // Add padding-right to accommodate the button
+                ],
+                innerWrapper: "bg-transparent",
+                inputWrapper: [
+                  "shadow-xl",
+                  "bg-default-300/50 outline outline-default-500",
+                  "dark:bg-default/60",
+                  "backdrop-blur-xl",
+                  "backdrop-saturate-200",
+                  "hover:bg-default-200/70",
+                  "dark:hover:bg-default/70",
+                  "group-data-[focus=true]:bg-default-200/50",
+                  "dark:group-data-[focus=true]:bg-default/60",
+                  "!cursor-text",
+                ],
+              }}
+            />
+
+            {/* <Button
+              color="secondary"
+              type="submit"
+              className="bg-maincolor text-white opacity-90"
+            >
+              Submit
+            </Button> */}
+            <Button
+              color="secondary"
+              type="submit"
+              size="sm"
+              className="absolute bottom-2 right-2 bg-maincolor text-white"
+            >
+              Submit
+            </Button>
+          </div>
+          {/* <Text span blockquote css={{ m: 0 }}>
+            Note: press <kbd>Enter</kbd> to submit and press{" "}
+            <kbd>Shift + Enter</kbd> to add a new line.
+          </Text> */}
+          {/* <Textarea
+            isInvalid={!isLengthValid}
+            variant="bordered"
+            label="Notepod AI"
+            onChange={(e) => setCodeQuery(e.target.value)}
+            onSubmit={handleSubmit}
+            placeholder="Ask a question ✨"
+            defaultValue="What does this code base do..."
+            errorMessage="The question must be at least 2 characters long."
+            classNames={{
+              label: "text-black/50 dark:text-white/90",
+              input: [
+                "bg-transparent",
+                "text-black/90 dark:text-white/90",
+                "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+              ],
+              innerWrapper: "bg-transparent",
+              inputWrapper: [
+                "shadow-xl",
+                "bg-default-300/50",
+                "dark:bg-default/60",
+                "backdrop-blur-xl",
+                "backdrop-saturate-200",
+                "hover:bg-default-200/70",
+                "dark:hover:bg-default/70",
+                "group-data-[focus=true]:bg-default-200/50",
+                "dark:group-data-[focus=true]:bg-default/60",
+                "!cursor-text",
+              ],
+            }}
+          /> */}
+          {/* <Input
             type="text"
             label="Ask something ✨"
             isClearable
@@ -108,7 +212,7 @@ export function AISearch(props: NodeViewProps) {
                 "!cursor-text",
               ],
             }}
-          />
+          /> */}
         </form>
         {loading && (
           <div>
@@ -150,14 +254,6 @@ const ReactComponentExtension = Node.create({
       documentId: null,
     };
   },
-  //   addAttributes() {
-  //     return {
-  //       onQuery: {
-  //         default: undefined,
-  //       },
-  //     };
-  //   },
-
   parseHTML() {
     return [
       {
