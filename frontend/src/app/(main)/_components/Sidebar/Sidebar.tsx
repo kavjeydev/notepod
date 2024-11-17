@@ -21,15 +21,15 @@ export const Sidebar = memo(
 
     const windowClassName = cn(
       "top-0 left-0 mr-4 bg-white lg:bg-white/30 lg:backdrop-blur-xl h-full lg:h-auto lg:relative z-[999] w-0 duration-300 transition-all",
-      "dark:bg-black lg:dark:bg-black/30",
+      "dark:bg-black lg:dark:bg-black/30 overflow-y-scroll mb-12",
       !isOpen && "border-r-transparent",
       isOpen && "w-80 border-r border-r-neutral-200 dark:border-r-neutral-800",
     );
 
     return (
       <div className={windowClassName}>
-        <div className="fixed w-full h-full overflow-hidden">
-          <div className="w-full h-full p-6 overflow-auto">
+        <div className="fixed w-full h-full overflow-y-scroll">
+          <div className="w-full h-full p-6 overflow-y-scroll">
             <TableOfContents
               onItemClick={handlePotentialClose}
               editor={editor}

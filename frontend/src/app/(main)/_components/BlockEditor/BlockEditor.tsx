@@ -67,18 +67,24 @@ export const BlockEditor = ({
       className="relative top-12 flex h-full w-full mb-20"
       ref={menuContainerRef}
     >
-      {/* <div
-        className="fixed flex h-full w-full mb-20 pr-20 ml"
+      <div className="fixed flex h-full overflow-y-scroll z-[999]">
+        {/* <div
+        className="relative flex h-full w-full overflow-y-scroll"
         ref={menuContainerRef}
       > */}
-      <Sidebar
-        isOpen={leftSidebar.isOpen}
-        onClose={leftSidebar.close}
-        editor={editor}
-      />
+        <Sidebar
+          isOpen={leftSidebar.isOpen}
+          onClose={leftSidebar.close}
+          editor={editor}
+        />
+      </div>
       {/* </div> */}
 
-      <div className="fixed bottom-8 right-2 bg-transparent z-[99999]">
+      <div
+        className={`fixed w-full h-16 mb-2  p-3  z-[99] transition-all
+          duration-300 ease-in-out
+          ${leftSidebar.isOpen ? "ml-80 dark:bg-[#121212] bg-default-100" : "ml-0 bg-transparent"}`}
+      >
         <EditorHeader
           editor={editor}
           collabState={collabState}
@@ -88,7 +94,11 @@ export const BlockEditor = ({
         />
       </div>
 
-      <div className="relative flex flex-col flex-1 h-full w-[50vw] overflow-visible">
+      <div
+        className={`relative flex flex-col flex-1 h-full w-[50vw]
+          overflow-y-scroll ${leftSidebar.isOpen ? "ml-64" : "ml-0"} transition-all
+          duration-300 ease-in-out`}
+      >
         <EditorContent
           editor={editor}
           className="flex-1 overflow-y-auto"

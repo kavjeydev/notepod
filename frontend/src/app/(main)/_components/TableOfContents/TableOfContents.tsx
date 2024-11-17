@@ -20,12 +20,12 @@ export const TableOfContents = memo(
     });
 
     return (
-      <div className="">
+      <div className="overflow-y-scroll">
         <div className="mb-2 text-xs font-semibold uppercase text-neutral-500 dark:text-neutral-400 ">
           Table of contents
         </div>
         {content.length > 0 ? (
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 overflow-y-scroll">
             {content.map((item) => (
               <a
                 key={item.id}

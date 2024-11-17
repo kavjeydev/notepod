@@ -66,7 +66,7 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
   return (
     <div className="flex flex-col md:max-w-3xl lg:max-w-4xl mx-auto items-center">
       <div className="relative w-[400px] top-2 mb-6 ">
-        <div className=" dark:bg-white/10 bg-black/10 rounded-xl p-2">
+        <div className=" dark:bg-white/5 bg-black/10 backdrop-blur-md rounded-xl p-2">
           <Input
             type="text"
             size="md"
@@ -85,7 +85,7 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
             }}
             color="default"
             classNames={{
-              label: "text-black/50 dark:text-white/90",
+              label: "text-black/60 dark:text-white/90",
               input: [
                 "bg-transparent",
                 "text-black/90 dark:text-white/90",
@@ -95,7 +95,7 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
               innerWrapper: "bg-transparent",
               inputWrapper: [
                 "shadow-xl",
-                "bg-white/50 ",
+                "bg-white/60 ",
                 "dark:bg-default/60",
                 "backdrop-blur-xl",
                 "backdrop-saturate-200",

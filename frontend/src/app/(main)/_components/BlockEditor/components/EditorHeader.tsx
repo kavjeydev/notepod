@@ -47,7 +47,7 @@ export const EditorHeader = ({
               tooltip={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
               onClick={toggleSidebar}
               active={isSidebarOpen}
-              className={isSidebarOpen ? "bg-transparent" : ""}
+              className={`m-2 ${isSidebarOpen ? "bg-default-300" : ""}`}
             >
               <Icon name={isSidebarOpen ? "PanelLeftClose" : "PanelLeft"} />
             </Toolbar.Button>
