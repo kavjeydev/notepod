@@ -1,11 +1,17 @@
 import concurrent.futures
 import hashlib
 import json
+
+# Optional: Import logging
+import logging
 import os
 import re
 import shutil
 import sqlite3
+import tempfile
 import time
+from threading import Lock
+from typing import Any, Dict
 
 import constants
 import faiss
@@ -13,39 +19,27 @@ import git
 import numpy as np
 import openai
 import tiktoken
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from sentence_transformers import SentenceTransformer
 from tenacity import retry, stop_after_attempt, wait_random_exponential
-from tree_sitter import Language, Parser
 
-# from sklearn.preprocessing import normalize
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    handlers=[logging.StreamHandler()],
+)
 
+logger = logging.getLogger(__name__)
+
+# Define origins for CORS
 origins = ["*"]
 
-
-def timing_decorator(func):
-    def wrapper(*args, **kwargs):
-        start_time = time.time()
-        result = func(*args, **kwargs)
-        end_time = time.time()
-        print(f"Function '{func.__name__}' took {end_time - start_time:.4f} seconds")
-        return result
-
-    return wrapper
-
-
-class QueryItem(BaseModel):
-    query: str
-    repoUrl: str | None = None
-    response: str | None = None
-    # documentId: str
-    # documentTitle: str
-
-
+# Initialize FastAPI app
 app = FastAPI()
 
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -54,112 +48,159 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# OpenAI API Key
+# Set OpenAI API Key
 openai.api_key = constants.API_KEY
 
-# repo_url = "https://github.com/kavjeydev/bitwise-longest-repeating.git"
-repo_path = "/repo"
+# Initialize tokenizer
+tokenizer = tiktoken.get_encoding("cl100k_base")
+MAX_TOKENS = 8191  # Maximum tokens for text-embedding-ada-002
 
 
-current_repo_url = None  # To store the current repository URL
-faiss_index = None
-code_chunks = None
-
-
-@timing_decorator
-def initialize_codebase(repo_url, embedding_model="text-embedding-ada-002"):
-    global faiss_index, code_chunks, current_repo_url
-
-    if current_repo_url == repo_url:
-        print(f"Repository {repo_url} is already initialized.")
-        return
-    else:
-        print("Codebase has not yet been initialized... Cloning now")
-
-    # Clone the repository
-    repo_path = clone_github_repo(repo_url)
-
-    # Parse the codebase and create chunks
-    code_chunks = read_files(repo_path)
-
-    # Generate embeddings for the chunks
-    embeddings = get_embeddings(code_chunks, model=embedding_model)
-
-    # Store embeddings in a FAISS vector store
-    faiss_index = store_in_faiss(embeddings)
-
-
-async def query_codebase(
-    question, repoUrl, embedding_model="text-embedding-ada-002", chat_model="gpt-4o"
-):
-    global faiss_index, code_chunks, current_repo_url
-    print(repoUrl, current_repo_url)
-
-    # if current_repo_url != repoUrl:
-    # print("Codebase has not yet been initialized... Cloning now")
-    initialize_codebase(repoUrl, embedding_model)
-    current_repo_url = repoUrl
-    # else:
-    #     print("Codebase already cloned...")
-
-    if faiss_index is None or code_chunks is None:
-        raise ValueError(
-            "Codebase has not been initialized. Call 'initialize_codebase' first."
+# Timing decorator for logging
+def timing_decorator(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        logger.info(
+            f"Function '{func.__name__}' took {end_time - start_time:.4f} seconds"
         )
+        return result
 
-    # Query the vector store for relevant code chunks
-    question_embedding = get_embedding(question, model=embedding_model)
-    question_embedding = np.array([question_embedding]).astype("float32")
-    faiss.normalize_L2(question_embedding)  # Ensure embedding is normalized
+    return wrapper
 
-    k = 10
-    distances, indices = faiss_index.search(question_embedding, k)
-    relevant_chunks = [code_chunks[i] for i in indices[0]]
 
-    # Combine relevant chunks into context
-    context = "\n".join(chunk[1] for chunk in relevant_chunks)
+# Pydantic model for API requests
+class QueryItem(BaseModel):
+    query: str
+    repoUrl: str | None = None
+    response: str | None = None
 
-    # Generate a response using OpenAI
-    response = openai.chat.completions.create(
-        model=chat_model,
-        messages=[
-            {
-                "role": "system",
-                "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation in markdown.",
-            },
-            {
-                "role": "user",
-                "content": f"Here is some code:\n{context}\n\nQuestion: {question}",
-            },
-        ],
-    )
 
-    return response.choices[0].message.content
+# Define RepoData class to store FAISS index and code chunks
+class RepoData:
+    def __init__(self, faiss_index, code_chunks):
+        self.faiss_index = faiss_index
+        self.code_chunks = code_chunks
+        self.lock = Lock()
+
+
+# Global repository cache and its lock
+repo_cache: Dict[str, RepoData] = {}
+repo_cache_lock = Lock()
 
 
 @timing_decorator
-def get_latest_commit_hash(repo_path):
-    repo = git.Repo(repo_path)
-    latest_commit = repo.head.commit.hexsha
-    return latest_commit
+def clone_github_repo(repo_url, clone_dir_base=None):
+    """
+    Clone the GitHub repository into a unique, writable directory.
+
+    Args:
+        repo_url (str): URL of the GitHub repository to clone.
+        clone_dir_base (str, optional): Base directory for cloning. Defaults to system temp directory.
+
+    Returns:
+        str: Path to the cloned repository.
+    """
+    if clone_dir_base is None:
+        # Use system temporary directory if no base directory is provided
+        clone_dir_base = tempfile.gettempdir()
+
+    # Generate a unique hash for the repository URL to create a unique directory
+    repo_hash = hashlib.sha256(repo_url.encode()).hexdigest()[:10]
+    clone_dir = os.path.join(clone_dir_base, repo_hash)
+
+    if os.path.exists(clone_dir):
+        logger.info(
+            f"Repository already exists in {clone_dir}. Removing it for a fresh clone."
+        )
+        try:
+            shutil.rmtree(clone_dir)
+            logger.info(f"Removed existing repository in {clone_dir}")
+        except Exception as e:
+            logger.error(f"Error removing directory {clone_dir}: {e}")
+            raise e  # Re-raise exception after logging
+
+    # Clone the repository after ensuring the directory is removed
+    try:
+        git.Repo.clone_from(repo_url, clone_dir)
+        logger.info(f"Cloned repository into {clone_dir}")
+    except Exception as e:
+        logger.error(f"Error cloning repository: {e}")
+        raise e  # Re-raise exception after logging
+
+    return clone_dir
 
 
 @timing_decorator
-def has_repo_changed(repo_path, hash_file="commit_hash.txt"):
-    current_hash = get_latest_commit_hash(repo_path)
-    if os.path.exists(hash_file):
-        with open(hash_file, "r") as f:
-            stored_hash = f.read().strip()
-        return current_hash != stored_hash
-    else:
-        return True
+def read_files(repo_path):
+    logger.info("Reading and processing files...")
+    code_chunks = []
+    file_paths = []
+
+    for root, _, files in os.walk(repo_path):
+        for file in files:
+            if file.endswith(
+                (
+                    ".py",
+                    ".js",
+                    ".ts",
+                    ".html",
+                    ".css",
+                    ".md",
+                    ".cpp",
+                    ".jsx",
+                    ".tsx",
+                    ".txt",
+                )
+            ):
+                file_path = os.path.join(root, file)
+                file_paths.append(file_path)
+
+    def process_file(file_path):
+        chunks = []
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                content = f.read()
+                # Break content into smaller chunks based on token limit
+                start = 0
+                while start < len(content):
+                    end = len(content)
+                    while True:
+                        chunk = content[start:end]
+                        tokens = tokenizer.encode(chunk)
+                        if len(tokens) <= MAX_TOKENS:
+                            break
+                        else:
+                            # Reduce the chunk size
+                            end -= int((end - start) / 2)
+                            if end <= start:
+                                # Cannot split further
+                                break
+                    if chunk.strip():  # Avoid adding empty chunks
+                        chunks.append((file_path, chunk))
+                    start = end
+        except Exception as e:
+            logger.error(f"Error processing file {file_path}: {e}")
+        return chunks
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        results = executor.map(process_file, file_paths)
+        for file_chunks in results:
+            code_chunks.extend(file_chunks)
+
+    return code_chunks
 
 
 @timing_decorator
-def update_stored_hash(repo_path, hash_file="commit_hash.txt"):
-    current_hash = get_latest_commit_hash(repo_path)
-    with open(hash_file, "w") as f:
-        f.write(current_hash)
+def store_in_faiss(embeddings):
+    embeddings = np.array(embeddings).astype("float32")
+    embeddings = np.ascontiguousarray(embeddings)
+    faiss.normalize_L2(embeddings)
+    dimension = embeddings.shape[1]
+    index = faiss.IndexFlatIP(dimension)
+    index.add(embeddings)
+    return index
 
 
 @timing_decorator
@@ -192,11 +233,6 @@ def get_embeddings(
     # Collect chunk texts and hashes
     for idx, chunk in enumerate(chunks):
         chunk_text = chunk[1]
-        # Optionally skip tokenization for speed
-        # tokens = tokenizer.encode(chunk_text)
-        # if len(tokens) > MAX_TOKENS:
-        #     print(f"Chunk at index {idx} exceeds the maximum token limit and will be skipped.")
-        #     continue
         chunk_hash = hashlib.sha256(chunk_text.encode("utf-8")).hexdigest()
         chunk_hashes.append(chunk_hash)
         chunk_texts.append(chunk_text)
@@ -248,7 +284,7 @@ def get_embeddings(
                     insert_data,
                 )
             except Exception as e:
-                print("Error during embedding request:", e)
+                logger.error("Error during embedding request:", exc_info=True)
                 continue
         conn.commit()
 
@@ -257,116 +293,61 @@ def get_embeddings(
 
 
 @timing_decorator
+def get_embedding(text, model="text-embedding-ada-002"):
+    try:
+        response = openai.embeddings.create(input=text, model=model)
+        embedding = response.data[0].embedding  # Access the embedding
+        return embedding
+    except Exception as e:
+        logger.error(f"Error getting embedding for text: {e}", exc_info=True)
+        raise e
+
+
+@timing_decorator
 def find_file(repo_path, filepath):
     for path, directories, files in os.walk(repo_path):
-        print(directories)
         if filepath in files:
-            return "found %s" % os.path.join(path, filepath)
+            full_path = os.path.join(path, filepath)
+            logger.info(f"Found file {filepath} at {full_path}")
+            return full_path
+    logger.warning(f"File {filepath} not found in repository {repo_path}")
     return None
 
 
 @timing_decorator
-def get_embedding(text, model="text-embedding-ada-002"):
-    response = openai.embeddings.create(input=text, model=model)
-    embedding = response.data[0].embedding  # Access the embedding
-    return embedding
-
-
-@timing_decorator
-def clone_github_repo(repo_url, clone_dir="repo"):
-
-    if os.path.exists(clone_dir):
-        print(f"Repository already exists in {clone_dir}. Removing it for fresh clone.")
-        try:
-            shutil.rmtree(clone_dir)
-            print(f"Removed existing repository in {clone_dir}")
-        except Exception as e:
-            print(f"Error removing directory {clone_dir}: {e}")
-            raise e  # Re-raise exception after logging
-
-    # Clone the repository after ensuring the directory is removed
+def query_vector_store(index, chunks, question, model="gpt-4o"):
     try:
-        git.Repo.clone_from(repo_url, clone_dir)
-        print(f"Cloned repository into {clone_dir}")
+        question_embedding = get_embedding(question, model="text-embedding-ada-002")
+        question_embedding = np.array([question_embedding]).astype("float32")
+        faiss.normalize_L2(question_embedding)  # Ensure embedding is normalized
+
+        k = 10
+        distances, indices = index.search(question_embedding, k)
+        relevant_chunks = [chunks[i] for i in indices[0] if i < len(chunks)]
+
+        # Combine relevant chunks into context
+        context = "\n".join([chunk[1] for chunk in relevant_chunks])
+
+        # Generate a response using OpenAI
+        response = openai.chat.completions.create(
+            model=model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation in markdown.",
+                },
+                {
+                    "role": "user",
+                    "content": f"Here is some code:\n{context}\n\nQuestion: {question}",
+                },
+            ],
+        )
+
+        # Access the content using object attributes
+        return response.choices[0].message.content
     except Exception as e:
-        print(f"Error cloning repository: {e}")
-        raise e  # Re-raise exception after logging
-
-    return clone_dir
-
-
-# Step 2: Read and process the files to chunk them into sections
-
-
-# Precompile regex patterns at the module level
-python_def_regex = re.compile(r"^\s*def\s+", re.MULTILINE)
-
-# Define file extensions at the module level
-python_extensions = {".py"}
-other_code_extensions = {".js", ".ts", ".cpp", ".jsx", ".tsx"}
-text_extensions = {".html", ".css", ".md"}
-
-# Initialize the tokenizer for the model you're using
-
-# Initialize the tokenizer
-tokenizer = tiktoken.get_encoding("cl100k_base")
-MAX_TOKENS = 8191  # Maximum tokens for text-embedding-ada-002 is 8191
-
-
-def read_files(repo_path):
-    print("Reading and processing files...")
-    code_chunks = []
-    file_paths = []
-
-    for root, _, files in os.walk(repo_path):
-        for file in files:
-            if file.endswith(
-                (
-                    ".py",
-                    ".js",
-                    ".ts",
-                    ".html",
-                    ".css",
-                    ".md",
-                    ".cpp",
-                    ".jsx",
-                    ".tsx",
-                    ".txt",
-                )
-            ):
-                # print("Valid file:", file)
-                file_path = os.path.join(root, file)
-                file_paths.append(file_path)
-
-    def process_file(file_path):
-        chunks = []
-        with open(file_path, "r", encoding="utf-8") as f:
-            content = f.read()
-            # Break content into smaller chunks based on token limit
-            start = 0
-            while start < len(content):
-                end = len(content)
-                while True:
-                    chunk = content[start:end]
-                    tokens = tokenizer.encode(chunk)
-                    if len(tokens) <= MAX_TOKENS:
-                        break
-                    else:
-                        # Reduce the chunk size
-                        end -= int((end - start) / 2)
-                        if end <= start:
-                            # Cannot split further
-                            break
-                chunks.append((file_path, chunk))
-                start = end
-        return chunks
-
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        results = executor.map(process_file, file_paths)
-        for file_chunks in results:
-            code_chunks.extend(file_chunks)
-
-    return code_chunks
+        logger.error(f"Error querying vector store: {e}", exc_info=True)
+        raise e
 
 
 @timing_decorator
@@ -380,39 +361,6 @@ def store_in_faiss(embeddings):
     return index
 
 
-@timing_decorator
-def query_vector_store(index, chunks, question, model="gpt-4o"):
-    question_embedding = get_embedding(question, model="text-embedding-ada-002")
-    question_embedding = np.array([question_embedding]).astype("float32")
-    question_embedding = np.ascontiguousarray(question_embedding)
-    faiss.normalize_L2(question_embedding)
-    k = 10
-    distances, indices = index.search(question_embedding, k)
-    relevant_chunks = [chunks[i] for i in indices[0]]
-
-    # Step 5.4: Send the question along with the retrieved code to OpenAI for a detailed response
-    context = "\n".join([chunk[1] for chunk in relevant_chunks])
-
-    # Use the correct API to get a completion
-    response = openai.chat.completions.create(
-        model=model,
-        messages=[
-            {
-                "role": "system",
-                "content": "You are a technical documentation expert. Given a codebase, answer some questions and write some expert documentation. Use markdown format for responses.",
-            },
-            {
-                "role": "user",
-                "content": f"Here is some code:\n{context}\n\nQuestion: {question}",
-            },
-        ],
-    )
-
-    # Corrected: Access the content using object attributes, not dict subscripting
-    return response.choices[0].message.content
-
-
-@timing_decorator
 def code_assistant_pipeline(repo_url, question, file=None):
     # Clone repo
     repo_path = clone_github_repo(repo_url)
@@ -435,19 +383,6 @@ def code_assistant_pipeline(repo_url, question, file=None):
     return answer
 
 
-@timing_decorator
-async def AIQuery(question, repo_url):
-    if question.split(" ")[0] == "@file":
-        filepath = find_file(repo_path, question.split(" ")[1])
-        answer = code_assistant_pipeline(
-            repo_url, " ".join(question.split(" ")[2:]), filepath
-        )
-        return answer
-    else:
-        answer = code_assistant_pipeline(repo_url, question)
-        return answer
-
-
 def get_all_files(repo_path):
     file_paths = []
     for root, dirs, files in os.walk(repo_path):
@@ -460,10 +395,122 @@ def get_all_files(repo_path):
     return file_paths
 
 
+def initialize_codebase(
+    repo_url, embedding_model="text-embedding-ada-002", clone_dir_base=None
+):
+    global repo_cache
+
+    # Acquire the cache lock to check if the repository is already initialized
+    with repo_cache_lock:
+        if repo_url in repo_cache:
+            logger.info(f"Repository {repo_url} is already initialized.")
+            return
+        else:
+            logger.info(f"Initializing repository {repo_url}.")
+            # Add a placeholder to indicate that initialization is in progress
+            repo_cache[repo_url] = None
+
+    try:
+        # Clone the repository
+        repo_path = clone_github_repo(repo_url, clone_dir_base=clone_dir_base)
+
+        # Parse the codebase and create chunks
+        code_chunks = read_files(repo_path)
+
+        # Generate embeddings for the chunks
+        embeddings = get_embeddings(code_chunks, model=embedding_model)
+
+        # Store embeddings in a FAISS vector store
+        faiss_index = store_in_faiss(embeddings)
+
+        # Create RepoData and add it to the cache
+        repo_data = RepoData(faiss_index=faiss_index, code_chunks=code_chunks)
+
+        with repo_cache_lock:
+            repo_cache[repo_url] = repo_data
+
+        logger.info(f"Repository {repo_url} initialized successfully.")
+
+    except Exception as e:
+        # Remove the placeholder in case of failure
+        with repo_cache_lock:
+            del repo_cache[repo_url]
+        logger.error(f"Error initializing repository {repo_url}: {e}", exc_info=True)
+        raise e
+
+
+async def query_codebase(
+    question, repoUrl, embedding_model="text-embedding-ada-002", chat_model="gpt-4o"
+):
+    global repo_cache
+
+    # Check if the repository is already initialized
+    with repo_cache_lock:
+        repo_data = repo_cache.get(repoUrl)
+        if repo_data is None:
+            # Repository is not initialized; proceed to initialize
+            logger.info(
+                f"Repository {repoUrl} is not initialized. Starting initialization."
+            )
+        elif isinstance(repo_data, RepoData):
+            # Repository is initialized
+            pass
+        else:
+            # Initialization is in progress
+            raise ValueError(f"Repository {repoUrl} is currently initializing.")
+
+    if repo_data is None:
+        # Initialize the repository outside the lock to prevent blocking
+        initialize_codebase(repoUrl, embedding_model, clone_dir_base=None)
+
+        # Re-acquire the cache lock to get the updated repo_data
+        with repo_cache_lock:
+            repo_data = repo_cache.get(repoUrl)
+            if not isinstance(repo_data, RepoData):
+                raise ValueError(f"Failed to initialize repository {repoUrl}.")
+
+    # Access the FAISS index and code chunks
+    faiss_index = repo_data.faiss_index
+    code_chunks = repo_data.code_chunks
+
+    if faiss_index is None or code_chunks is None:
+        raise ValueError("Codebase has not been initialized properly.")
+
+    # Query the vector store for relevant code chunks
+    question_embedding = get_embedding(question, model=embedding_model)
+    question_embedding = np.array([question_embedding]).astype("float32")
+    faiss.normalize_L2(question_embedding)  # Ensure embedding is normalized
+
+    k = 10
+    distances, indices = faiss_index.search(question_embedding, k)
+    relevant_chunks = [code_chunks[i] for i in indices[0] if i < len(code_chunks)]
+
+    # Combine relevant chunks into context
+    context = "\n".join([chunk[1] for chunk in relevant_chunks])
+
+    # Generate a response using OpenAI
+    response = openai.chat.completions.create(
+        model=chat_model,
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation in markdown.",
+            },
+            {
+                "role": "user",
+                "content": f"Here is some code:\n{context}\n\nQuestion: {question}",
+            },
+        ],
+    )
+
+    return response.choices[0].message.content
+
+
 @app.on_event("startup")
 def on_startup():
-    # Initialize the codebase when the API starts
-    initialize_codebase("https://github.com/kavjeydev/bitwise-longest-repeating.git")
+    # Optionally initialize specific repositories on startup
+    initial_repo_url = "https://github.com/kavjeydev/bitwise-longest-repeating.git"
+    initialize_codebase(initial_repo_url, clone_dir_base=None)
 
 
 @app.post("/apirun")
@@ -471,10 +518,10 @@ async def respond(queryItem: QueryItem):
     try:
         start_t = time.time()
         response = await query_codebase(queryItem.query, queryItem.repoUrl)
-        # await generate_ast(queryItem.repoUrl)
         end_t = time.time()
-        print("TOTAL TIME:", end_t - start_t)
+        logger.info("TOTAL TIME: %.4f seconds", end_t - start_t)
         queryItem.response = response
         return queryItem
     except Exception as e:
+        logger.error(f"Error in /apirun endpoint: {e}", exc_info=True)
         return {"error": str(e)}
