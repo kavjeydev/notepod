@@ -11,6 +11,11 @@ import { useSearchParams } from "next/navigation";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import AISearch from "@/app/(main)/_components/ai-seach-bar/ai-search-bar";
 import { Input } from "@nextui-org/input";
+import { SetGithubRepo } from "@/app/(main)/_components/set-github-repo";
+import { TableOfContents } from "@/app/(main)/_components/TableOfContents";
+import { Sidebar } from "@/app/(main)/_components/Sidebar";
+import { useSidebar } from "@/app/(main)/hooks/useSidebar";
+import { useBlockEditor } from "@/app/(main)/hooks/useBlockEditor";
 
 interface DocumentIdPageProps {
   params: {
@@ -28,6 +33,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   const document = useQuery(api.documents.getById, {
     documentId: params.documentId,
   });
+  const leftSidebar = useSidebar();
 
   const setGithubRepo = useMutation(api.documents.setGithubRepo);
 
@@ -51,46 +57,16 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   }
 
   return (
-    <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-[#f4f4f4] dark:bg-[#121212] pb-5">
-      <div className="h-[10vh] max-h-[100%] overflow-hidden"></div>
-      <div className="flex flex-col md:max-w-3xl lg:max-w-4xl mx-auto items-center">
-        <Input
-          type="text"
-          label="Set Repository..."
-          isClearable
-          onChange={(e) => {
-            setGitHub(e.target.value);
-            e.preventDefault();
-          }}
-          color="default"
-          classNames={{
-            label: "text-black/50 dark:text-white/90",
-            input: [
-              "bg-transparent",
-              "text-black/90 dark:text-white/90",
-              "placeholder:text-default-700/50 dark:placeholder:text-white/60",
-            ],
-            innerWrapper: "bg-transparent",
-            inputWrapper: [
-              "shadow-xl",
-              "bg-default-300/50",
-              "dark:bg-default/60",
-              "backdrop-blur-xl",
-              "backdrop-saturate-200",
-              "hover:bg-default-200/70",
-              "dark:hover:bg-default/70",
-              "group-data-[focus=true]:bg-default-200/50",
-              "dark:group-data-[focus=true]:bg-default/60",
-              "!cursor-text",
-            ],
-          }}
-        />
+    <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-[#f4f4f4] dark:bg-[#121212] pb-5 ">
+      {/* <div className="flex h-[10vh] max-h-[100%] overflow-hidden"></div> */}
+      <div className="flex flex-col mx-auto items-center">
         <BlockEditor
           aiToken={undefined}
           hasCollab={false}
           ydoc={ydoc}
           docId={params.documentId}
-          editable={true}
+          editable={false}
+          previewMode={true}
         />
       </div>
     </div>

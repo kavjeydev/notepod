@@ -66,6 +66,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
           ydoc={ydoc}
           docId={params.documentId}
           editable={true}
+          previewMode={false}
         />
         <div className="fixed bottom-2">
           <SetGithubRepo
