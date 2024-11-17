@@ -63,8 +63,17 @@ export const BlockEditor = ({
   ];
 
   return (
-    <div className="flex h-full" ref={menuContainerRef}>
-      <div className="fixed bg-red-400 bottom-8 right-2 bg-transparent z-[99999] pointer-events-none">
+    <div
+      className="relative top-12 flex h-full w-full mb-20"
+      ref={menuContainerRef}
+    >
+      <Sidebar
+        isOpen={leftSidebar.isOpen}
+        onClose={leftSidebar.close}
+        editor={editor}
+      />
+
+      <div className="fixed bottom-8 right-2 bg-transparent z-[99999]">
         <EditorHeader
           editor={editor}
           collabState={collabState}
@@ -73,11 +82,7 @@ export const BlockEditor = ({
           toggleSidebar={leftSidebar.toggle}
         />
       </div>
-      <Sidebar
-        isOpen={leftSidebar.isOpen}
-        onClose={leftSidebar.close}
-        editor={editor}
-      />
+
       <div className="relative flex flex-col flex-1 h-full w-[50vw] overflow-visible">
         <EditorContent
           editor={editor}
@@ -99,6 +104,11 @@ export const BlockEditor = ({
         <TableRowMenu editor={editor} appendTo={menuContainerRef} />
         <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
         <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
+        {/* <Sidebar
+          isOpen={leftSidebar.isOpen}
+          onClose={leftSidebar.close}
+          editor={editor}
+        /> */}
       </div>
     </div>
   );

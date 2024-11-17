@@ -65,8 +65,8 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
 
   return (
     <div className="flex flex-col md:max-w-3xl lg:max-w-4xl mx-auto items-center">
-      <div className="relative w-[400px] top-2 mb-4 ">
-        <div className=" p-2 dark:bg-black/20 bg-black/10 rounded-xl">
+      <div className="relative w-[400px] top-2 mb-6 ">
+        <div className=" dark:bg-white/10 bg-black/10 rounded-xl p-2">
           <Input
             type="text"
             size="md"
