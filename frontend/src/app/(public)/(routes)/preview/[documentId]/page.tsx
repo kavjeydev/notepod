@@ -16,6 +16,7 @@ import { TableOfContents } from "@/app/(main)/_components/TableOfContents";
 import { Sidebar } from "@/app/(main)/_components/Sidebar";
 import { useSidebar } from "@/app/(main)/hooks/useSidebar";
 import { useBlockEditor } from "@/app/(main)/hooks/useBlockEditor";
+import { Spinner } from "@nextui-org/react";
 
 interface DocumentIdPageProps {
   params: {
@@ -49,7 +50,11 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   };
 
   if (document === undefined) {
-    return <div>Loading</div>;
+    return (
+      <div className="h-[100vh] w-full flex items-center justify-center">
+        <Spinner className="" />
+      </div>
+    );
   }
 
   if (document === null) {
