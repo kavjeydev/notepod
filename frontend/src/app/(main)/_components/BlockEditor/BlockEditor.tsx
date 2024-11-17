@@ -67,11 +67,16 @@ export const BlockEditor = ({
       className="relative top-12 flex h-full w-full mb-20"
       ref={menuContainerRef}
     >
+      {/* <div
+        className="fixed flex h-full w-full mb-20 pr-20 ml"
+        ref={menuContainerRef}
+      > */}
       <Sidebar
         isOpen={leftSidebar.isOpen}
         onClose={leftSidebar.close}
         editor={editor}
       />
+      {/* </div> */}
 
       <div className="fixed bottom-8 right-2 bg-transparent z-[99999]">
         <EditorHeader

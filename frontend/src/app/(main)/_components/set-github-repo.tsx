@@ -113,7 +113,7 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
             onClick={() => writeGitHub(gitRepo)}
             // disabled={!gitRepo || !githubRepoUrlPattern.test(gitRepo)}
             className="absolute right-2 top-1/2 transform -translate-y-1/2
-            px-3 py-1 h-[75%] pt-2 pb-2 w-20 bg-maincolor text-white"
+            px-3 py-1 h-[65%] pt-3 mr-1 mb-1 pb-3 w-20 bg-maincolor text-white"
           >
             {alreadySetRepo == gitRepo ? <div>Resync</div> : <div>Sync</div>}
           </Button>
