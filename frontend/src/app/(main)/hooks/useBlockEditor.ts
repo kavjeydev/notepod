@@ -18,6 +18,7 @@ import { Id } from "../../../../convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import ReactComponentExtension from "../_components/ai-seach-bar/ai-search-bar";
+import { CustomCodeBlock } from "../extensions/CustomCodeBlock/CustomCodeBlock";
 
 declare global {
   interface Window {

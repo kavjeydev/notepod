@@ -9,32 +9,33 @@ import { AnimatedListDemo } from "../animated-list/animated-list";
 
 const files = [
   {
-    name: "bitcoin.pdf",
-    body: "Bitcoin is a cryptocurrency invented in 2008 by an unknown person or group of people using the name Satoshi Nakamoto.",
+    name: "doc.tsx",
+    body: 'import { BellIcon, Heart, Share2Icon } from "lucide-react";',
   },
   {
-    name: "finances.xlsx",
-    body: "A spreadsheet or worksheet is a file made of rows and columns that help sort data, arrange data easily, and calculate numerical data.",
+    name: "page.tsx",
+    body: "const { isAuthenticated, isLoading } = useConvexAuth();",
   },
   {
-    name: "logo.svg",
-    body: "Scalable Vector Graphics is an Extensible Markup Language-based vector image format for two-dimensional graphics with support for interactivity and animation.",
+    name: "ast.py",
+    body: "def main(): \n    generate(ast)",
   },
   {
-    name: "keys.gpg",
-    body: "GPG keys are used to encrypt and decrypt email, files, directories, and whole disk partitions and to authenticate messages.",
+    name: "main.py",
+    body: 'def main(): \n    print("hi")',
   },
   {
-    name: "seed.txt",
-    body: "A seed phrase, seed recovery phrase or backup seed phrase is a list of words which store all the information needed to recover Bitcoin funds on-chain.",
+    name: "README.txt",
+    body: "NOTEPOD DOCUMENTATION: ...",
   },
 ];
 
 const features = [
   {
     Icon: FileTextIcon,
-    name: "Save your files",
-    description: "We automatically save your files as you type.",
+    name: "Learn, Query, Understand",
+    description:
+      "Notepod AI learns your codebase and returns results with a 1M+ token context window.",
     href: "#",
     cta: "Learn more",
     className: "col-span-3 lg:col-span-1",

@@ -72,7 +72,7 @@ export default function Home() {
                 {isLoading && <Spinner size="md" />}
                 {isAuthenticated && !isLoading && (
                   <Button
-                    className="bg-maincolor text-white min-w-[150px]"
+                    className="bg-maincolor text-white min-w-[150px] z-[99999]"
                     size="lg"
                     radius="full"
                     onClick={gotoDocuments}
@@ -82,7 +82,7 @@ export default function Home() {
                 )}
                 {!isAuthenticated && !isLoading && (
                   <Button
-                    className="bg-maincolor text-white min-w-[150px]"
+                    className="bg-maincolor text-white min-w-[150px] z-[99999]"
                     size="lg"
                     radius="full"
                   >
@@ -91,7 +91,7 @@ export default function Home() {
                 )}
 
                 <Button
-                  className="text-text-color bg-bgcolor min-w-[150px]"
+                  className="text-text-color bg-bgcolor min-w-[150px] z-[99999]"
                   size="lg"
                   radius="full"
                   variant="ghost"
