@@ -11,6 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import AISearch from "@/app/(main)/_components/ai-seach-bar/ai-search-bar";
 import { Input } from "@nextui-org/input";
+import { SetGithubRepo } from "@/app/(main)/_components/set-github-repo";
 
 interface DocumentIdPageProps {
   params: {
@@ -54,7 +55,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
     <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-[#f4f4f4] dark:bg-[#121212] pb-5">
       <div className="h-[10vh] max-h-[100%] overflow-hidden"></div>
       <div className="flex flex-col md:max-w-3xl lg:max-w-4xl mx-auto items-center">
-        <Input
+        {/* <Input
           type="text"
           label="Set Repository..."
           isClearable
@@ -84,7 +85,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
               "!cursor-text",
             ],
           }}
-        />
+        /> */}
         <BlockEditor
           aiToken={undefined}
           hasCollab={false}
@@ -92,6 +93,13 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
           docId={params.documentId}
           editable={true}
         />
+        <div className="fixed bottom-2">
+          <SetGithubRepo
+            params={{
+              documentId: document._id,
+            }}
+          />
+        </div>
       </div>
     </div>
   );
