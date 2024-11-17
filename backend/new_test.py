@@ -95,12 +95,12 @@ async def query_codebase(
     global faiss_index, code_chunks, current_repo_url
     print(repoUrl, current_repo_url)
 
-    if current_repo_url != repoUrl:
-        print("Codebase has not yet been initialized... Cloning now")
-        initialize_codebase(repoUrl, embedding_model)
-        current_repo_url = repoUrl
-    else:
-        print("Codebase already cloned...")
+    # if current_repo_url != repoUrl:
+    # print("Codebase has not yet been initialized... Cloning now")
+    initialize_codebase(repoUrl, embedding_model)
+    current_repo_url = repoUrl
+    # else:
+    #     print("Codebase already cloned...")
 
     if faiss_index is None or code_chunks is None:
         raise ValueError(
@@ -276,14 +276,22 @@ def get_embedding(text, model="text-embedding-ada-002"):
 def clone_github_repo(repo_url, clone_dir="repo"):
 
     if os.path.exists(clone_dir):
-        print(f"Repository already cloned in {clone_dir}")
+        print(f"Repository already exists in {clone_dir}. Removing it for fresh clone.")
         try:
             shutil.rmtree(clone_dir)
-        except FileNotFoundError:
-            print(f"Directory not found: {clone_dir}")
-    else:
+            print(f"Removed existing repository in {clone_dir}")
+        except Exception as e:
+            print(f"Error removing directory {clone_dir}: {e}")
+            raise e  # Re-raise exception after logging
+
+    # Clone the repository after ensuring the directory is removed
+    try:
         git.Repo.clone_from(repo_url, clone_dir)
         print(f"Cloned repository into {clone_dir}")
+    except Exception as e:
+        print(f"Error cloning repository: {e}")
+        raise e  # Re-raise exception after logging
+
     return clone_dir
 
 
