@@ -9,7 +9,6 @@ import Title from "./title";
 import Banner from "./banner";
 import Menu from "./menu";
 import Publish from "./publish";
-import { SetGithubRepo } from "./set-github-repo";
 
 interface NavbarProps {
   isCollapsed: boolean;
@@ -50,11 +49,6 @@ export default function NavbarDoc({ isCollapsed, onResetWidth }: NavbarProps) {
 
         <div className="flex items-center justify-between w-full">
           <Title initialData={document} />
-          <SetGithubRepo
-            params={{
-              documentId: document._id,
-            }}
-          />
           <div className="flex items-center gap-x-2">
             <Publish initialData={document} />
             <Menu documentId={document._id} />

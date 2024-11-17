@@ -274,13 +274,13 @@ def get_embedding(text, model="text-embedding-ada-002"):
 
 @timing_decorator
 def clone_github_repo(repo_url, clone_dir="repo"):
-    try:
-        shutil.rmtree(clone_dir)
-    except FileNotFoundError:
-        print(f"Directory not found: {clone_dir}")
 
     if os.path.exists(clone_dir):
         print(f"Repository already cloned in {clone_dir}")
+        try:
+            shutil.rmtree(clone_dir)
+        except FileNotFoundError:
+            print(f"Directory not found: {clone_dir}")
     else:
         git.Repo.clone_from(repo_url, clone_dir)
         print(f"Cloned repository into {clone_dir}")

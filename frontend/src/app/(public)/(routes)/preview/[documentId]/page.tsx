@@ -3,10 +3,14 @@
 import { useMutation, useQuery } from "convex/react";
 import { Id } from "../../../../../../convex/_generated/dataModel";
 import { api } from "../../../../../../convex/_generated/api";
+import { Editor } from "@/components/editor";
 import { BlockEditor } from "@/app/(main)/_components/BlockEditor/BlockEditor";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { Doc as YDoc } from "yjs";
-import { Spinner } from "@/app/(main)/_components/ui/Spinner";
+import { useSearchParams } from "next/navigation";
+import { TiptapCollabProvider } from "@hocuspocus/provider";
+import AISearch from "@/app/(main)/_components/ai-seach-bar/ai-search-bar";
+import { Input } from "@nextui-org/input";
 
 interface DocumentIdPageProps {
   params: {
@@ -14,110 +18,80 @@ interface DocumentIdPageProps {
   };
 }
 
+interface QueryProps {
+  query: string;
+  response: string;
+}
+
 export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   const ydoc = useMemo(() => new YDoc(), []);
-  const documentPage = useQuery(api.documents.getById, {
+  const document = useQuery(api.documents.getById, {
     documentId: params.documentId,
   });
-  const [viewed, setViewed] = useState(false);
 
-  const increaseView = useMutation(api.documents.increaseView);
+  const setGithubRepo = useMutation(api.documents.setGithubRepo);
 
-  const viewedPod = () => {
-    const promise = increaseView({ id: params.documentId });
+  const setGitHub = (repo: string) => {
+    if (!document) {
+      return null;
+    }
+
+    setGithubRepo({
+      id: document?._id,
+      repoName: repo,
+    });
   };
 
-  const [activeTime, setActiveTime] = useState(0); // State to track active time in seconds
-  const intervalRef = useRef<number | NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    // Function to increment the active time every second
-    const incrementActiveTime = () => {
-      setActiveTime((prevTime) => prevTime + 1);
-    };
-
-    // Start the interval when the component mounts
-    const startInterval = () => {
-      intervalRef.current = setInterval(incrementActiveTime, 1000);
-    };
-
-    // Clear the interval
-    const clearActiveInterval = () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-
-    // Start counting active time
-    startInterval();
-
-    // Handle page visibility change
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden") {
-        // Pause timer when the page becomes inactive
-        clearActiveInterval();
-      } else {
-        // Resume timer when the page becomes active again
-        startInterval();
-      }
-    };
-
-    // Add event listener for visibility change
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    // Cleanup function when component unmounts
-    return () => {
-      clearActiveInterval(); // Stop the interval
-      document.removeEventListener("visibilitychange", handleVisibilityChange); // Remove event listener
-    };
-  }, []);
-
-  const update = useMutation(api.documents.update);
-
-  const onChange = (content: string) => [
-    update({
-      id: params.documentId,
-      content,
-    }),
-  ];
-
-  if (documentPage === undefined) {
-    return (
-      <div className="flex items-center justify-center h-[100vh] w-[100vw]">
-        <Spinner />
-      </div>
-    );
+  if (document === undefined) {
+    return <div>Loading</div>;
   }
 
-  if (documentPage === null) {
+  if (document === null) {
     return null;
-  }
-
-  if (activeTime >= 10 && !viewed) {
-    viewedPod();
-    setViewed(true);
   }
 
   return (
     <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-[#f4f4f4] dark:bg-[#121212] pb-5">
       <div className="h-[10vh] max-h-[100%] overflow-hidden"></div>
-      <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
-        {/* <Toolbar initialData={document} /> */}
-
-        {/* <Editor
-          onChange={() => {}}
-          initialContent={document.content}
-          docId={params.documentId}
-        /> */}
+      <div className="flex flex-col md:max-w-3xl lg:max-w-4xl mx-auto items-center">
+        <Input
+          type="text"
+          label="Set Repository..."
+          isClearable
+          onChange={(e) => {
+            setGitHub(e.target.value);
+            e.preventDefault();
+          }}
+          color="default"
+          classNames={{
+            label: "text-black/50 dark:text-white/90",
+            input: [
+              "bg-transparent",
+              "text-black/90 dark:text-white/90",
+              "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+            ],
+            innerWrapper: "bg-transparent",
+            inputWrapper: [
+              "shadow-xl",
+              "bg-default-300/50",
+              "dark:bg-default/60",
+              "backdrop-blur-xl",
+              "backdrop-saturate-200",
+              "hover:bg-default-200/70",
+              "dark:hover:bg-default/70",
+              "group-data-[focus=true]:bg-default-200/50",
+              "dark:group-data-[focus=true]:bg-default/60",
+              "!cursor-text",
+            ],
+          }}
+        />
         <BlockEditor
           aiToken={undefined}
           hasCollab={false}
           ydoc={ydoc}
           docId={params.documentId}
-          editable={false}
+          editable={true}
         />
-        {/* <div>Time Spent: {activeTime}</div> */}
       </div>
     </div>
   );
