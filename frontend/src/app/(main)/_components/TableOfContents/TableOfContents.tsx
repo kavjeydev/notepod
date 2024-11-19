@@ -20,12 +20,12 @@ export const TableOfContents = memo(
     });
 
     return (
-      <div className="overflow-y-scroll">
+      <div className="overflow-x-hidden z-[99999]">
         <div className="mb-2 text-xs font-semibold uppercase text-neutral-500 dark:text-neutral-400 ">
           Table of contents
         </div>
         {content.length > 0 ? (
-          <div className="flex flex-col gap-1 overflow-y-scroll">
+          <div className="flex flex-col gap-1">
             {content.map((item) => (
               <a
                 key={item.id}
@@ -33,7 +33,8 @@ export const TableOfContents = memo(
                 style={{ marginLeft: `${1 * item.level - 1}rem` }}
                 onClick={onItemClick}
                 className={cn(
-                  "block font-medium text-neutral-500 dark:text-neutral-300 p-1 rounded bg-opacity-10 text-sm hover:text-neutral-800 transition-all hover:bg-black hover:bg-opacity-5 truncate w-full",
+                  "block font-medium text-neutral-500 dark:text-neutral-300 p-1 rounded bg-opacity-10 text-sm hover:text-neutral-800 transition-all hover:bg-black dark:hover:bg-white/10 \
+                  hover:bg-opacity-5 truncate w-full",
                   item.isActive &&
                     "text-neutral-800 bg-neutral-100 dark:text-neutral-100 dark:bg-neutral-900",
                 )}

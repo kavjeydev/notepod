@@ -28,8 +28,8 @@ export const Sidebar = memo(
 
     return (
       <div className={windowClassName}>
-        <div className="fixed w-full h-full overflow-y-scroll">
-          <div className="w-full h-full p-6 overflow-y-scroll">
+        <div className="fixed w-full h-full">
+          <div className="w-full h-full p-6">
             <TableOfContents
               onItemClick={handlePotentialClose}
               editor={editor}
