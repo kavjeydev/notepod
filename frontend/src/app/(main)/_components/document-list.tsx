@@ -311,7 +311,7 @@ export const DocumentList = ({
           {level === 0 ? (
             <div
               className={cn(
-                "grow min-h-[25px] bg-[#FFFFFF] dark:bg-[#262626]",
+                "grow min-h-[25px] bg-[#FFFFFF] dark:bg-black",
                 isDragging && "hover:dark:bg-[#363636] hover:bg-[#E5E5E5]",
               )}
               ref={outsideRef}

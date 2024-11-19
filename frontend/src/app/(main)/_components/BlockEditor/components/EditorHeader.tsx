@@ -44,7 +44,11 @@ export const EditorHeader = ({
         <div className="flex flex-row gap-x-1.5 items-center">
           <div className="flex items-center gap-x-1.5">
             <Toolbar.Button
-              tooltip={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+              tooltip={
+                isSidebarOpen
+                  ? "Close table of contents"
+                  : "Open table of contents"
+              }
               onClick={toggleSidebar}
               active={isSidebarOpen}
               className={`m-2 ${isSidebarOpen ? "bg-default-300" : ""}`}

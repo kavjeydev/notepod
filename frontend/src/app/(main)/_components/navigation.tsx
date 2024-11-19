@@ -159,7 +159,7 @@ export default function Navigation() {
       <aside
         ref={sidebarRef}
         className={cn(
-          "relative group/sidebar h-[100vh] bg-[#FFFFFF] dark:bg-[#262626] overflow-y-auto flex w-60 flex-col z-[99999]",
+          "relative group/sidebar h-[100vh] bg-[#FFFFFF] dark:bg-black overflow-y-auto flex w-60 flex-col z-[99999] border-r-1",
           isResetting && "transition-all ease-in-out duration-300",
           isMobile && "w-0",
         )}
@@ -240,7 +240,7 @@ export default function Navigation() {
             </DragProvider>
           </div>
 
-          <div className="absolute dark:bg-[#313131] bg-white bottom-0 w-full h-[125px] pb-2 border-t-1 dark:border-default-300 border-default-300 pt-2 z-[99999]">
+          <div className="absolute dark:bg-[#090909] bg-white bottom-0 w-full h-[125px] pb-2 border-t-1 dark:border-default-300 border-default-300 pt-2 z-[99999]">
             <Item
               onClick={handleCreateFile}
               icon={Plus}

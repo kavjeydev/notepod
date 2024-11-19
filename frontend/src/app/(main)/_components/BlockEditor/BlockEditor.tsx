@@ -66,7 +66,7 @@ export const BlockEditor = ({
 
   return (
     <div
-      className={`relative ${previewMode ? "top-0" : "top-12"} flex h-full w-full mb-20`}
+      className={`relative ${previewMode ? "top-0" : "top-12"} flex h-full w-full mb-20 `}
       ref={menuContainerRef}
     >
       <div className="fixed flex h-full z-[999]">
@@ -83,7 +83,7 @@ export const BlockEditor = ({
       {/* </div> */}
 
       <div
-        className={`fixed w-full h-16 mb-2 p-3 z-[99] transition-all
+        className={`fixed w-full h-16 mb-2 p-3 z-[999] transition-all
           duration-300 ease-in-out
           ${previewMode && "top-0"}
           ${leftSidebar.isOpen ? "ml-80 dark:bg-[#121212] bg-default-100" : "ml-0 bg-transparent"}`}
@@ -99,7 +99,7 @@ export const BlockEditor = ({
 
       <div
         className={`relative flex flex-col flex-1 h-full w-[50vw]
-           ${leftSidebar.isOpen ? "ml-64" : "ml-0"} transition-all
+           ${leftSidebar.isOpen ? "ml-64 mt-4" : "ml-0"} transition-all
           duration-300 ease-in-out`}
       >
         <EditorContent
