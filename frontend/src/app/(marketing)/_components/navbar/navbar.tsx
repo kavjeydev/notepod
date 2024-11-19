@@ -14,6 +14,8 @@ import { Spinner } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FloatingDockDemo } from "../floating-dock/floating-dock";
+import { PartyPopper, X } from "lucide-react";
+import { useState } from "react";
 
 const space = Space_Grotesk({
   subsets: ["latin"],
@@ -33,10 +35,15 @@ export default function Navbar() {
   var currentTheme: string = "light";
   const scrolled = useScrollTop();
   const { isAuthenticated, isLoading } = useConvexAuth();
+  const [isOpen, setIsOpen] = useState(true);
 
   const router = useRouter();
   const gotoDocuments = () => {
     router.push("/documents");
+  };
+
+  const closePopUp = () => {
+    setIsOpen(false);
   };
   return (
     <div
@@ -46,6 +53,27 @@ export default function Navbar() {
           "border-b shadow-sm shadow-default-800/10 transition duration-400 ease-in-out",
       )}
     >
+      {isOpen && (
+        <div
+          className="h-14 w-full bg-gradient-to-r dark:from-slate-900 dark:to-maincolor
+         from-slate-100 to-maincolor
+      flex items-center justify-center gap-4"
+        >
+          <PartyPopper className="text-black dark:text-white font-thin" />
+          <p className="text-black text-sm dark:text-white">
+            We're excited to announce our official alpha release! Sign up now
+            for an exclusive invite and early access.
+          </p>
+          <button
+            className="flex items-center justify-center rounded-full w-5 h-5
+        dark:bg-black bg-white hover:outline hover:outline-4 outline-maincolor transition-all duration-200"
+            onClick={closePopUp}
+          >
+            <X className="h-3 w-3" />
+          </button>
+        </div>
+      )}
+
       <div
         className="flex justify-between items-center fixed z-50 pl-[115px]
       pr-[115px] pb-[10px] pt-[10px] w-[100vw] h-[80px] backdrop-blur-[20px] "
