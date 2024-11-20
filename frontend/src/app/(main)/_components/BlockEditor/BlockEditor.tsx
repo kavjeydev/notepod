@@ -69,7 +69,7 @@ export const BlockEditor = ({
       className={`relative ${previewMode ? "top-0" : "top-12"} flex h-full w-full mb-20 `}
       ref={menuContainerRef}
     >
-      <div className="fixed flex h-full z-[999]">
+      <div className="fixed flex h-full z-[999] ">
         {/* <div
         className="relative flex h-full w-full overflow-y-scroll"
         ref={menuContainerRef}

@@ -21,11 +21,11 @@ export const TableOfContents = memo(
 
     return (
       <div className="overflow-x-hidden z-[99999]">
-        <div className="mb-2 text-xs font-semibold uppercase text-neutral-500 dark:text-neutral-400 ">
+        <div className="mb-2 text-xs font-semibold uppercase text-neutral-500 dark:text-neutral-400">
           Table of contents
         </div>
         {content.length > 0 ? (
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 mb-8">
             {content.map((item) => (
               <a
                 key={item.id}

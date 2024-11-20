@@ -56,8 +56,7 @@ export default function Navbar() {
       {isOpen && (
         <div
           className="h-14 w-full bg-gradient-to-r dark:from-slate-900 dark:to-maincolor
-         from-slate-100 to-maincolor
-      flex items-center justify-center gap-4"
+         from-slate-100 to-maincolor flex items-center justify-center gap-4"
         >
           <PartyPopper className="text-black dark:text-white font-thin" />
           <p className="text-black text-sm dark:text-white">

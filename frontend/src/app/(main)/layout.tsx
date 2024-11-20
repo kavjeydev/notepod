@@ -1,5 +1,7 @@
 "use client";
 
+import type { Metadata } from "next";
+
 import { Spinner } from "@nextui-org/react";
 import { useConvexAuth } from "convex/react";
 import { redirect } from "next/navigation";
