@@ -19,6 +19,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import ReactComponentExtension from "../_components/ai-seach-bar/ai-search-bar";
 import { CustomCodeBlock } from "../extensions/CustomCodeBlock/CustomCodeBlock";
+import { StreamingNode } from "../_components/streaming-node";
 
 declare global {
   interface Window {
@@ -75,6 +76,7 @@ export const useBlockEditor = ({
           onQuery: () => {},
           documentId: docId,
         }),
+        ,
         History,
         ...ExtensionKit({
           provider,

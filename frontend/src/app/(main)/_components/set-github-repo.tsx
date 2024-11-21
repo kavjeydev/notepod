@@ -95,7 +95,7 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
               innerWrapper: "bg-transparent",
               inputWrapper: [
                 "shadow-xl",
-                "bg-white/60 ",
+                "bg-white/60",
                 "dark:bg-default/60",
                 "backdrop-blur-xl",
                 "backdrop-saturate-200",
@@ -103,7 +103,7 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
                 "dark:hover:bg-default/70",
                 "group-data-[focus=true]:bg-default-200/50",
                 "dark:group-data-[focus=true]:bg-default/60",
-                "!cursor-text rounded-xl",
+                "!cursor-text rounded-xl border dark:border-default-300 border-default-400",
               ],
             }}
           />
@@ -113,7 +113,7 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
             onClick={() => writeGitHub(gitRepo)}
             // disabled={!gitRepo || !githubRepoUrlPattern.test(gitRepo)}
             className="absolute right-2 top-1/2 transform -translate-y-1/2
-            px-3 py-1 h-[65%] pt-3 mr-1 mb-1 pb-3 w-20 bg-maincolor text-white"
+            px-3 py-1 h-[58%] pt-3 mr-2 mb-1 pb-3 w-20 bg-maincolor text-white"
           >
             {alreadySetRepo == gitRepo ? <div>Resync</div> : <div>Sync</div>}
           </Button>

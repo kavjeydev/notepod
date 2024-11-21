@@ -7,6 +7,8 @@ import MarkdownIt from "markdown-it";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { toast } from "sonner";
+import axios from "axios";
+
 // import { AnimatedShinyTextDemo } from "";
 
 export interface QueryProps {
@@ -22,6 +24,8 @@ export function AISearch(props: NodeViewProps) {
   const [codeQuery, setCodeQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLengthValid, setIsLengthValid] = useState(true);
+
+  const [streamedResponse, setStreamedResponse] = useState("");
 
   const update = useMutation(api.documents.update);
   const documentId = extension.options.documentId;
@@ -50,10 +54,15 @@ export function AISearch(props: NodeViewProps) {
     }
     setIsLengthValid(true);
     setLoading(true);
-    // "http://127.0.0.1:8000/apirun" TEST ROUTE
+    setStreamedResponse("");
+
+    // Capture the insertion position before deleting the node
+    const insertPosition = editor.state.selection.from;
+
+    // Remove the current node (input form)
+
     try {
       const response = await fetch("http://127.0.0.1:8000/apirun", {
-        //"http://18.116.61.111/apirun", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,21 +73,80 @@ export function AISearch(props: NodeViewProps) {
         }),
       });
 
-      const result: QueryProps = await response.json();
-      console.log("res", result);
+      if (!response.ok || !response.body) {
+        toast.error("Network response was not ok");
+        setLoading(false);
+        return;
+      }
 
-      // Remove the current node
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let done = false;
+
+      // Initialize variables for buffering
+      let accumulatedContent = "";
+      let buffer = "";
       deleteNode();
-      const htmlContent = markdownIt.render(result.response);
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true });
+          console.log("Received chunk:", chunk);
 
-      // Insert the new content into the editor
-      editor.commands.insertContent(htmlContent);
+          // Append the new chunk to the buffer
+          buffer += chunk;
 
-      const editorContent = editor.getHTML();
+          // Check if the buffer contains a complete block
+          let blockDelimiter = buffer.lastIndexOf("\n\n");
+          if (blockDelimiter !== -1) {
+            // Extract the complete block
+            const completeBlock = buffer.substring(0, blockDelimiter + 2);
+            buffer = buffer.substring(blockDelimiter + 2); // Keep the rest in the buffer
 
-      onChange(editorContent);
+            // Append the complete block to the accumulated content
+            accumulatedContent += completeBlock;
+
+            // Render the accumulated content to HTML
+            const htmlContent = markdownIt.render(accumulatedContent);
+
+            // Replace the existing content in the editor with the new content
+            editor
+              .chain()
+              .focus()
+              .deleteRange({
+                from: insertPosition,
+                to: editor.state.doc.content.size,
+              })
+              .insertContentAt(insertPosition, htmlContent)
+              .run();
+
+            // Optionally, update the editor's state
+            onChange(editor.getHTML());
+          }
+        }
+      }
+
+      // After the stream ends, process any remaining content
+      if (buffer.length > 0) {
+        accumulatedContent += buffer;
+        const htmlContent = markdownIt.render(accumulatedContent);
+
+        editor
+          .chain()
+          .focus()
+          .deleteRange({
+            from: insertPosition,
+            to: editor.state.doc.content.size,
+          })
+          .insertContentAt(insertPosition, htmlContent)
+          .run();
+
+        onChange(editor.getHTML());
+      }
     } catch (error) {
       toast.error("AI Request Failed");
+      console.error("Error during fetch:", error);
     } finally {
       setLoading(false);
     }
@@ -93,6 +161,31 @@ export function AISearch(props: NodeViewProps) {
     },
     [formRef],
   );
+
+  const testStreaming = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/test-stream", {
+        method: "POST",
+      });
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let done = false;
+
+      while (!done && reader) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true });
+          console.log("Test chunk:", chunk);
+        }
+      }
+    } catch (error) {
+      console.error("Error during test fetch:", error);
+    }
+  };
+
+  // testStreaming();
 
   return (
     <NodeViewWrapper>

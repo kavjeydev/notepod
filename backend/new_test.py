@@ -1,3 +1,4 @@
+import asyncio
 import concurrent.futures
 import hashlib
 import json
@@ -5,7 +6,6 @@ import json
 # Optional: Import logging
 import logging
 import os
-import re
 import shutil
 import sqlite3
 import tempfile
@@ -21,7 +21,9 @@ import openai
 import tiktoken
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
+from starlette.concurrency import iterate_in_threadpool, run_in_threadpool
 from tenacity import retry, stop_after_attempt, wait_random_exponential
 
 # Configure logging
@@ -48,8 +50,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# client = openai.OpenAI(api_key=constants.DEEPSEEK_KEY, base_url="https://api.deepseek.com")
+
+
 # Set OpenAI API Key
-openai.api_key = constants.API_KEY
+openai.api_key = constants.DEEPSEEK_KEY
+openai.base_url = "https://api.deepseek.com/v1/"
 
 # Initialize tokenizer
 tokenizer = tiktoken.get_encoding("cl100k_base")
@@ -224,6 +230,8 @@ def load_embedding_cache(db_file="embedding_cache.db"):
 def get_embeddings(
     chunks, model="text-embedding-ada-002", db_file="embedding_cache.db"
 ):
+    openai.api_key = constants.OPENAI_API_KEY
+    openai.base_url = "https://api.openai.com/v1/"
     conn, cursor = load_embedding_cache(db_file)
     embeddings = [None] * len(chunks)
     chunk_hashes = []
@@ -289,16 +297,24 @@ def get_embeddings(
         conn.commit()
 
     conn.close()
+    openai.api_key = constants.DEEPSEEK_KEY
+    openai.base_url = "https://api.deepseek.com/v1/"
     return embeddings
 
 
 @timing_decorator
 def get_embedding(text, model="text-embedding-ada-002"):
     try:
+        openai.api_key = constants.OPENAI_API_KEY
+        openai.base_url = "https://api.openai.com/v1/"
         response = openai.embeddings.create(input=text, model=model)
         embedding = response.data[0].embedding  # Access the embedding
+        openai.api_key = constants.DEEPSEEK_KEY
+        openai.base_url = "https://api.deepseek.com/v1/"
         return embedding
     except Exception as e:
+        openai.api_key = constants.DEEPSEEK_KEY
+        openai.base_url = "https://api.deepseek.com/v1/"
         logger.error(f"Error getting embedding for text: {e}", exc_info=True)
         raise e
 
@@ -315,8 +331,10 @@ def find_file(repo_path, filepath):
 
 
 @timing_decorator
-def query_vector_store(index, chunks, question, model="gpt-4o"):
+def query_vector_store(index, chunks, question, model="deepseek-chat"):
     try:
+        openai.api_key = constants.OPENAI_API_KEY
+        openai.base_url = "https://api.openai.com/v1/"
         question_embedding = get_embedding(question, model="text-embedding-ada-002")
         question_embedding = np.array([question_embedding]).astype("float32")
         faiss.normalize_L2(question_embedding)  # Ensure embedding is normalized
@@ -329,6 +347,8 @@ def query_vector_store(index, chunks, question, model="gpt-4o"):
         context = "\n".join([chunk[1] for chunk in relevant_chunks])
 
         # Generate a response using OpenAI
+        openai.api_key = constants.DEEPSEEK_KEY
+        openai.base_url = "https://api.deepseek.com/v1/"
         response = openai.chat.completions.create(
             model=model,
             messages=[
@@ -341,6 +361,7 @@ def query_vector_store(index, chunks, question, model="gpt-4o"):
                     "content": f"Here is some code:\n{context}\n\nQuestion: {question}",
                 },
             ],
+            stream=True,
         )
 
         # Access the content using object attributes
@@ -399,7 +420,8 @@ def initialize_codebase(
     repo_url, embedding_model="text-embedding-ada-002", clone_dir_base=None
 ):
     global repo_cache
-
+    openai.api_key = constants.OPENAI_API_KEY
+    openai.base_url = "https://api.openai.com/v1/"
     # Acquire the cache lock to check if the repository is already initialized
     with repo_cache_lock:
         if repo_url in repo_cache:
@@ -430,21 +452,31 @@ def initialize_codebase(
             repo_cache[repo_url] = repo_data
 
         logger.info(f"Repository {repo_url} initialized successfully.")
+        openai.api_key = constants.DEEPSEEK_KEY
+        openai.base_url = "https://api.deepseek.com/v1/"
 
     except Exception as e:
         # Remove the placeholder in case of failure
+        openai.api_key = constants.DEEPSEEK_KEY
+        openai.base_url = "https://api.deepseek.com/v1/"
         with repo_cache_lock:
             del repo_cache[repo_url]
         logger.error(f"Error initializing repository {repo_url}: {e}", exc_info=True)
         raise e
 
 
-async def query_codebase(
-    question, repoUrl, embedding_model="text-embedding-ada-002", chat_model="gpt-4o"
+def query_codebase(
+    question,
+    repoUrl,
+    embedding_model="text-embedding-ada-002",
+    chat_model="deepseek-chat",
 ):
     global repo_cache
 
     # Check if the repository is already initialized
+    openai.api_key = constants.OPENAI_API_KEY
+    openai.base_url = "https://api.openai.com/v1/"
+
     with repo_cache_lock:
         repo_data = repo_cache.get(repoUrl)
         if repo_data is None:
@@ -481,7 +513,7 @@ async def query_codebase(
     question_embedding = np.array([question_embedding]).astype("float32")
     faiss.normalize_L2(question_embedding)  # Ensure embedding is normalized
 
-    k = 10
+    k = 5
     distances, indices = faiss_index.search(question_embedding, k)
     relevant_chunks = [code_chunks[i] for i in indices[0] if i < len(code_chunks)]
 
@@ -489,21 +521,80 @@ async def query_codebase(
     context = "\n".join([chunk[1] for chunk in relevant_chunks])
 
     # Generate a response using OpenAI
-    response = openai.chat.completions.create(
-        model=chat_model,
-        messages=[
-            {
-                "role": "system",
-                "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation in markdown.",
-            },
-            {
-                "role": "user",
-                "content": f"Here is some code:\n{context}\n\nQuestion: {question}",
-            },
-        ],
-    )
+    openai.api_key = constants.DEEPSEEK_KEY
+    openai.base_url = "https://api.deepseek.com/v1/"
 
-    return response.choices[0].message.content
+    def make_openai_request():
+        # Generate a response using OpenAI with stream=True
+        openai.api_key = constants.DEEPSEEK_KEY
+        openai.base_url = "https://api.deepseek.com/v1/"
+        return openai.chat.completions.create(
+            model=chat_model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation in markdown.",
+                },
+                {
+                    "role": "user",
+                    "content": f"Here is some code:\n{context}\n\nQuestion: {question} answer questions and write expert documentation in markdown format",
+                },
+            ],
+            stream=True,  # Enable streaming
+        )
+
+    # Run the blocking API call in a thread
+    response = make_openai_request()
+
+    # Async generator to yield response chunks
+    def stream_response():
+        try:
+            for chunk in response:
+                delta = chunk.choices[0].delta
+                content = getattr(delta, "content", "")
+                if content:
+                    # Yield content for SSE
+                    print("CONTENT", content)
+                    yield f"{content}"
+                # No need for await asyncio.sleep(0) here
+        except Exception as e:
+            logger.error(f"Error streaming response: {e}", exc_info=True)
+            yield f"data: [Error]: {e}\n\n"
+        finally:
+            # Ensure the generator completes
+            yield "data: [DONE]\n\n"
+
+    return stream_response()
+
+    # response = openai.chat.completions.create(
+    #     model=chat_model,
+    #     messages=[
+    #         {
+    #             "role": "system",
+    #             "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation in markdown.",
+    #         },
+    #         {
+    #             "role": "user",
+    #             "content": f"Here is some code:\n{context}\n\nQuestion: {question}",
+    #         },
+    #     ],
+    #     stream=True,
+    # )
+
+    # def generate():
+    #     try:
+    #         for chunk in response:
+    #             content = chunk["choices"][0]["delta"].get("content", "")
+    #             if content:
+    #                 # Optionally, format the content for SSE if needed
+    #                 yield f"data: {content}\n\n"
+    #     except Exception as e:
+    #         logger.error(f"Error streaming response: {e}", exc_info=True)
+    #         yield f"data: [Error]: {e}\n\n"
+
+    # return generate()
+
+    # return response.choices[0].message.content
 
 
 @app.on_event("startup")
@@ -516,12 +607,44 @@ def on_startup():
 @app.post("/apirun")
 async def respond(queryItem: QueryItem):
     try:
-        start_t = time.time()
-        response = await query_codebase(queryItem.query, queryItem.repoUrl)
-        end_t = time.time()
-        logger.info("TOTAL TIME: %.4f seconds", end_t - start_t)
-        queryItem.response = response
-        return queryItem
+        # Run the blocking query_codebase function in a thread
+        generator = await run_in_threadpool(
+            query_codebase, queryItem.query, queryItem.repoUrl
+        )
+        # Convert the synchronous generator to an async generator
+        async_generator = iterate_in_threadpool(generator)
+        # Return the StreamingResponse
+        return StreamingResponse(
+            async_generator,
+            media_type="text/plain",
+            headers={
+                "Cache-Control": "no-cache",
+                "Transfer-Encoding": "chunked",
+            },
+        )
     except Exception as e:
         logger.error(f"Error in /apirun endpoint: {e}", exc_info=True)
-        return {"error": str(e)}
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+@app.post("/test-stream")
+async def test_stream():
+    async def event_generator():
+        for i in range(5):
+            yield f"Chunk {i}\n"
+            await asyncio.sleep(1)
+
+    return StreamingResponse(event_generator(), media_type="text/plain")
+
+
+# async def respond(queryItem: QueryItem):
+#     try:
+#         start_t = time.time()
+#         response = await query_codebase(queryItem.query, queryItem.repoUrl)
+#         end_t = time.time()
+#         logger.info("TOTAL TIME: %.4f seconds", end_t - start_t)
+#         queryItem.response = response
+#         return queryItem
+#     except Exception as e:
+#         logger.error(f"Error in /apirun endpoint: {e}", exc_info=True)
+#         return {"error": str(e)}
