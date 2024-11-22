@@ -6,6 +6,7 @@ import { ConvexClientProvider } from "@/components/providers/convex-provider";
 import { Toaster } from "sonner";
 
 import { ModalProvider } from "@/components/providers/modal-provider";
+import { ClerkProvider } from "@clerk/clerk-react";
 
 export const metadata: Metadata = {
   title: "Notepod - Technical Docs in Seconds",

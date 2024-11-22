@@ -72,6 +72,7 @@ export const useBlockEditor = ({
         }
       },
       extensions: [
+        StreamingNode,
         ReactComponentExtension.configure({
           onQuery: () => {},
           documentId: docId,

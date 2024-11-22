@@ -562,7 +562,7 @@ def query_codebase(
             yield f"data: [Error]: {e}\n\n"
         finally:
             # Ensure the generator completes
-            yield "data: [DONE]\n\n"
+            yield ""
 
     return stream_response()
 

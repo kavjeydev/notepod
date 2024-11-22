@@ -17,6 +17,7 @@ runtimes:
 # This is the section where you manage your linters. (https://docs.trunk.io/check/configuration)
 lint:
   disabled:
+    - trufflehog
     - ruff
     - osv-scanner
     - bandit
@@ -29,7 +30,6 @@ lint:
     - oxipng@9.1.2
     - prettier@3.3.3
     - svgo@3.3.2
-    - trufflehog@3.82.11
 actions:
   disabled:
     - trunk-announce

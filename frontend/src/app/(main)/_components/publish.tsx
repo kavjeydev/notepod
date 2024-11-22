@@ -125,6 +125,11 @@ export default function Publish({ initialData }: PublishProps) {
             <span className="text-xs text-muted-foreground mb-4">
               Share your work with others.
             </span>
+            <input
+              type="file"
+              className="bg-transparent flex-1 border-none outline-none hidden"
+              name="media"
+            />
             <Button
               disabled={isSubmitting}
               onClick={onPublish}
