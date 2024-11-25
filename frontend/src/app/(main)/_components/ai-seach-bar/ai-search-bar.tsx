@@ -7,9 +7,6 @@ import MarkdownIt from "markdown-it";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { toast } from "sonner";
-import axios from "axios";
-
-// import { AnimatedShinyTextDemo } from "";
 
 export interface QueryProps {
   query: string;
@@ -62,7 +59,7 @@ export function AISearch(props: NodeViewProps) {
     // Remove the current node (input form)
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/apirun", {
+      const response = await fetch("http://54.177.252.196/apirun", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -162,28 +159,28 @@ export function AISearch(props: NodeViewProps) {
     [formRef],
   );
 
-  const testStreaming = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/test-stream", {
-        method: "POST",
-      });
+  // const testStreaming = async () => {
+  //   try {
+  //     const response = await fetch("http://127.0.0.1:8000/test-stream", {
+  //       method: "POST",
+  //     });
 
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder("utf-8");
-      let done = false;
+  //     const reader = response.body?.getReader();
+  //     const decoder = new TextDecoder("utf-8");
+  //     let done = false;
 
-      while (!done && reader) {
-        const { value, done: readerDone } = await reader.read();
-        done = readerDone;
-        if (value) {
-          const chunk = decoder.decode(value, { stream: true });
-          console.log("Test chunk:", chunk);
-        }
-      }
-    } catch (error) {
-      console.error("Error during test fetch:", error);
-    }
-  };
+  //     while (!done && reader) {
+  //       const { value, done: readerDone } = await reader.read();
+  //       done = readerDone;
+  //       if (value) {
+  //         const chunk = decoder.decode(value, { stream: true });
+  //         console.log("Test chunk:", chunk);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during test fetch:", error);
+  //   }
+  // };
 
   // testStreaming();
 

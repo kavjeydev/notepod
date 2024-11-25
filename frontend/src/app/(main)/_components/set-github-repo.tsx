@@ -36,7 +36,7 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
     });
 
     try {
-      const response = await fetch("http://127.0.0.1:8009/generateast", {
+      const response = await fetch("http://0.0.0.0:8000/generateast", {
         //"http://18.116.61.111/apirun", {
         method: "POST",
         headers: {
