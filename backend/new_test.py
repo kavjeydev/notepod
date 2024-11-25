@@ -54,8 +54,8 @@ app.add_middleware(
 
 
 # Set OpenAI API Key
-openai.api_key = constants.DEEPSEEK_KEY
-openai.base_url = "https://api.deepseek.com/v1/"
+# openai.api_key = constants.DEEPSEEK_KEY
+# openai.base_url = "https://api.deepseek.com/v1/"
 
 # Initialize tokenizer
 tokenizer = tiktoken.get_encoding("cl100k_base")
@@ -297,8 +297,8 @@ def get_embeddings(
         conn.commit()
 
     conn.close()
-    openai.api_key = constants.DEEPSEEK_KEY
-    openai.base_url = "https://api.deepseek.com/v1/"
+    # openai.api_key = constants.DEEPSEEK_KEY
+    # openai.base_url = "https://api.deepseek.com/v1/"
     return embeddings
 
 
@@ -309,12 +309,12 @@ def get_embedding(text, model="text-embedding-ada-002"):
         openai.base_url = "https://api.openai.com/v1/"
         response = openai.embeddings.create(input=text, model=model)
         embedding = response.data[0].embedding  # Access the embedding
-        openai.api_key = constants.DEEPSEEK_KEY
-        openai.base_url = "https://api.deepseek.com/v1/"
+        # openai.api_key = constants.DEEPSEEK_KEY
+        # openai.base_url = "https://api.deepseek.com/v1/"
         return embedding
     except Exception as e:
-        openai.api_key = constants.DEEPSEEK_KEY
-        openai.base_url = "https://api.deepseek.com/v1/"
+        # openai.api_key = constants.DEEPSEEK_KEY
+        # openai.base_url = "https://api.deepseek.com/v1/"
         logger.error(f"Error getting embedding for text: {e}", exc_info=True)
         raise e
 
@@ -331,7 +331,7 @@ def find_file(repo_path, filepath):
 
 
 @timing_decorator
-def query_vector_store(index, chunks, question, model="deepseek-chat"):
+def query_vector_store(index, chunks, question, model="gpt-4o"):
     try:
         openai.api_key = constants.OPENAI_API_KEY
         openai.base_url = "https://api.openai.com/v1/"
@@ -347,8 +347,8 @@ def query_vector_store(index, chunks, question, model="deepseek-chat"):
         context = "\n".join([chunk[1] for chunk in relevant_chunks])
 
         # Generate a response using OpenAI
-        openai.api_key = constants.DEEPSEEK_KEY
-        openai.base_url = "https://api.deepseek.com/v1/"
+        # openai.api_key = constants.DEEPSEEK_KEY
+        # openai.base_url = "https://api.deepseek.com/v1/"
         response = openai.chat.completions.create(
             model=model,
             messages=[
@@ -452,13 +452,13 @@ def initialize_codebase(
             repo_cache[repo_url] = repo_data
 
         logger.info(f"Repository {repo_url} initialized successfully.")
-        openai.api_key = constants.DEEPSEEK_KEY
-        openai.base_url = "https://api.deepseek.com/v1/"
+        # openai.api_key = constants.DEEPSEEK_KEY
+        # openai.base_url = "https://api.deepseek.com/v1/"
 
     except Exception as e:
         # Remove the placeholder in case of failure
-        openai.api_key = constants.DEEPSEEK_KEY
-        openai.base_url = "https://api.deepseek.com/v1/"
+        # openai.api_key = constants.DEEPSEEK_KEY
+        # openai.base_url = "https://api.deepseek.com/v1/"
         with repo_cache_lock:
             del repo_cache[repo_url]
         logger.error(f"Error initializing repository {repo_url}: {e}", exc_info=True)
@@ -469,7 +469,7 @@ def query_codebase(
     question,
     repoUrl,
     embedding_model="text-embedding-ada-002",
-    chat_model="deepseek-chat",
+    chat_model="gpt-4o",
 ):
     global repo_cache
 
@@ -521,13 +521,13 @@ def query_codebase(
     context = "\n".join([chunk[1] for chunk in relevant_chunks])
 
     # Generate a response using OpenAI
-    openai.api_key = constants.DEEPSEEK_KEY
-    openai.base_url = "https://api.deepseek.com/v1/"
+    # openai.api_key = constants.DEEPSEEK_KEY
+    # openai.base_url = "https://api.deepseek.com/v1/"
 
     def make_openai_request():
         # Generate a response using OpenAI with stream=True
-        openai.api_key = constants.DEEPSEEK_KEY
-        openai.base_url = "https://api.deepseek.com/v1/"
+        # openai.api_key = constants.DEEPSEEK_KEY
+        # openai.base_url = "https://api.deepseek.com/v1/"
         return openai.chat.completions.create(
             model=chat_model,
             messages=[
