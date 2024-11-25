@@ -59,7 +59,7 @@ export function AISearch(props: NodeViewProps) {
     // Remove the current node (input form)
 
     try {
-      const response = await fetch("http://54.177.252.196/apirun", {
+      const response = await fetch("http://0.0.0.0:8000/apirun", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

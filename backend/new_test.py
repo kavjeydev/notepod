@@ -354,14 +354,19 @@ def query_vector_store(index, chunks, question, model="gpt-4o"):
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation in markdown.",
+                    "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation. Your \
+                        entire response should be strictly in markdown format. \
+                        - Use Markdown headings, lists, tables, and other formatting as appropriate.\
+                        - Only use code blocks for actual code snippets or commands.\
+                        - Do not enclose the entire response in a code block.\
+                        - Ensure the documentation is clear, well-structured, and easy to read.",
                 },
                 {
                     "role": "user",
-                    "content": f"Here is some code:\n{context}\n\nQuestion: {question}",
+                    "content": f"Here is some code:\n{context}\n\nQuestion: {question}",  #  answer questions and write expert documentation in markdown format
                 },
             ],
-            stream=True,
+            stream=True,  # Enable streaming
         )
 
         # Access the content using object attributes
@@ -533,11 +538,16 @@ def query_codebase(
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation in markdown.",
+                    "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation. Your \
+                        entire response should be strictly in markdown format. \
+                        - Use Markdown headings, lists, tables, and other formatting as appropriate.\
+                        - Only use code blocks for actual code snippets or commands.\
+                        - Do not enclose the entire response in a code block.\
+                        - Ensure the documentation is clear, well-structured, and easy to read.",
                 },
                 {
                     "role": "user",
-                    "content": f"Here is some code:\n{context}\n\nQuestion: {question} answer questions and write expert documentation in markdown format",
+                    "content": f"Here is some code:\n{context}\n\nQuestion: {question}",  #  answer questions and write expert documentation in markdown format
                 },
             ],
             stream=True,  # Enable streaming
