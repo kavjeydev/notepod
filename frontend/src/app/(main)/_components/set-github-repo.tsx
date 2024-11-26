@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { AST_ROUTE } from "../../../../constants";
 
 interface GithubRepoParams {
   params: {
@@ -36,7 +37,7 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
     });
 
     try {
-      const response = await fetch("https://api.notepod.co/generateast", {
+      const response = await fetch(AST_ROUTE, {
         //"http://18.116.61.111/apirun", {
         method: "POST",
         headers: {
