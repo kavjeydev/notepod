@@ -36,7 +36,7 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
     });
 
     try {
-      const response = await fetch("http://54.177.252.196/generateast", {
+      const response = await fetch("https://api.notepod.co/generateast", {
         //"http://18.116.61.111/apirun", {
         method: "POST",
         headers: {
