@@ -7,7 +7,6 @@ import MarkdownIt from "markdown-it";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { toast } from "sonner";
-import { API_ROUTE } from "../../../../../constants";
 
 export interface QueryProps {
   query: string;
@@ -65,7 +64,7 @@ export function AISearch(props: NodeViewProps) {
     // // Remove the current node (input form)
 
     try {
-      const response = await fetch(API_ROUTE, {
+      const response = await fetch("https://api.notepod.co/apirun", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
