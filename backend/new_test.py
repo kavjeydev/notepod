@@ -519,7 +519,7 @@ def query_codebase(
     question_embedding = np.array([question_embedding]).astype("float32")
     faiss.normalize_L2(question_embedding)  # Ensure embedding is normalized
 
-    k = 5
+    k = 10
     distances, indices = faiss_index.search(question_embedding, k)
     relevant_chunks = [code_chunks[i] for i in indices[0] if i < len(code_chunks)]
 
