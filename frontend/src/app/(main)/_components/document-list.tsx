@@ -48,8 +48,9 @@ export const DocumentList = ({
     autoScroll,
     setAutoScroll,
   } = useDragContext();
-  // const [hoverId, setHoverId] = useState<Id<"documents">>();
+
   const moveFile = useMutation(api.documents.moveFile);
+
   const handleMouseMove = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     docId: Id<"documents"> | undefined,
@@ -84,11 +85,13 @@ export const DocumentList = ({
     setClickId(docId);
     setDragTitle(docTitle);
     setIsDragging(true);
+    setActiveId(docId);
   };
 
-  const handleMouseUp = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-  ) => {
+  // Ref to store the latest handleMouseUp function
+  const handleMouseUpRef = useRef<(event: MouseEvent) => void>();
+
+  const handleMouseUp = (event: MouseEvent) => {
     event.stopPropagation();
     if (clickId && clickId !== hoverId) {
       onMoveFile(event);
@@ -100,6 +103,11 @@ export const DocumentList = ({
 
     setAutoScroll({ up: false, down: false, left: false, right: false });
   };
+
+  // Assign the handleMouseUp to the ref
+  useEffect(() => {
+    handleMouseUpRef.current = handleMouseUp;
+  }, [clickId, hoverId, isDragging, autoScroll]);
 
   const onExpand = (documentId: string) => {
     setExpanded((prevExpanded) => ({
@@ -116,7 +124,38 @@ export const DocumentList = ({
     router.push(`/documents/${documentId}`);
   };
 
-  useEffect(() => {}, [clickId, hoverId]);
+  useEffect(() => {
+    // Function to handle global mouse up
+    const handleGlobalMouseUp = (event: MouseEvent) => {
+      if (handleMouseUpRef.current) {
+        handleMouseUpRef.current(event);
+      }
+    };
+
+    // Function to handle global mouse move (if needed)
+    const handleGlobalMouseMove = (event: MouseEvent) => {
+      if (isDragging) {
+        // Optionally, you can handle global mouse move here
+        // For example, updating cursor position or auto-scrolling
+        // But in this case, it's already handled by component's mouse move
+        setHoverId(undefined);
+      }
+    };
+
+    if (isDragging) {
+      window.addEventListener("mouseup", handleGlobalMouseUp);
+      window.addEventListener("mousemove", handleGlobalMouseMove);
+    } else {
+      window.removeEventListener("mouseup", handleGlobalMouseUp);
+      window.removeEventListener("mousemove", handleGlobalMouseMove);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener("mouseup", handleGlobalMouseUp);
+      window.removeEventListener("mousemove", handleGlobalMouseMove);
+    };
+  }, [isDragging]);
 
   useEffect(() => {
     let animationFrameId: number;
@@ -166,12 +205,23 @@ export const DocumentList = ({
     };
   }, [autoScroll, isDragging]);
 
-  const onMoveFile = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const onMoveFile = (event: MouseEvent) => {
     event.stopPropagation();
-    if (!clickId || clickId == hoverId) {
+    console.log(hoverId, typeof hoverId, hoverId === "outside");
+    if (!clickId || clickId === hoverId) {
       return;
     }
-    if (clickId) {
+    if (hoverId === "outside") {
+      const promise = moveFile({ id: clickId, parentId: undefined });
+
+      toast.promise(promise, {
+        loading: "Moving Pod...",
+        success: "Moved Pod!",
+        error: "Failed to move Pod",
+      });
+    } else if (hoverId === undefined) {
+      toast.error("Failed to move Pod");
+    } else if (clickId) {
       const promise = moveFile({ id: clickId, parentId: hoverId });
 
       toast.promise(promise, {
@@ -181,6 +231,7 @@ export const DocumentList = ({
       });
     }
   };
+
   if (documents === undefined) {
     return (
       <>
@@ -194,151 +245,120 @@ export const DocumentList = ({
       </>
     );
   }
+
   return (
     <>
-      <>
-        <p
-          style={{ paddingLeft: level ? `${level * 12 + 25}px` : undefined }}
-          className={cn(
-            "hidden text-sm font-medium text-muted-foreground/80",
-            level === 0 && "hidden",
-          )}
-        >
-          No Pods inside
-        </p>
-        <div
-          className="flex flex-col overflow-y-auto h-[100%]"
-          ref={containerRef}
-          onMouseMove={(event) => {
-            if (isDragging) {
-              handleMouseMove(event, undefined);
-            }
-          }}
-        >
-          {documents.map((doc) => (
-            <div>
-              {doc.isFolder ? (
-                <div
-                  key={doc._id}
-                  onMouseMove={(event) => handleMouseMove(event, doc._id)}
-                  onMouseDown={(event) => {
-                    handleMouseDown(event, doc._id, doc.title);
-                  }}
-                  onMouseUp={handleMouseUp}
-                >
-                  {isDragging && <Follow title={dragTitle} />}
+      <div
+        className="flex flex-col overflow-y-auto h-[100%] pr-2 pl-2 "
+        ref={containerRef}
+        onMouseMove={(event) => {
+          if (isDragging) {
+            handleMouseMove(event, undefined);
+          }
+        }}
+        // Remove onMouseUp from here
+      >
+        {documents.map((doc) => (
+          <div key={doc._id}>
+            {doc.isFolder ? (
+              <div
+                onMouseMove={(event) => handleMouseMove(event, doc._id)}
+                onMouseDown={(event) => {
+                  handleMouseDown(event, doc._id, doc.title);
+                }}
+                // Remove onMouseUp from here
+              >
+                {isDragging && <Follow title={dragTitle} />}
 
-                  <Item
-                    id={doc._id}
-                    onClick={
-                      doc.isFolder
-                        ? () => {
-                            onExpand(doc._id);
-                            setActiveId(doc._id);
-                          }
-                        : () => {
-                            onRedirect(doc._id);
-                            setActiveId(doc._id);
-                          }
-                    }
-                    label={doc.title}
-                    icon={doc.isFolder ? undefined : FileIcon}
-                    documentIcon={doc.icon}
-                    active={activeId === doc._id}
-                    level={level}
-                    onExpand={() => onExpand(doc._id)}
-                    expanded={expanded[doc._id]}
-                    isFolder={doc.isFolder}
-                    height={10}
-                    width={10}
-                  />
-                  {expanded[doc._id] && (
-                    <DocumentList
-                      parentDocumentId={doc._id}
-                      level={level + 1}
-                    />
-                  )}
-                </div>
-              ) : (
-                <div></div>
-              )}
-            </div>
-          ))}
-
-          {documents.map((doc) => (
-            <div>
-              {!doc.isFolder ? (
-                <div
-                  key={doc._id}
-                  onMouseMove={(event) => handleMouseMove(event, doc._id)}
-                  onMouseDown={(event) =>
-                    handleMouseDown(event, doc._id, doc.title)
+                <Item
+                  id={doc._id}
+                  onClick={
+                    doc.isFolder
+                      ? () => {
+                          onExpand(doc._id);
+                          setActiveId(doc._id);
+                        }
+                      : () => {
+                          onRedirect(doc._id);
+                          setActiveId(doc._id);
+                        }
                   }
-                  onMouseUp={handleMouseUp}
-                >
-                  <Item
-                    id={doc._id}
-                    onClick={
-                      doc.isFolder
-                        ? () => onExpand(doc._id)
-                        : () => onRedirect(doc._id)
-                    }
-                    label={doc.title}
-                    icon={doc.isFolder ? undefined : FileIcon}
-                    documentIcon={doc.icon}
-                    active={activeId === doc._id}
-                    level={level}
-                    onExpand={() => onExpand(doc._id)}
-                    expanded={expanded[doc._id]}
-                    isFolder={doc.isFolder}
-                    height={10}
-                    width={10}
-                  />
+                  label={doc.title}
+                  icon={doc.isFolder ? undefined : FileIcon}
+                  documentIcon={doc.icon}
+                  active={activeId === doc._id}
+                  level={level}
+                  onExpand={() => onExpand(doc._id)}
+                  expanded={expanded[doc._id]}
+                  isFolder={doc.isFolder}
+                  height={10}
+                  width={10}
+                />
+                {expanded[doc._id] && (
+                  <DocumentList parentDocumentId={doc._id} level={level + 1} />
+                )}
+              </div>
+            ) : null}
+          </div>
+        ))}
 
-                  {expanded[doc._id] && (
-                    <DocumentList
-                      parentDocumentId={doc._id}
-                      level={level + 1}
-                    />
-                  )}
-                </div>
-              ) : (
-                <div></div>
-              )}
-            </div>
-          ))}
-
-          {level === 0 ? (
-            <div
-              className={cn(
-                "grow min-h-[25px] bg-[#FFFFFF] dark:bg-black",
-                isDragging && "hover:dark:bg-[#363636] hover:bg-[#E5E5E5]",
-              )}
-              ref={outsideRef}
-              onMouseMove={(event) => {
-                if (isDragging) {
-                  handleMouseMove(event, undefined);
+        {documents.map((doc) => (
+          <div key={`${doc._id}-file`}>
+            {!doc.isFolder ? (
+              <div
+                onMouseMove={(event) => handleMouseMove(event, doc._id)}
+                onMouseDown={(event) =>
+                  handleMouseDown(event, doc._id, doc.title)
                 }
+                // Remove onMouseUp from here
+              >
+                <Item
+                  id={doc._id}
+                  onClick={
+                    doc.isFolder
+                      ? () => onExpand(doc._id)
+                      : () => onRedirect(doc._id)
+                  }
+                  label={doc.title}
+                  icon={doc.isFolder ? undefined : FileIcon}
+                  documentIcon={doc.icon}
+                  active={activeId === doc._id}
+                  level={level}
+                  onExpand={() => onExpand(doc._id)}
+                  expanded={expanded[doc._id]}
+                  isFolder={doc.isFolder}
+                  height={10}
+                  width={10}
+                />
 
-                if (!outsideRef.current) {
-                  return;
-                }
-              }}
-              onMouseUp={(e) => {
-                handleMouseUp(e);
+                {expanded[doc._id] && (
+                  <DocumentList parentDocumentId={doc._id} level={level + 1} />
+                )}
+              </div>
+            ) : null}
+          </div>
+        ))}
 
-                if (!outsideRef.current) {
-                  return;
-                }
+        {level === 0 ? (
+          <div
+            className={cn(
+              "grow min-h-[25px] bg-[#FFFFFF] dark:bg-black",
+              isDragging && "hover:dark:bg-[#363636] hover:bg-[#E5E5E5]",
+            )}
+            ref={outsideRef}
+            onMouseMove={(event) => {
+              if (isDragging) {
+                handleMouseMove(event, "outside" as Id<"documents">);
+              }
 
-                // outsideRef.current.style.backgroundColor = "#262626";
-              }}
-            ></div>
-          ) : (
-            <div></div>
-          )}
-        </div>
-      </>
+              if (!outsideRef.current) {
+                return;
+              }
+            }}
+            // Remove onMouseUp from here
+          ></div>
+        ) : null}
+      </div>
     </>
   );
 };

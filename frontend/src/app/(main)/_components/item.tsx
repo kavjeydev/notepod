@@ -197,9 +197,9 @@ export const Item = ({
       role="button"
       style={{ paddingLeft: level ? `${level * 12 + 12}px` : "12px" }}
       className={cn(
-        "group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/10 flex items-center text-muted-foreground font-medium select-none",
+        "group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/10 rounded-sm flex items-center text-muted-foreground font-medium select-none",
         active &&
-          "bg-primary/15 text-primary border-neutral-400 border-1 dark:border-neutral-500",
+          "bg-maincolor/20 text-primary  hover:bg-maincolor/20 text-black dark:text-white dark:bg-[#8a4dff]/30",
         documentIcon && "ml-[-3px]",
       )}
     >
@@ -222,7 +222,10 @@ export const Item = ({
         <div>
           {Icon ? (
             <Icon
-              className="shrink-0 h-[18px] mr-[9px] text-muted-foreground"
+              className={cn(
+                "shrink-0 h-[18px] mr-[9px] text-muted-foreground",
+                active && "text-black dark:text-white",
+              )}
               height={height}
               width={width}
             />
@@ -302,14 +305,24 @@ export const Item = ({
                 onClick={onCreateFile}
                 className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
               >
-                <FilePlus2 className="h-4 w-4 text-muted-foreground" />
+                <FilePlus2
+                  className={cn(
+                    "h-4 w-4 text-muted-foreground",
+                    active && "hover:bg-maincolor rounded-sm",
+                  )}
+                />
               </div>
               <div
                 role="button"
                 onClick={onCreateFolder}
                 className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
               >
-                <FolderPlusIcon className="h-4 w-4 text-muted-foreground" />
+                <FolderPlusIcon
+                  className={cn(
+                    "h-4 w-4 text-muted-foreground",
+                    active && "hover:bg-maincolor rounded-sm",
+                  )}
+                />
               </div>
             </div>
           ) : (
