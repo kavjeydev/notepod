@@ -354,7 +354,8 @@ def query_vector_store(index, chunks, question, model="gpt-4o"):
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation. Your \
+                    "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation \
+                        and be like a person. Your \
                         entire response should be strictly in markdown format. \
                         - Use Markdown headings, lists, tables, and other formatting as appropriate.\
                         - Only use code blocks for actual code snippets or commands.\
@@ -363,7 +364,7 @@ def query_vector_store(index, chunks, question, model="gpt-4o"):
                 },
                 {
                     "role": "user",
-                    "content": f"Here is some code:\n{context}\n\nQuestion: {question}",  #  answer questions and write expert documentation in markdown format
+                    "content": f"Here is some code:\n{context}\n\Here is the prompt: {question}",  #  answer questions and write expert documentation in markdown format
                 },
             ],
             stream=True,  # Enable streaming
@@ -538,7 +539,8 @@ def query_codebase(
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation. Your \
+                    "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation \
+                        and respond like a normal person. Your \
                         entire response should be strictly in markdown format. \
                         - Use Markdown headings, lists, tables, and other formatting as appropriate.\
                         - Only use code blocks for actual code snippets or commands.\

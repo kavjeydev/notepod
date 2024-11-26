@@ -7,6 +7,7 @@ import MarkdownIt from "markdown-it";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { toast } from "sonner";
+import { API_ROUTE } from "../../../../../constants";
 
 export interface QueryProps {
   query: string;
@@ -56,10 +57,15 @@ export function AISearch(props: NodeViewProps) {
     // Capture the insertion position before deleting the node
     const insertPosition = editor.state.selection.from;
 
-    // Remove the current node (input form)
+    // const apiUrl = process.env.API_ENDPOINT;
+
+    // if (!apiUrl) {
+    //   throw new Error("API_URL is not defined in the environment variables");
+    // }
+    // // Remove the current node (input form)
 
     try {
-      const response = await fetch("http://0.0.0.0:8000/apirun", {
+      const response = await fetch(API_ROUTE, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,7 +77,7 @@ export function AISearch(props: NodeViewProps) {
       });
 
       if (!response.ok || !response.body) {
-        toast.error("Network response was not ok");
+        toast.error(`Network response was not ok`);
         setLoading(false);
         return;
       }
