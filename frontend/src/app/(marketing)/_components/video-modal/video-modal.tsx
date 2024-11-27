@@ -30,7 +30,7 @@ export default function VideoModal() {
         backdrop="blur"
         size="5xl"
       >
-        <ModalContent className="z-[99999]">
+        <ModalContent className="absolute z-[999]">
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
