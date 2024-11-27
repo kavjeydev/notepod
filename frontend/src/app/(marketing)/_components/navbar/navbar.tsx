@@ -48,7 +48,7 @@ export default function Navbar() {
   return (
     <div
       className={cn(
-        "w-full h-[80px] fixed transition duration-400 ease-in-out z-[9999999]",
+        "w-full h-[80px] fixed transition duration-400 ease-in-out z-[11]",
         scrolled &&
           "border-b shadow-sm shadow-default-800/10 transition duration-400 ease-in-out",
       )}

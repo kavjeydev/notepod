@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Modal,
   ModalContent,
@@ -13,7 +14,7 @@ export default function VideoModal() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
-    <div className="">
+    <>
       <Button
         onPress={onOpen}
         className="text-text-color bg-bgcolor min-w-[150px] z-[9]"
@@ -26,11 +27,11 @@ export default function VideoModal() {
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        className="z-[999999]"
+        className="!fixed z-[999999]" // Set z-index higher than navbar
         backdrop="blur"
         size="5xl"
       >
-        <ModalContent className="absolute z-[999]">
+        <ModalContent className="!relative z-[9999999]">
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
@@ -53,6 +54,6 @@ export default function VideoModal() {
           )}
         </ModalContent>
       </Modal>
-    </div>
+    </>
   );
 }

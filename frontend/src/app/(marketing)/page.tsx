@@ -78,7 +78,7 @@ export default function Home() {
                 )}
                 {!isAuthenticated && !isLoading && (
                   <Button
-                    className="bg-maincolor text-white min-w-[150px] z-[99999]"
+                    className="bg-maincolor text-white min-w-[150px] z-[9]"
                     size="lg"
                     radius="full"
                   >
