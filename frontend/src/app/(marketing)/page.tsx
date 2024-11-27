@@ -13,6 +13,8 @@ import { AnimatedBeamDemo } from "./_components/animated-beam/animated-beam";
 import { AnimatedGridPatternDemo } from "./_components/animated-grid/animated-grid";
 import { ParticlesDemo } from "./_components/particles/particles";
 import { BentoDemo } from "./_components/bento-grid/bento-grid";
+import { ArcadeEmbed } from "./_components/arcade-embed";
+import VideoModal from "./_components/video-modal/video-modal";
 
 const space = Space_Grotesk({
   subsets: ["latin"],
@@ -49,13 +51,13 @@ export default function Home() {
           <div className="flex w-[50vw] ml-[100px]">
             <div className="flex flex-col pl-8 gap-[25px] mt-[150px]">
               <h1
-                className="font-spaceg text-[4.2875rem] font-semibold tracking-tighter leading-[4.2875rem] w-[624px]
+                className="font-spaceg text-[4.2875rem] font-semibold tracking-tighter leading-[4.29rem] w-[624px]
               bg-gradient-to-t dark:from-default-400 dark:via-default-600 dark:to-white
               from-default-600 via-default-800 to-black
-              inline-block text-transparent bg-clip-text"
+              inline-block text-transparent bg-clip-text overflow-visible"
               >
-                Technical docs for any codebase{" "}
-                <span className="">in seconds.</span>
+                The <span className="">AI-Powered</span> Text Editor for
+                Developers{" "}
               </h1>
               <h6 className="text-default-500 text-lg leading-[30px] w-[500px]">
                 Our AI learns about any codebase, answers any questions, and
@@ -66,7 +68,7 @@ export default function Home() {
                 {isLoading && <Spinner size="md" />}
                 {isAuthenticated && !isLoading && (
                   <Button
-                    className="bg-maincolor text-white min-w-[150px] z-[99999]"
+                    className="bg-maincolor text-white min-w-[150px] z-[9]"
                     size="lg"
                     radius="full"
                     onClick={gotoDocuments}
@@ -84,14 +86,17 @@ export default function Home() {
                   </Button>
                 )}
 
-                <Button
+                {/* <Button
                   className="text-text-color bg-bgcolor min-w-[150px] z-[99999]"
                   size="lg"
                   radius="full"
                   variant="ghost"
                 >
                   Watch a demo&nbsp;<span className="mt-[3px]">▶</span>
-                </Button>
+                </Button> */}
+                <VideoModal />
+                {/* <video src="/notepod_demo.mp4" className="z-[99999]" /> */}
+                {/* <ArcadeEmbed /> */}
               </div>
             </div>
           </div>

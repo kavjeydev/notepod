@@ -27,6 +27,10 @@ export const DocumentList = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
+  const [currentPosition, setCurrentPosition] = useState({ x: 0, y: 0 });
+
   const SCROLL_THRESHOLD = 40; // pixels
   const SCROLL_SPEED = 8; // pixels per animation frame
 
@@ -84,6 +88,7 @@ export const DocumentList = ({
     event.stopPropagation();
     setClickId(docId);
     setDragTitle(docTitle);
+
     setIsDragging(true);
     setActiveId(docId);
   };
