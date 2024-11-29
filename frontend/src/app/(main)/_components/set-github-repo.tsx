@@ -99,13 +99,13 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
               inputWrapper: [
                 "shadow-xl",
                 "bg-white/90",
-                "dark:bg-default/95",
+                "dark:bg-black/80",
                 "backdrop-blur-xl",
                 "backdrop-saturate-200",
-                "hover:bg-black/90",
-                "dark:hover:bg-black/90",
+                "hover:bg-white/90",
+                "dark:hover:bg-black/80",
                 "group-data-[focus=true]:bg-white/90",
-                "dark:group-data-[focus=true]:bg-white/90",
+                "dark:group-data-[focus=true]:bg-black/80",
                 "!cursor-text rounded-xl ",
               ],
             }}
