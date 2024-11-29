@@ -50,7 +50,13 @@ export default function NavbarDoc({ isCollapsed, onResetWidth }: NavbarProps) {
 
         <div className="flex items-center justify-between w-full">
           <Title initialData={document} />
-
+          <div className="">
+            {
+              document.githubRepo
+                ?.split("/")
+                [document.githubRepo?.split("/").length - 1].split(".")[0]
+            }
+          </div>
           <div className="flex items-center gap-x-2">
             <Publish initialData={document} />
             <Menu documentId={document._id} />

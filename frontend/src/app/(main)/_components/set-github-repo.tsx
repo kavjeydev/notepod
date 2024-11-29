@@ -66,7 +66,10 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
   return (
     <div className="flex flex-col md:max-w-3xl lg:max-w-4xl mx-auto items-center">
       <div className="relative w-[400px] top-2 mb-6 ">
-        <div className=" dark:bg-white/5 bg-black/10 backdrop-blur-md rounded-xl p-2">
+        <div
+          className="  backdrop-blur-md rounded-[0.85rem] p-[0.1rem]
+        bg-gradient-to-r from-violet-600 to-indigo-600"
+        >
           <Input
             type="text"
             size="md"
@@ -95,15 +98,15 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
               innerWrapper: "bg-transparent",
               inputWrapper: [
                 "shadow-xl",
-                "bg-white/60",
-                "dark:bg-default/60",
+                "bg-white/90",
+                "dark:bg-default/95",
                 "backdrop-blur-xl",
                 "backdrop-saturate-200",
-                "hover:bg-default-200/70",
-                "dark:hover:bg-default/70",
-                "group-data-[focus=true]:bg-default-200/50",
-                "dark:group-data-[focus=true]:bg-default/60",
-                "!cursor-text rounded-xl border dark:border-default-300 border-default-400",
+                "hover:bg-black/90",
+                "dark:hover:bg-black/90",
+                "group-data-[focus=true]:bg-white/90",
+                "dark:group-data-[focus=true]:bg-white/90",
+                "!cursor-text rounded-xl ",
               ],
             }}
           />

@@ -61,7 +61,7 @@ export default function Navbar() {
           <PartyPopper className="text-black dark:text-white font-thin" />
           <p className="text-black text-sm dark:text-white">
             We're excited to announce our official alpha release! Sign up now
-            for an exclusive invite and early access.
+            for early access.
           </p>
           <button
             className="flex items-center justify-center rounded-full w-5 h-5
@@ -83,7 +83,10 @@ export default function Navbar() {
             alt="logo"
             height={30}
             width={110}
-            className="dark:hidden"
+            className="dark:hidden cursor-pointer"
+            onClick={() => {
+              router.push("/");
+            }}
           />
 
           <Image
@@ -91,7 +94,10 @@ export default function Navbar() {
             alt="logo"
             height={30}
             width={110}
-            className="hidden dark:block"
+            className="hidden dark:block cursor-pointer"
+            onClick={() => {
+              router.push("/");
+            }}
           />
           {/* notepod */}
         </div>
@@ -105,7 +111,11 @@ export default function Navbar() {
             Product
           </div>
           <div
-            className="flex text-text-color pl-[10px] pr-[10px] text-sm rounded-full hover:text-muted-foreground cursor-pointer"
+            className="flex text-text-color pl-[10px] pr-[10px] text-sm rounded-full
+            hover:text-muted-foreground cursor-pointer"
+            onClick={() => {
+              router.push("/pricing");
+            }}
             // size="sm"
             // variant="light"
           >
