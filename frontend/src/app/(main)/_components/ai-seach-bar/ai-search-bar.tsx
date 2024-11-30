@@ -225,10 +225,10 @@ export function AISearch(props: NodeViewProps) {
             editor
               .chain()
               .focus()
-              // .deleteRange({
-              //   from: insertPosition,
-              //   to: editor.state.doc.content.size,
-              // })
+              .deleteRange({
+                from: insertPosition,
+                to: insertPosition,
+              })
               .insertContentAt(insertPosition, htmlContent)
               .run();
 
@@ -246,10 +246,10 @@ export function AISearch(props: NodeViewProps) {
         editor
           .chain()
           .focus()
-          // .deleteRange({
-          //   from: insertPosition,
-          //   to: editor.state.doc.content.size,
-          // })
+          .deleteRange({
+            from: insertPosition,
+            to: editor.state.doc.content.size,
+          })
           .insertContentAt(insertPosition, htmlContent)
           .run();
 
