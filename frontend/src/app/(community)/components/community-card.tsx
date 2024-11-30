@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { api } from "../../../../convex/_generated/api";
 import { Doc, Id } from "../../../../convex/_generated/dataModel";
+import { increaseView } from "../../../../convex/documents";
 
 interface CardProps {
   document: Doc<"documents">;
@@ -27,10 +28,18 @@ export default function CommunityCard({ document }: CardProps) {
   const increaseLike = useMutation(api.documents.increaseLike);
   const addLikeToStorage = useMutation(api.likeData.addLikeFromUser);
 
+  const increaseView = useMutation(api.documents.increaseView);
+
   const decreaseLike = useMutation(api.documents.decreaseLike);
   const removeLikeFromStorage = useMutation(api.likeData.removeLikeFromUser);
 
   const visitPod = (initialData: Doc<"documents">) => {
+    const promise = increaseView({ id: initialData._id });
+    toast.promise(promise, {
+      // loading: "Unlikin g Pod...",
+      // success: "Pod removed from likes",
+      error: "Failed to view Pod",
+    });
     const url = `/preview/${initialData._id}`;
     window.open(url, "_blank");
   };
