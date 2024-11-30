@@ -15,8 +15,6 @@ export const ConvexClientProvider = ({ children }: { children: ReactNode }) => {
       publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!}
       signInForceRedirectUrl="/documents"
       signUpFallbackRedirectUrl="/documents"
-      // Ensure you specify the navigate callback if neede
-      // navigate={(to) => window.history.pushState(null, "", to)}
     >
       <ConvexProviderWithClerk useAuth={useAuth} client={convex}>
         {children}
