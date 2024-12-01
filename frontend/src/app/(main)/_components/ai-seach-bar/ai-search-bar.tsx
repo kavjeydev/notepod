@@ -227,7 +227,7 @@ export function AISearch(props: NodeViewProps) {
               .focus()
               .deleteRange({
                 from: insertPosition,
-                to: insertPosition,
+                to: editor.state.doc.content.size,
               })
               .insertContentAt(insertPosition, htmlContent)
               .run();
@@ -248,7 +248,7 @@ export function AISearch(props: NodeViewProps) {
           .focus()
           .deleteRange({
             from: insertPosition,
-            to: insertPosition,
+            to: editor.state.doc.content.size,
           })
           .insertContentAt(insertPosition, htmlContent)
           .run();
