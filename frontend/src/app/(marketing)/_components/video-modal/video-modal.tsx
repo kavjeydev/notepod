@@ -17,10 +17,10 @@ export default function VideoModal() {
     <>
       <Button
         onPress={onOpen}
-        className="text-text-color bg-bgcolor min-w-[150px] z-[9]"
+        className="text-text-color border border-black/40 dark:border-white/40 min-w-[150px] z-[9]"
         size="md"
         radius="sm"
-        variant="ghost"
+        variant="faded"
       >
         Watch a demo <span className="mt-[1px] text-lg">➤</span>
       </Button>

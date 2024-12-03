@@ -19,6 +19,12 @@ import TiltCard from "./_components/tilt-card/tilt-card";
 import SparklesText from "@/components/ui/sparkles-text";
 import { MarqueeDemo } from "./_components/marquee-company/marquee-demo";
 import { useTheme } from "next-themes";
+import { MagicCard } from "@/components/ui/magic-card";
+import { MagicCardDemo } from "./_components/magic-card/magic-card";
+import AnimatedGradientText from "@/components/ui/animated-gradient-text";
+import { ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { RetroGridDemo } from "./_components/retro-grid/retro-grid";
 
 const space = Space_Grotesk({
   subsets: ["latin"],
@@ -56,7 +62,7 @@ export default function Home() {
           <div className="flex flex-col items-center w-[100vw]">
             <div className="flex flex-col pl-8 gap-[25px] mt-[120px] items-center">
               <h1
-                className="font-spaceg text-[4.2875rem] font-semibold tracking-tighter leading-[4.29rem] w-[650px]
+                className="font-spaceg text-[4.2875rem] font-bold tracking-tighter leading-[4.29rem] w-[650px]
                 dark:text-white text-black inline-block bg-clip-text overflow-visible text-center"
               >
                 <span>The </span>
@@ -104,6 +110,7 @@ export default function Home() {
             </div>
             <AnimatedBeamDemo />
           </div> */}
+          <RetroGridDemo />
         </div>
 
         {/* <div className=" pl-24 pr-24 pb-24">
@@ -115,23 +122,9 @@ export default function Home() {
         </TiltCard> */}
 
         {/* <DescCard /> */}
-        <div className="flex w-full h-full mt-20 items-center justify-center">
-          <div className="relative mt-0 ml-20 mb-20">
-            {theme === "dark" ? (
-              <img
-                src="/dark_info.png"
-                height={100}
-                width={1000}
-                className="rounded-xl"
-              />
-            ) : (
-              <img
-                src="/light_info.png"
-                height={100}
-                width={1000}
-                className="rounded-xl"
-              />
-            )}
+        <div className="flex w-full h-full mt-20 mb-20 items-center rounded-t-xl justify-center bg-maincolor pt-20 pb-20">
+          <div className="flex gap-12">
+            <MagicCardDemo />
           </div>
           {/* <div className="relative mt ml">
             <img src="/dark_info.png" height={100} width={800} />

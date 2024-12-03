@@ -16,11 +16,11 @@ const config: Config = {
       fontFamily: {
         spaceg: ["Space Grotesk", "sans-serif"],
       },
-
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        maincolor: "#5700ff",
+        maincolor: "#353CED",
+        secondcolor: "#88D498",
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
@@ -74,6 +74,7 @@ const config: Config = {
         "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
         "shiny-text": "shiny-text 8s infinite",
         shine: "shine 3s linear infinite",
+        grid: "grid 15s linear infinite",
       },
       keyframes: {
         text: {
@@ -130,8 +131,20 @@ const config: Config = {
           },
         },
         shine: {
-          "0%": { backgroundPosition: "200% 0%" },
-          "100%": { backgroundPosition: "-200% 0%" },
+          "0%": {
+            backgroundPosition: "200% 0%",
+          },
+          "100%": {
+            backgroundPosition: "-200% 0%",
+          },
+        },
+        grid: {
+          "0%": {
+            transform: "translateY(-50%)",
+          },
+          "100%": {
+            transform: "translateY(0)",
+          },
         },
       },
     },
