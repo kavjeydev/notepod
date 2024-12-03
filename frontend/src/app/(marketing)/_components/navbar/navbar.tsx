@@ -53,7 +53,7 @@ export default function Navbar() {
           "border-b shadow-sm shadow-default-800/10 transition duration-400 ease-in-out",
       )}
     >
-      {isOpen && (
+      {/* {isOpen && (
         <div
           className="h-14 w-full bg-gradient-to-r dark:from-slate-900 dark:to-maincolor
          from-slate-100 to-maincolor flex items-center justify-center gap-4"
@@ -71,7 +71,7 @@ export default function Navbar() {
             <X className="h-3 w-3" />
           </button>
         </div>
-      )}
+      )} */}
 
       <div
         className="flex justify-between items-center fixed z-50 pl-[115px]
@@ -150,7 +150,7 @@ export default function Navbar() {
               <SignInButton mode="modal">
                 <Button
                   variant="light"
-                  radius="full"
+                  radius="md"
                   size="md"
                   className="text-text-color"
                 >
@@ -160,7 +160,7 @@ export default function Navbar() {
               <SignInButton mode="modal">
                 <Button
                   color="primary"
-                  radius="full"
+                  radius="md"
                   className="bg-maincolor text-white"
                 >
                   Sign Up
@@ -172,7 +172,7 @@ export default function Navbar() {
             <>
               <Button
                 color="primary"
-                radius="full"
+                radius="sm"
                 className="bg-maincolor text-white"
                 onClick={gotoDocuments}
               >

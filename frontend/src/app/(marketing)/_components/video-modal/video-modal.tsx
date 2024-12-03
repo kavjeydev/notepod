@@ -18,11 +18,11 @@ export default function VideoModal() {
       <Button
         onPress={onOpen}
         className="text-text-color bg-bgcolor min-w-[150px] z-[9]"
-        size="lg"
-        radius="full"
+        size="md"
+        radius="sm"
         variant="ghost"
       >
-        Watch a demo <span className="mt-[3px]">▶</span>
+        Watch a demo <span className="mt-[1px] text-lg">➤</span>
       </Button>
       <Modal
         isOpen={isOpen}
