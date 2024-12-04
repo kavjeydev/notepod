@@ -25,6 +25,8 @@ import AnimatedGradientText from "@/components/ui/animated-gradient-text";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RetroGridDemo } from "./_components/retro-grid/retro-grid";
+import { useEffect } from "react";
+import { CardDemo } from "./_components/shad-card/card-main";
 
 const space = Space_Grotesk({
   subsets: ["latin"],
@@ -42,7 +44,6 @@ const lato = Lato({
 
 export default function Home() {
   const router = useRouter();
-  const { theme } = useTheme();
 
   const gotoDocuments = () => {
     router.push("/documents");
@@ -123,15 +124,34 @@ export default function Home() {
 
       {/* <DescCard /> */}
       <div
-        className="flex w-full h-full mt-20 mb-20 items-center justify-center
-        bg-gradient-to-tr from-thirdcolor to-transparent pt-20 pb-20"
+        className="flex w-full h-full mt-10 items-center justify-center
+pt-20 pb-20 z-50"
       >
-        <div className="flex gap-12">
-          <MagicCardDemo />
+        <div className="flex gap-12 z-10">
+          <CardDemo />
+          {/* <MagicCardDemo /> */}
         </div>
         {/* <div className="relative mt ml">
             <img src="/dark_info.png" height={100} width={800} />
           </div> */}
+      </div>
+
+      <div className="h-[80vh] w-full flex gap-4 ">
+        <div
+          className="flex items-center justify-center text-[4rem]
+          h-full w-[50vw] font-spaceg text-black dark:text-white pl-32
+          font-medium leading-[1.1] mt-0 mb-10"
+        >
+          <div
+            className="absolute h-[30rem] w-96 bg-maincolor/40
+          -left-56 z-0 blur-[100px] rounded-full"
+          ></div>
+          <div className="z-10">
+            The Work AI platform for
+            <div className="text-maincolor">quickly & securely</div>
+            bringing AI into the enterprise.
+          </div>
+        </div>
       </div>
       {/* </ReactLenis> */}
     </NextUIProvider>

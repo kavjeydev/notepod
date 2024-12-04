@@ -20,7 +20,7 @@ const config: Config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         maincolor: "#454ADE", // F9C784, FF8C42, FCDDB4
-        secondcolor: "#FF8C42",
+        secondcolor: "#FFFFFF",
         thirdcolor: "#454ADE",
         card: {
           DEFAULT: "hsl(var(--card))",
