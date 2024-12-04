@@ -6,26 +6,44 @@ export function MagicCardDemo() {
   return (
     <div
       className={
-        "flex h-[500px] w-[100vw] pl-20 pr-20 flex-col gap-4 lg:h-[250px] lg:flex-row"
+        "flex h-[500px] w-[100vw] pl-20 pr-20 flex-col gap-4 lg:h-[350px] lg:flex-row"
       }
     >
       <MagicCard
-        className="cursor-pointer flex-col items-center justify-center shadow-2xl whitespace-nowrap text-4xl"
-        gradientColor={theme === "dark" ? "#262626" : "#c6c6c6"}
+        className="cursor-pointer flex-col shadow-2xl whitespace-nowrap text-4xl bg-gradient-to-tr
+        dark:from-black dark:via-black dark:to-[#131313] from-white via-white to-white"
+        gradientColor={theme === "dark" ? "#262626" : "#cccccc"}
       >
-        Magic
+        <div
+          className="h-[350px] w-full flex p-8 font-spaceg font-semibold
+        text-4xl text-maincolor "
+        >
+          Learn
+        </div>
       </MagicCard>
       <MagicCard
-        className="cursor-pointer flex-col items-center justify-center shadow-2xl whitespace-nowrap text-4xl"
-        gradientColor={theme === "dark" ? "#262626" : "#c6c6c6"}
+        className="cursor-pointer flex-col shadow-2xl whitespace-nowrap text-4xl
+        font-spaceg  bg-gradient-to-tr dark:from-black dark:via-black dark:to-[#131313] from-white via-white to-white"
+        gradientColor={theme === "dark" ? "#262626" : "#cccccc"}
       >
-        Card
+        <div
+          className="h-[350px] w-full flex p-8 font-spaceg font-semibold
+        text-4xl text-maincolor"
+        >
+          Write
+        </div>
       </MagicCard>
       <MagicCard
-        className="cursor-pointer flex-col items-center justify-center shadow-2xl whitespace-nowrap text-4xl"
-        gradientColor={theme === "dark" ? "#262626" : "#c6c6c6"}
+        className="cursor-pointer flex-col shadow-2xl whitespace-nowrap text-4xl bg-gradient-to-tr
+        dark:from-black dark:via-black dark:to-[#131313] from-white via-white to-white"
+        gradientColor={theme === "dark" ? "#262626" : "#cccccc"}
       >
-        Card
+        <div
+          className="h-[350px] w-full flex p-8 font-spaceg font-semibold
+        text-4xl text-maincolor"
+        >
+          Publish
+        </div>
       </MagicCard>
     </div>
   );

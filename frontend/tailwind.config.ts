@@ -19,8 +19,9 @@ const config: Config = {
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        maincolor: "#353CED",
-        secondcolor: "#88D498",
+        maincolor: "#454ADE", // F9C784, FF8C42, FCDDB4
+        secondcolor: "#FF8C42",
+        thirdcolor: "#454ADE",
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
