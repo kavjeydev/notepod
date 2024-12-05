@@ -29,7 +29,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className="dark:bg-[#121212] h-full bg-[#FFFFFF]"
+        className="dark:bg-[#121212] h-full bg-[#FFFFFF] overflow-x-hidden"
       >
         <ConvexClientProvider>
           <ThemeProvider
