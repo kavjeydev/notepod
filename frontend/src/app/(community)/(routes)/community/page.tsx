@@ -17,7 +17,7 @@ export default function CommunityPage() {
   const { results, status, loadMore } = usePaginatedQuery(
     api.documents.getFullPage,
     {},
-    { initialNumItems: 3 },
+    { initialNumItems: 10 },
   );
 
   const router = useRouter();

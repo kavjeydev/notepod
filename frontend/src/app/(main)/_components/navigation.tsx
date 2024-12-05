@@ -34,6 +34,8 @@ import TrashBox from "./trash-box";
 import { DragProvider } from "./drag-context";
 import { useSettings } from "../../../../hooks/use-settings";
 import NavbarDoc from "./navbar-doc";
+import { AppSidebar } from "./app-sidebar/app-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function Navigation() {
   const pathname = usePathname();
