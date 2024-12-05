@@ -1,6 +1,6 @@
 "use client";
 
-import { Space_Grotesk } from "next/font/google";
+import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
 import { Lato } from "next/font/google";
 import { ReactLenis } from "@studio-freight/react-lenis";
 import { useConvexAuth } from "convex/react";
@@ -27,8 +27,17 @@ import { cn } from "@/lib/utils";
 import { RetroGridDemo } from "./_components/retro-grid/retro-grid";
 import { useEffect } from "react";
 import { CardDemo } from "./_components/shad-card/card-main";
+import { Badge } from "@/components/ui/badge";
+import { DotPatternDemo } from "./_components/dot-pattern/dot-pattern";
 
 const space = Space_Grotesk({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-space",
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+const code_font = IBM_Plex_Mono({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-space",
@@ -44,6 +53,10 @@ const lato = Lato({
 
 export default function Home() {
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
+  useEffect(() => {
+    setTheme("light");
+  }, []);
 
   const gotoDocuments = () => {
     router.push("/documents");
@@ -55,7 +68,7 @@ export default function Home() {
       {/* <ReactLenis root options={{ lerp: 0.1, duration: 1.5 }}> */}
       <Navbar />
 
-      <div className="fixed top-0 h-full w-full pointer-events-none z-0">
+      <div className="absolute top-0 h-full w-full pointer-events-none z-0">
         <ParticlesDemo />
       </div>
 
@@ -127,7 +140,10 @@ export default function Home() {
         className="flex w-full h-full mt-10 items-center justify-center
 pt-20 pb-20 z-50"
       >
-        <div className="flex gap-12 z-10">
+        <div className="flex flex-col gap-8 z-10 ">
+          <div className="text-[3.3rem] font-spaceg tracking-tighter font-medium">
+            Get to know Notepod.
+          </div>
           <CardDemo />
           {/* <MagicCardDemo /> */}
         </div>
@@ -136,21 +152,28 @@ pt-20 pb-20 z-50"
           </div> */}
       </div>
 
-      <div className="h-[80vh] w-full flex gap-4 ">
+      <div
+        className="h-[60vh] w-full flex gap-4
+      bg-gradient-to-tr from-maincolor to-violet-500 mb-20  items-center"
+      >
         <div
-          className="flex items-center justify-center text-[4rem]
+          className="flex items-center justify-center text-[3.5rem]
           h-full w-[50vw] font-spaceg text-black dark:text-white pl-32
-          font-medium leading-[1.1] mt-0 mb-10"
+          font-medium leading-[1] mt-0 mb-10"
         >
-          <div
-            className="absolute h-[30rem] w-96 bg-maincolor/40
-          -left-56 z-0 blur-[100px] rounded-full"
-          ></div>
-          <div className="z-10">
-            The Work AI platform for
-            <div className="text-maincolor">quickly & securely</div>
-            bringing AI into the enterprise.
+          <div className="flex flex-col gap-4">
+            <Badge className="w-fit bg-black/20">Notepod AI</Badge>
+            <div className="z-10 text-white tracking-tighter font-medium">
+              Speed up the learning process for large codebases.
+            </div>
           </div>
+        </div>
+        <div className="flex h-full w-[50vw] p-20 items-center justify-center">
+          <video autoPlay muted loop playsInline className="rounded-lg z-10">
+            <source src="/ai_func.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <DotPatternDemo />
         </div>
       </div>
       {/* </ReactLenis> */}

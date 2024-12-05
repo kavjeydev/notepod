@@ -48,9 +48,9 @@ export default function Navbar() {
   return (
     <div
       className={cn(
-        "w-full h-[80px] fixed transition duration-400 ease-in-out z-[11]",
+        "w-full h-[60px] fixed transition duration-400 ease-in-out z-[30]",
         scrolled &&
-          "border-b shadow-sm shadow-default-800/10 transition duration-400 ease-in-out",
+          "border-b shadow-lg shadow-default-800/5 transition duration-400 ease-in-out",
       )}
     >
       {/* {isOpen && (
@@ -74,8 +74,8 @@ export default function Navbar() {
       )} */}
 
       <div
-        className="flex justify-between items-center fixed z-50 pl-[115px]
-      pr-[115px] pb-[10px] pt-[10px] w-[100vw] h-[80px] backdrop-blur-[20px] "
+        className="flex justify-between items-center absolute z-50 pl-[115px]
+      pr-[115px] pb-[10px] pt-[10px] w-[100vw] h-[60px] bg-white dark:bg-black"
       >
         <div className="flex items-center justify-center border-r-[10] font-bold text-[20px]">
           <Image
@@ -181,7 +181,7 @@ export default function Navbar() {
               <UserButton />
             </>
           )}
-          <ModeToggle />
+          {/* <ModeToggle /> */}
         </div>
       </div>
     </div>

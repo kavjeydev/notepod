@@ -1,6 +1,7 @@
 .ProseMirror {
   code {
-    @apply caret-black dark:caret-white text-white bg-neutral-700 rounded-sm text-sm p-1 shadow-lg font-mono;
+    @apply caret-black dark:caret-white dark:text-white dark:bg-neutral-900 bg-[#e6e6e6] text-black
+    rounded-sm text-sm p-1 font-mono;
 
     &::selection {
       @apply bg-white/30;
@@ -8,8 +9,8 @@
   }
 
   pre {
-    @apply caret-white bg-neutral-200 text-black dark:text-white rounded my-12 p-4 border
-    border-neutral-300 dark:bg-neutral-900 dark:border-neutral-800;
+    @apply caret-white bg-neutral-200 text-black dark:text-white rounded my-12 p-4
+    dark:bg-neutral-900;
 
     *::selection {
       @apply bg-black/15 dark:bg-white/20;
@@ -61,6 +62,8 @@
     .hljs-keyword,
     .hljs-selector-tag {
       @apply text-[#008cff] dark:text-teal-300;
+      @apply font-codef;
+      @apply font-thin;
     }
 
     .hljs-emphasis {

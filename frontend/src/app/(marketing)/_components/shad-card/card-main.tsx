@@ -11,6 +11,9 @@ import {
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import { AISearch } from "@/app/(main)/_components/ai-seach-bar/ai-search-bar";
+import { AISearchMock } from "../mock-ai-search/mock-ai-search";
 
 const notifications = [
   {
@@ -36,9 +39,16 @@ const arrowVariants = {
 
 export function CardDemo({ className, ...props }: CardProps) {
   return (
-    <div className="flex gap-8">
+    <div className="flex gap-8 ">
       {/* Card 1 */}
-      <Card className={cn("w-[380px]", className)} {...props}>
+      <Card
+        className={cn(
+          "w-[380px] bg-gradient-to-b from-blue-100 via-white to-white \
+          dark:from-lime-900 dark:via-black dark:to-black",
+          className,
+        )}
+        {...props}
+      >
         <CardHeader>
           <CardTitle>Learn</CardTitle>
           <CardDescription>
@@ -46,38 +56,11 @@ export function CardDemo({ className, ...props }: CardProps) {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <div className="flex items-center space-x-4 rounded-md border p-4">
-            <BellRing />
-            <div className="flex-1 space-y-1">
-              <p className="text-sm font-medium leading-none">
-                Push Notifications
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Send notifications to device.
-              </p>
-            </div>
-            <Switch />
-          </div>
-          <div>
-            {notifications.map((notification, index) => (
-              <div
-                key={index}
-                className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
-              >
-                <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-                <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {notification.title}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {notification.description}
-                  </p>
-                </div>
-              </div>
-            ))}
+          <div className="relative">
+            <AISearchMock />
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="relative flex flex-col h-full">
           <motion.button
             className="text-maincolor font-spaceg text-md hover:bg-transparent hover:text-black
             dark:hover:text-secondcolor m-2
@@ -98,7 +81,14 @@ export function CardDemo({ className, ...props }: CardProps) {
       </Card>
 
       {/* Card 2 */}
-      <Card className={cn("w-[380px]", className)} {...props}>
+      <Card
+        className={cn(
+          "w-[380px] bg-gradient-to-b from-orange-100 via-white to-white \
+          dark:from-orange-900 dark:via-black dark:to-black",
+          className,
+        )}
+        {...props}
+      >
         <CardHeader>
           <CardTitle>Write</CardTitle>
           <CardDescription>
@@ -158,7 +148,14 @@ export function CardDemo({ className, ...props }: CardProps) {
       </Card>
 
       {/* Card 3 */}
-      <Card className={cn("w-[380px]", className)} {...props}>
+      <Card
+        className={cn(
+          "w-[380px] h-[42rem] bg-gradient-to-b from-lime-100 via-white to-white \
+          dark:from-lime-900 dark:via-black dark:to-black",
+          className,
+        )}
+        {...props}
+      >
         <CardHeader>
           <CardTitle>Publish</CardTitle>
           <CardDescription>Share your projects with the world.</CardDescription>

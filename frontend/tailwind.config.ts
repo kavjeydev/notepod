@@ -15,6 +15,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         spaceg: ["Space Grotesk", "sans-serif"],
+        codef: ["IBM Plex Mono", "monospace"],
       },
       colors: {
         background: "hsl(var(--background))",
