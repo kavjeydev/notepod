@@ -228,7 +228,7 @@ def load_embedding_cache(db_file="embedding_cache.db"):
 @timing_decorator
 @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
 def get_embeddings(
-    chunks, model="text-embedding-ada-002", db_file="embedding_cache.db"
+    chunks, model="text-embedding-3-small", db_file="embedding_cache.db"
 ):
     openai.api_key = constants.OPENAI_API_KEY
     openai.base_url = "https://api.openai.com/v1/"
@@ -303,7 +303,7 @@ def get_embeddings(
 
 
 @timing_decorator
-def get_embedding(text, model="text-embedding-ada-002"):
+def get_embedding(text, model="text-embedding-3-small"):
     try:
         openai.api_key = constants.OPENAI_API_KEY
         openai.base_url = "https://api.openai.com/v1/"
@@ -335,7 +335,7 @@ def query_vector_store(index, chunks, question, model="gpt-4o"):
     try:
         openai.api_key = constants.OPENAI_API_KEY
         openai.base_url = "https://api.openai.com/v1/"
-        question_embedding = get_embedding(question, model="text-embedding-ada-002")
+        question_embedding = get_embedding(question, model="text-embedding-3-small")
         question_embedding = np.array([question_embedding]).astype("float32")
         faiss.normalize_L2(question_embedding)  # Ensure embedding is normalized
 
@@ -423,7 +423,7 @@ def get_all_files(repo_path):
 
 
 def initialize_codebase(
-    repo_url, embedding_model="text-embedding-ada-002", clone_dir_base=None
+    repo_url, embedding_model="text-embedding-3-small", clone_dir_base=None
 ):
     global repo_cache
     openai.api_key = constants.OPENAI_API_KEY
@@ -474,7 +474,7 @@ def initialize_codebase(
 def query_codebase(
     question,
     repoUrl,
-    embedding_model="text-embedding-ada-002",
+    embedding_model="text-embedding-3-small",
     chat_model="gpt-4o",
 ):
     global repo_cache
