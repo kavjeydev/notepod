@@ -172,7 +172,7 @@ export function AISearch(props: NodeViewProps) {
     const insertPosition = editor.state.selection.from;
 
     try {
-      const response = await fetch("http://0.0.0.0:8000/apirun", {
+      const response = await fetch("https://api.notepod.co/apirun", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

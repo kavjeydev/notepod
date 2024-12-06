@@ -364,7 +364,7 @@ def query_vector_store(index, chunks, question, model="gpt-4o"):
                 },
                 {
                     "role": "user",
-                    "content": f"Here is some code:\n{context}\n\Here is the prompt: {question}",  #  answer questions and write expert documentation in markdown format
+                    "content": f"Here is some code:\n{context}\n Here is the prompt: {question}",  #  answer questions and write expert documentation in markdown format
                 },
             ],
             stream=True,  # Enable streaming
