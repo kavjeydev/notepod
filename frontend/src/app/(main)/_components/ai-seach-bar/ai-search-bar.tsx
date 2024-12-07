@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { IconBrandPython } from "@tabler/icons-react";
 import { Tooltip } from "@nextui-org/react";
+import GitHubRepos from "../repo-list/repo-list";
 
 export interface QueryProps {
   query: string;
@@ -338,7 +339,6 @@ export function AISearch(props: NodeViewProps) {
               }}
             />
 
-            {/* Dropdown for AI Model Selection */}
             <Select
               // label={undefined}
 

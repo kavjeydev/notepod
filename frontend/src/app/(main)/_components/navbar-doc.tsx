@@ -11,6 +11,8 @@ import Menu from "./menu";
 import Publish from "./publish";
 import { SetGithubRepo } from "./set-github-repo";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { createPortal } from "react-dom";
+
 import {
   Modal,
   ModalContent,
@@ -20,6 +22,7 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
+import GitHubRepos from "./repo-list/repo-list";
 
 interface NavbarProps {
   isCollapsed: boolean;
@@ -49,7 +52,7 @@ export default function NavbarDoc({ isCollapsed, onResetWidth }: NavbarProps) {
   }
 
   return (
-    <>
+    <div className="z-10">
       <nav className="bg-[#f4f4f4] dark:bg-[#121212] px-3 py-2 w-full flex items-center gap-x-4 border-b-1 border-default-300">
         {isCollapsed && (
           <MenuIcon
@@ -85,13 +88,14 @@ export default function NavbarDoc({ isCollapsed, onResetWidth }: NavbarProps) {
         </div>
       </nav>
       {document.isArchived && <Banner documentId={document._id} />}
+
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        className="fixed !z-[999999]"
+        className="fixed z-[1000000]"
         backdrop="opaque"
       >
-        <ModalContent className="z-[99999999]">
+        <ModalContent className="z-[1000001]">
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
@@ -103,6 +107,7 @@ export default function NavbarDoc({ isCollapsed, onResetWidth }: NavbarProps) {
                     documentId: document._id,
                   }}
                 />
+                <GitHubRepos />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
@@ -113,6 +118,6 @@ export default function NavbarDoc({ isCollapsed, onResetWidth }: NavbarProps) {
           )}
         </ModalContent>
       </Modal>
-    </>
+    </div>
   );
 }

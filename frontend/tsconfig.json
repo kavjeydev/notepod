@@ -32,8 +32,8 @@
     "src/app/(main)/_components/renderItems.js",
     "src/app/(main)/_components/CodeBlockComponent.tsx",
     "mongo/pages/api/users.js",
-    "src/app/api/movefile/route.js",
-    "src/app/api/movefile/moveFile.js"
+    "src/pages/api/movefile/route.js",
+    "src/pages/api/movefile/moveFile.js"
   ],
   "exclude": ["node_modules"]
 }
