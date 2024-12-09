@@ -199,7 +199,8 @@ export const Item = ({
       className={cn(
         "group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/10 rounded-sm flex items-center text-muted-foreground font-medium select-none",
         active &&
-          "bg-maincolor/20 text-primary  hover:bg-maincolor/20 text-black dark:text-white dark:bg-[#8a4dff]/30",
+          "bg-lightlightbg/60 text-primary  hover:bg-lightlightbg/100 dark:text-textactive \
+          text-lighttextactive dark:bg-[#2F2D2A]/80",
         documentIcon && "ml-[-3px]",
       )}
     >
@@ -224,7 +225,7 @@ export const Item = ({
             <Icon
               className={cn(
                 "shrink-0 h-[18px] mr-[9px] text-muted-foreground",
-                active && "text-black dark:text-white",
+                active && "text-lighttextactive dark:text-textactive",
               )}
               height={height}
               width={width}
@@ -255,7 +256,7 @@ export const Item = ({
       {isSearch && (
         <kbd
           className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded
-        border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100"
+        border dark:bg-darkbg bg-white px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 border-muted-foreground/50"
         >
           <span className="text-xs">⌘</span>K
         </kbd>

@@ -115,7 +115,8 @@ export const useBlockEditor = ({
           autocomplete: "off",
           autocorrect: "off",
           autocapitalize: "off",
-          class: "min-h-full",
+          class:
+            "min-h-full prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none",
         },
       },
     },

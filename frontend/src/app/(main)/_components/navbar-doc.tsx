@@ -4,7 +4,7 @@ import { useQuery } from "convex/react";
 import { useParams } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
-import { MenuIcon } from "lucide-react";
+import { Divide, MenuIcon } from "lucide-react";
 import Title from "./title";
 import Banner from "./banner";
 import Menu from "./menu";
@@ -23,6 +23,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import GitHubRepos from "./repo-list/repo-list";
+import { Separator } from "@/components/ui/separator";
 
 interface NavbarProps {
   isCollapsed: boolean;
@@ -38,7 +39,7 @@ export default function NavbarDoc({ isCollapsed, onResetWidth }: NavbarProps) {
 
   if (document === undefined) {
     return (
-      <nav className="bg-background dark:bg-[#121212] px-3 py-2 w-full flex items-center justify-between">
+      <nav className="bg-background dark:bg-darkbg px-3 py-2 w-full flex items-center justify-between">
         <Title.Skeleton />
         <div className="flex items-center gap-x-2">
           <Menu.Skeleton />
@@ -53,7 +54,7 @@ export default function NavbarDoc({ isCollapsed, onResetWidth }: NavbarProps) {
 
   return (
     <div className="z-10">
-      <nav className="bg-[#f4f4f4] dark:bg-[#121212] px-3 py-2 w-full flex items-center gap-x-4 border-b-1 border-default-300">
+      <nav className="bg-lightlightbg dark:bg-darkbg px-3 py-2 w-full flex items-center gap-x-4 border-b-1 border-default-300">
         {isCollapsed && (
           <MenuIcon
             role="button"
@@ -107,7 +108,12 @@ export default function NavbarDoc({ isCollapsed, onResetWidth }: NavbarProps) {
                     documentId: document._id,
                   }}
                 />
-                <GitHubRepos />
+                <Separator orientation="horizontal" className="mb-4" />
+                <GitHubRepos
+                  params={{
+                    documentId: document._id,
+                  }}
+                />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

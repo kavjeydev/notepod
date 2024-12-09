@@ -45,6 +45,7 @@ export const SearchCommand = () => {
   }, [toggle]);
 
   const onSelectFile = (id: string) => {
+    console.log(id);
     router.push(`/documents/${id}`);
 
     onClose();
@@ -70,7 +71,9 @@ export const SearchCommand = () => {
                   key={doc._id}
                   value={`${doc._id}-${doc.title}`}
                   title={doc.title}
-                  onSelect={onSelectFolder}
+                  onSelect={() => {
+                    onSelectFolder(doc._id);
+                  }}
                 >
                   <Folder className="m-2 h-4 w-4" />
 
@@ -81,7 +84,9 @@ export const SearchCommand = () => {
                   key={doc._id}
                   value={`${doc._id}-${doc.title}`}
                   title={doc.title}
-                  onSelect={onSelectFile}
+                  onSelect={() => {
+                    onSelectFile(doc._id);
+                  }}
                 >
                   <File className="m-2 h-4 w-4" />
 

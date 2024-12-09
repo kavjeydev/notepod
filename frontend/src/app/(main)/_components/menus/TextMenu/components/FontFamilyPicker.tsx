@@ -9,7 +9,7 @@ const FONT_FAMILY_GROUPS = [
   {
     label: "Sans Serif",
     options: [
-      { label: "Inter", value: "" },
+      { label: "Space Grotesk", value: "" },
       { label: "Arial", value: "Arial" },
       { label: "Helvetica", value: "Helvetica" },
     ],

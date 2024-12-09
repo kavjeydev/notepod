@@ -1,10 +1,10 @@
 .ProseMirror {
   p {
-    @apply leading-relaxed my-3 first:mt-0 last:mb-0;
+    @apply leading-normal my-3 first:mt-0 last:mb-0 font-spaceg;
   }
 
   & > p {
-    @apply my-6 first:mt-0 last:mb-0;
+    @apply my-6 first:mt-0 last:mb-0 font-spaceg;
   }
 
   h1 {
@@ -12,15 +12,15 @@
   }
 
   h2 {
-    @apply text-2xl;
-  }
-
-  h3 {
     @apply text-xl;
   }
 
-  h4 {
+  h3 {
     @apply text-lg;
+  }
+
+  h4 {
+    @apply text-medium;
   }
 
   h5 {
@@ -37,7 +37,7 @@
   h4,
   h5,
   h6 {
-    @apply font-bold first:mt-0 last:mb-0;
+    @apply font-medium first:mt-0 last:mb-0 font-spaceg;
   }
 
   h1,

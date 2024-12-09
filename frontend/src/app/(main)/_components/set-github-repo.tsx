@@ -68,7 +68,8 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
       <div className="relative w-[400px] top-2 mb-6 ">
         <div
           className="  backdrop-blur-md rounded-[0.85rem] p-[0.1rem]
-        bg-gradient-to-r from-violet-600 to-indigo-600"
+        bg-gradient-to-r dark:from-violet-600 dark:to-indigo-600 from:bg-secondcolor
+        from-second to-third"
         >
           <Input
             type="text"
@@ -116,7 +117,7 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
             onClick={() => writeGitHub(gitRepo)}
             // disabled={!gitRepo || !githubRepoUrlPattern.test(gitRepo)}
             className="absolute right-2 top-1/2 transform -translate-y-1/2
-            px-3 py-1 h-[58%] pt-3 mr-2 mb-1 pb-3 w-20 bg-maincolor text-white"
+            px-3 py-1 h-[58%] pt-3 mr-2 mb-1 pb-3 w-20 dark:bg-maincolor bg-third text-white"
           >
             {alreadySetRepo == gitRepo ? <div>Resync</div> : <div>Sync</div>}
           </Button>

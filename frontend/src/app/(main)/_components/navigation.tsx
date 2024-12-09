@@ -161,7 +161,8 @@ export default function Navigation() {
       <aside
         ref={sidebarRef}
         className={cn(
-          "relative group/sidebar h-[100vh] bg-[#FFFFFF] dark:bg-black overflow-y-auto flex w-60 flex-col z-[9] border-r-1",
+          "relative group/sidebar h-[100vh] bg-lightbg dark:bg-darkdarkbg overflow-y-auto flex w-60 \
+          flex-col z-[9] border-r-1 dark:border-bordercolor border-lightborder",
           isResetting && "transition-all ease-in-out duration-300",
           isMobile && "w-0",
         )}
@@ -170,7 +171,7 @@ export default function Navigation() {
           role="button"
           onClick={collapse}
           className={cn(
-            "h-6 w-6 text-muted-foreground rounded-small hover:bg-neutral-300",
+            "h-6 w-6 dark:text-white text-black rounded-small hover:bg-neutral-300",
             "dark:hover:bg-neutral-600 absolute top-3 right-2 opacity-0 group-hover/sidebar:opacity-100 transition",
             isMobile && "opacity-100",
           )}
@@ -242,7 +243,7 @@ export default function Navigation() {
             </DragProvider>
           </div>
 
-          <div className="absolute dark:bg-[#090909] bg-white bottom-0 w-full h-[125px] pb-2 border-t-1 dark:border-default-300 border-default-300 pt-2 z-[99999]">
+          <div className="absolute dark:bg-darkdarkbg bg-lightbg bottom-0 w-full h-[125px] pb-2 border-t-1 dark:border-bordercolor border-lightborder pt-2 z-[99999]">
             <Item
               onClick={handleCreateFile}
               icon={Plus}
@@ -304,7 +305,7 @@ export default function Navigation() {
               <MenuIcon
                 onClick={resetWidth}
                 role="button"
-                className="h-6 w-6 text-muted-foreground"
+                className="h-6 w-6 dark:text-white text-black"
               />
             )}
           </nav>

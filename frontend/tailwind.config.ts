@@ -23,6 +23,17 @@ const config: Config = {
         maincolor: "#454ADE",
         secondcolor: "#FFFFFF",
         thirdcolor: "#454ADE",
+        darkdarkbg: "#090B10",
+        darkbg: "#0F111A",
+        textactive: "#82AAFF",
+        // lightbg: "#FFFFFF",
+        bordercolor: "#1D212E",
+        lightbg: "#EDE7E5",
+        lightlightbg: "#FAF4F2",
+        lighttextactive: "#E14774",
+        lightborder: "#D3CDCC",
+        second: "#FCDDB4",
+        third: "#FF8C42",
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
@@ -71,6 +82,11 @@ const config: Config = {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        "color-1": "hsl(var(--color-1))",
+        "color-2": "hsl(var(--color-2))",
+        "color-3": "hsl(var(--color-3))",
+        "color-4": "hsl(var(--color-4))",
+        "color-5": "hsl(var(--color-5))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -87,6 +103,7 @@ const config: Config = {
         "shiny-text": "shiny-text 8s infinite",
         shine: "shine 3s linear infinite",
         grid: "grid 15s linear infinite",
+        rainbow: "rainbow var(--speed, 2s) infinite linear",
       },
       keyframes: {
         text: {
@@ -156,6 +173,14 @@ const config: Config = {
           },
           "100%": {
             transform: "translateY(0)",
+          },
+        },
+        rainbow: {
+          "0%": {
+            "background-position": "0%",
+          },
+          "100%": {
+            "background-position": "200%",
           },
         },
       },
