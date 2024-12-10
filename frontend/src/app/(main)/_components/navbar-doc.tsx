@@ -55,7 +55,7 @@ export default function NavbarDoc({ isCollapsed, onResetWidth }: NavbarProps) {
   }
 
   return (
-    <div className="z-10">
+    <div className="z-10 overscroll-contain">
       <nav className="bg-lightlightbg dark:bg-darkbg px-3 py-2 w-full flex items-center gap-x-4 border-b-1 border-default-300">
         {isCollapsed && (
           <MenuIcon

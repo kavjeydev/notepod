@@ -22,7 +22,10 @@ export default function documentsPage() {
   };
 
   return (
-    <div className="h-[100vh] flex flex-col items-center justify-center space-y-4 bg-lightlightbg dark:bg-darkbg">
+    <div
+      className="h-[100vh] flex flex-col items-center justify-center space-y-4
+    bg-lightlightbg dark:bg-darkbg overscroll-contain"
+    >
       <Image src="/empty_dark1.svg" height={300} width={300} alt="empty" />
       <h2 className="text-lg font-bold">
         Welcome to {user?.firstName}&apos;s Pod

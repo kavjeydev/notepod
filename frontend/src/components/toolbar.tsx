@@ -21,9 +21,7 @@ export default function Toolbar({ initialData, preview }: ToolbarProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(initialData.title);
   const update = useMutation(api.documents.update);
-
   const removeIcon = useMutation(api.documents.removeIcon);
-
   const coverImage = useCoverImage();
 
   const enableInput = () => {
@@ -69,10 +67,7 @@ export default function Toolbar({ initialData, preview }: ToolbarProps) {
   };
 
   return (
-    <div
-      className="opacity-100 flex items-center cursor-pointer hover:opacity-45
-    transition-opacity duration-250"
-    >
+    <div className="opacity-100 flex items-center cursor-pointer hover:opacity-45 transition-opacity duration-250">
       {!initialData.icon && !preview && (
         <IconPicker asChild onChange={onIconSelect}>
           <Smile className="h-4 w-4 font-bold mr-2" />
@@ -80,8 +75,22 @@ export default function Toolbar({ initialData, preview }: ToolbarProps) {
       )}
       {initialData.icon && !preview && (
         <IconPicker asChild onChange={onIconSelect}>
-          <p className="mr-2">{initialData.icon}</p>
-          {/* <Smile className="h-8 w-8 font-bold" /> */}
+          <div className="mr-2 relative group">
+            <div className="flex items-center justify-center cursor-pointer">
+              {initialData.icon}
+              <div
+                className={`w-6 h-6 absolute top-0 flex items-center justify-center bg-black/20
+                  rounded-full z-10 opacity-0 transition-opacity duration-200 mt-6
+                  group-hover:opacity-100 cursor-pointer ml-[0.1rem]`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemoveIcon();
+                }}
+              >
+                <X className="w-4 h-4 text-white cursor-pointer" />
+              </div>
+            </div>
+          </div>
         </IconPicker>
       )}
     </div>
