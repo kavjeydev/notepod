@@ -38,17 +38,56 @@ export const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
       onNodeChange={data.handleNodeChange}
       tippyOptions={{
         offset: [-2, 16],
-        zIndex: 99,
+        zIndex: 5,
+        duration: [200, 200], // 200ms for show and hide
+        inertia: true, // Smooth inertia effect
+        animation: "fade",
+        animateFill: false,
       }}
     >
-      <div className="flex items-center gap-0.5 ">
-        <Toolbar.Button onClick={actions.handleAdd}>
-          <Icon name="Plus" />
+      <div className="flex items-center">
+        {/* Plus Button with Transition and Accessibility */}
+        <Toolbar.Button
+          onClick={actions.handleAdd}
+          aria-label="Add content"
+          className="
+            transition
+            duration-200
+            ease-in-out
+            transform
+            hover:scale-105
+            hover:bg-gray-100
+            dark:hover:bg-gray-800
+            focus:outline-none
+            focus:ring-2
+            dark:focus:ring-maincolor focus:ring-third
+          "
+        >
+          <Icon name="Plus" className="text-black dark:text-white w-3 h-3" />
         </Toolbar.Button>
+
+        {/* Popover Trigger Button with Transition and Accessibility */}
         <Popover.Root open={menuOpen} onOpenChange={setMenuOpen}>
           <Popover.Trigger asChild>
-            <Toolbar.Button>
-              <Icon name="GripVertical" />
+            <Toolbar.Button
+              aria-label="Open menu"
+              className="
+                transition
+                duration-200
+                ease-in-out
+                transform
+                hover:scale-105
+                hover:bg-gray-100
+                dark:hover:bg-gray-800
+                focus:outline-none
+                focus:ring-2
+                dark:focus:ring-maincolor focus:ring-third
+              "
+            >
+              <Icon
+                name="GripVertical"
+                className="text-black dark:text-white w-3 h-3"
+              />
             </Toolbar.Button>
           </Popover.Trigger>
           <Popover.Content side="bottom" align="start" sideOffset={8}>

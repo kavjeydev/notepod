@@ -24,6 +24,8 @@ import {
 } from "@nextui-org/react";
 import GitHubRepos from "./repo-list/repo-list";
 import { Separator } from "@/components/ui/separator";
+import IconPicker from "@/components/icon-picker";
+import Toolbar from "@/components/toolbar";
 
 interface NavbarProps {
   isCollapsed: boolean;

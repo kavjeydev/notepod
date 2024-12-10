@@ -21,6 +21,7 @@ import { update } from "../../../../../convex/documents";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { Id } from "../../../../../convex/_generated/dataModel";
+import Toolbar from "@/components/toolbar";
 
 export const BlockEditor = ({
   aiToken,
@@ -64,6 +65,10 @@ export const BlockEditor = ({
     }),
   ];
 
+  if (!document) {
+    return null;
+  }
+
   return (
     <div
       className={`relative ${previewMode ? "top-0" : "top-[3.3rem]"} flex h-full w-full mb-20 `}
@@ -84,7 +89,7 @@ export const BlockEditor = ({
 
       <div
         className={`fixed w-full h-16 mb-2 p-3 z-[9] transition-all
-          duration-300 ease-in-out
+          duration-300 ease-in-out bg-red-400 pointer-events-none
           ${previewMode && "top-0"}
           ${leftSidebar.isOpen ? "ml-80 dark:bg-darkbg bg-lightlightbg z-0" : "ml-0 bg-transparent"}`}
       >
@@ -102,6 +107,7 @@ export const BlockEditor = ({
            ${leftSidebar.isOpen ? "ml-80 mt-4" : "ml-0"} transition-all
           duration-300 ease-in-out`}
       >
+        {/* <Toolbar initialData={document} /> */}
         <EditorContent
           editor={editor}
           className="flex-1 overflow-y-auto"

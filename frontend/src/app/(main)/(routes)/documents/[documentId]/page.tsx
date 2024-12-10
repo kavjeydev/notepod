@@ -16,6 +16,7 @@ import { TableOfContents } from "@/app/(main)/_components/TableOfContents";
 import { Sidebar } from "@/app/(main)/_components/Sidebar";
 import { useSidebar } from "@/app/(main)/hooks/useSidebar";
 import { useBlockEditor } from "@/app/(main)/hooks/useBlockEditor";
+import Toolbar from "@/components/toolbar";
 
 interface DocumentIdPageProps {
   params: {
@@ -57,8 +58,9 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   }
 
   return (
-    <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-lightlightbg dark:bg-darkbg pb-5 ">
+    <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-lightlightbg dark:bg-darkbg pb-5 overscroll-contain">
       {/* <div className="flex h-[10vh] max-h-[100%] overflow-hidden"></div> */}
+
       <div className="flex flex-col mx-auto items-center">
         <BlockEditor
           aiToken={undefined}

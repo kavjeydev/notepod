@@ -9,7 +9,7 @@
   }
 
   pre {
-    @apply caret-white bg-neutral-200 text-black dark:text-white rounded my-12 p-4
+    @apply caret-white bg-lightbg text-black dark:text-white rounded my-12 p-4
     dark:bg-darkdarkbg;
 
     *::selection {
@@ -61,7 +61,7 @@
 
     .hljs-keyword,
     .hljs-selector-tag {
-      @apply text-[#008cff] dark:text-teal-300;
+      @apply text-lighttextactive dark:text-textactive;
       @apply font-codef;
       @apply font-thin;
     }

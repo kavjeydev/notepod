@@ -69,11 +69,11 @@ export default function Toolbar({ initialData, preview }: ToolbarProps) {
   };
 
   return (
-    <div className="pl-[54px] group relative">
+    <div className="ml-60 group relative flex">
       {!!initialData.icon && !preview && (
-        <div className="flex items-center gap-x-2 group/icon pt-6">
+        <div className="flex flex-row-reverse items-center group/icon">
           <IconPicker onChange={onIconSelect}>
-            <p className="text-4xl hover:opacity-75 transition">
+            <p className="hover:opacity-75 text-3xl transition mr-2 mb-1">
               {initialData.icon}
             </p>
           </IconPicker>
@@ -89,23 +89,24 @@ export default function Toolbar({ initialData, preview }: ToolbarProps) {
       )}
 
       {!!initialData.icon && preview && (
-        <p className="text-6xl pt-6">{initialData.icon}</p>
+        <p className="text-2xl ">{initialData.icon}</p>
       )}
-      <div className="opacity-0 group-hover:opacity-100 flex items-center gap-x-1 py-4">
+      <div className=" flex items-center gap-x-1 justify-center">
         {!initialData.icon && !preview && (
           <IconPicker asChild onChange={onIconSelect}>
-            <Button
+            {/* <Button
               className="text-muted-foreground text-xs"
               variant="outline"
               size="sm"
             >
               <Smile className="h-4 w-4 mr-2" />
               Add Icon
-            </Button>
+            </Button> */}
+            <Smile className="h-8 w-8 mr-2 mb-1" />
           </IconPicker>
         )}
 
-        {!initialData.coverImage && !preview && (
+        {/* {!initialData.coverImage && !preview && (
           <Button
             className="text-muted-foreground text-xs"
             variant="outline"
@@ -115,7 +116,7 @@ export default function Toolbar({ initialData, preview }: ToolbarProps) {
             <ImageIcon className="h-4 w-4 " />
             Add cover
           </Button>
-        )}
+        )} */}
       </div>
       {isEditing && !preview ? (
         <TextareaAutosize
@@ -124,7 +125,7 @@ export default function Toolbar({ initialData, preview }: ToolbarProps) {
           onKeyDown={onKeyDown}
           value={value}
           onChange={(e) => onInput(e.target.value)}
-          className="text-5xl bg-transparent font-bold break-words outline-none text-[#3f3f3f] dark:text-[#cfcfcf] resize-none"
+          className="text-5xl bg-transparent font-bold break-words outline-none text-[#3f3f3f] dark:text-[#cfcfcf]"
         />
       ) : (
         <div
