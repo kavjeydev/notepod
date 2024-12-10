@@ -46,9 +46,16 @@ export default function Title({ initialData }: TitleProps) {
     }
   };
 
+  const onIconSelect = (icon: string) => {
+    update({
+      id: initialData._id,
+      icon,
+    });
+  };
+
   return (
     <div className="flex items-center gap-x-1">
-      {!!initialData && <p>{initialData.icon}</p>}
+      {/* {!!initialData && <p>{initialData.icon}</p>} */}
 
       {isEditing ? (
         <Input

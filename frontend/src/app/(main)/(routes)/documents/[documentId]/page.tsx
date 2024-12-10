@@ -62,6 +62,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
       {/* <div className="flex h-[10vh] max-h-[100%] overflow-hidden"></div> */}
 
       <div className="flex flex-col mx-auto items-center">
+        {/* <Toolbar initialData={document} /> */}
         <BlockEditor
           aiToken={undefined}
           hasCollab={false}

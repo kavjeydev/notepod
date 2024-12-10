@@ -89,7 +89,7 @@ export const BlockEditor = ({
 
       <div
         className={`fixed w-full h-16 mb-2 p-3 z-[9] transition-all
-          duration-300 ease-in-out bg-red-400 pointer-events-none
+          duration-300 ease-in-out
           ${previewMode && "top-0"}
           ${leftSidebar.isOpen ? "ml-80 dark:bg-darkbg bg-lightlightbg z-0" : "ml-0 bg-transparent"}`}
       >

@@ -66,7 +66,10 @@ export default function NavbarDoc({ isCollapsed, onResetWidth }: NavbarProps) {
         )}
 
         <div className="flex items-center justify-between w-full">
-          <Title initialData={document} />
+          <div className="flex">
+            <Toolbar initialData={document} />
+            <Title initialData={document} />
+          </div>
 
           <div className="flex items-center gap-x-2">
             <div

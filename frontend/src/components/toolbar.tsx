@@ -69,71 +69,20 @@ export default function Toolbar({ initialData, preview }: ToolbarProps) {
   };
 
   return (
-    <div className="ml-60 group relative flex">
-      {!!initialData.icon && !preview && (
-        <div className="flex flex-row-reverse items-center group/icon">
-          <IconPicker onChange={onIconSelect}>
-            <p className="hover:opacity-75 text-3xl transition mr-2 mb-1">
-              {initialData.icon}
-            </p>
-          </IconPicker>
-          <Button
-            onClick={onRemoveIcon}
-            className="rounded-full opacity-0 group-hover:opacity-100 transition text-muted-foreground text-xs"
-            variant="outline"
-            size="icon"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
+    <div
+      className="opacity-100 flex items-center cursor-pointer hover:opacity-45
+    transition-opacity duration-250"
+    >
+      {!initialData.icon && !preview && (
+        <IconPicker asChild onChange={onIconSelect}>
+          <Smile className="h-4 w-4 font-bold mr-2" />
+        </IconPicker>
       )}
-
-      {!!initialData.icon && preview && (
-        <p className="text-2xl ">{initialData.icon}</p>
-      )}
-      <div className=" flex items-center gap-x-1 justify-center">
-        {!initialData.icon && !preview && (
-          <IconPicker asChild onChange={onIconSelect}>
-            {/* <Button
-              className="text-muted-foreground text-xs"
-              variant="outline"
-              size="sm"
-            >
-              <Smile className="h-4 w-4 mr-2" />
-              Add Icon
-            </Button> */}
-            <Smile className="h-8 w-8 mr-2 mb-1" />
-          </IconPicker>
-        )}
-
-        {/* {!initialData.coverImage && !preview && (
-          <Button
-            className="text-muted-foreground text-xs"
-            variant="outline"
-            size="sm"
-            onClick={coverImage.onOpen}
-          >
-            <ImageIcon className="h-4 w-4 " />
-            Add cover
-          </Button>
-        )} */}
-      </div>
-      {isEditing && !preview ? (
-        <TextareaAutosize
-          ref={inputRef}
-          onBlur={disableInput}
-          onKeyDown={onKeyDown}
-          value={value}
-          onChange={(e) => onInput(e.target.value)}
-          className="text-5xl bg-transparent font-bold break-words outline-none text-[#3f3f3f] dark:text-[#cfcfcf]"
-        />
-      ) : (
-        <div
-          onClick={enableInput}
-          className="pb-[11.5px] text-5xl font-bold break-words outline-none text-[#3f3f3f] dark:text-[#cfcfcf]"
-        >
-          {initialData.title}
-        </div>
+      {initialData.icon && !preview && (
+        <IconPicker asChild onChange={onIconSelect}>
+          <p className="mr-2">{initialData.icon}</p>
+          {/* <Smile className="h-8 w-8 font-bold" /> */}
+        </IconPicker>
       )}
     </div>
   );
