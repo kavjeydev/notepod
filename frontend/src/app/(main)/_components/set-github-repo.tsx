@@ -68,7 +68,7 @@ export const SetGithubRepo = ({ params }: GithubRepoParams) => {
       <div className="relative w-[400px] top-2 mb-6 ">
         <div
           className="  backdrop-blur-md rounded-[0.85rem] p-[0.1rem]
-        bg-gradient-to-r dark:from-violet-600 dark:to-indigo-600 from:bg-secondcolor
+        bg-gradient-to-r dark:from-maincolor dark:to-purple-500 from:bg-secondcolor
         from-second to-third"
         >
           <Input

@@ -54,9 +54,6 @@ const lato = Lato({
 export default function Home() {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
-  useEffect(() => {
-    setTheme("light");
-  }, []);
 
   const gotoDocuments = () => {
     router.push("/documents");
@@ -64,7 +61,7 @@ export default function Home() {
   const { isAuthenticated, isLoading } = useConvexAuth();
 
   return (
-    <NextUIProvider className="dark:bg-black">
+    <NextUIProvider className="dark:bg-darkdarkbg bg-lightlightbg">
       {/* <ReactLenis root options={{ lerp: 0.1, duration: 1.5 }}> */}
       <Navbar />
 
@@ -96,7 +93,7 @@ export default function Home() {
               {isLoading && <Spinner size="md" />}
               {isAuthenticated && !isLoading && (
                 <Button
-                  className="bg-maincolor text-white min-w-[150px] z-[9]"
+                  className="dark:bg-maincolor bg-third text-white min-w-[150px] z-[9]"
                   size="md"
                   radius="sm"
                   onClick={gotoDocuments}
@@ -106,7 +103,7 @@ export default function Home() {
               )}
               {!isAuthenticated && !isLoading && (
                 <Button
-                  className="bg-maincolor text-white min-w-[150px] z-[9]"
+                  className="dark:bg-maincolor bg-third text-white min-w-[150px] z-[9]"
                   size="md"
                   radius="sm"
                 >
@@ -154,15 +151,18 @@ pt-20 pb-20 z-50"
 
       <div
         className="h-[60vh] w-full flex gap-4
-      bg-gradient-to-tr from-maincolor to-violet-500 mb-20  items-center"
+      bg-gradient-to-tr dark:from-purple-500 dark:to-violet-500 mb-20 items-center
+      from-third to-orange-300"
       >
         <div
           className="flex items-center justify-center text-[3.5rem]
-          h-full w-[50vw] font-spaceg text-black dark:text-white pl-32
+          h-full w-[50vw] font-spaceg text-white pl-32
           font-medium leading-[1] mt-0 mb-10"
         >
           <div className="flex flex-col gap-4">
-            <Badge className="w-fit bg-black/20">Notepod AI</Badge>
+            <Badge className="w-fit bg-black/20 dark:bg-white/20 dark:text-white text-white">
+              Notepod AI
+            </Badge>
             <div className="z-10 text-white tracking-tighter font-medium">
               Speed up the learning process for large codebases.
             </div>

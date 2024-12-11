@@ -114,9 +114,9 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
       className={cn(
         "flex items-center justify-center relative w-36 cursor-pointer overflow-hidden rounded-xl",
         // Light mode styles
-        "border-white bg-white hover:bg-white",
+        "border-white bg-lightlightbg hover:bg-lightlightbg",
         // Dark mode styles
-        "dark:border-gray-50/[.1] dark:bg-black dark:hover:bg-black",
+        "dark:border-gray-50/[.1] dark:bg-darkdarkbg dark:hover:bg-darkdarkbg",
       )}
     >
       <div className="flex flex-row items-center gap-0">
@@ -161,8 +161,8 @@ export const MarqueeDemo: React.FC = () => {
       </Marquee>
 
       {/* Gradient Overlays for Left and Right */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white dark:from-black"></div>
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-black"></div>
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-lightlightbg dark:from-darkdarkbg"></div>
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-lightlightbg dark:from-darkdarkbg"></div>
     </div>
   );
 };

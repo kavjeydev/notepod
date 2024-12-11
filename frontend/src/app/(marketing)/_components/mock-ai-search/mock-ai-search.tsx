@@ -257,7 +257,7 @@ export function AISearchMock() {
             <Button
               color="secondary"
               size="sm"
-              className="absolute bottom-2 right-2 bg-maincolor text-white"
+              className="absolute bottom-2 right-2 dark:bg-maincolor bg-third text-white"
             >
               Submit
             </Button>
