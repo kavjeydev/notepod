@@ -36,7 +36,7 @@ export default function CommunityPage() {
   }
 
   return (
-    <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-[#f4f4f4] dark:bg-[#121212] pb-5">
+    <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-lightlightbg dark:bg-darkdarkbg pb-5">
       <CommunityNavbar />
       <div className="pr-12 pl-12 pt-1 pb-1 flex gap-2 flex-wrap-reverse mt-20">
         {results.map((document) => (

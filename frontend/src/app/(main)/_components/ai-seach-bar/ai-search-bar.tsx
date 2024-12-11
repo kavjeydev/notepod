@@ -12,7 +12,10 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import getCaretCoordinates from "textarea-caret";
 import { toast } from "sonner";
+import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { IconBrandPython } from "@tabler/icons-react";
+import { Tooltip } from "@nextui-org/react";
+import GitHubRepos from "../repo-list/repo-list";
 import { useAuth } from "@clerk/clerk-react";
 
 export interface QueryProps {
@@ -31,10 +34,11 @@ interface Repo {
   full_name: string;
   html_url: string;
   description: string;
+  // Add other fields as needed
 }
 
 export function AISearch(props: NodeViewProps) {
-  const { editor, extension } = props;
+  const { editor, deleteNode, extension } = props;
   const markdownIt = new MarkdownIt();
 
   const [codeQuery, setCodeQuery] = useState("");
@@ -58,6 +62,7 @@ export function AISearch(props: NodeViewProps) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(0);
   const [caretCoordinates, setCaretCoordinates] = useState({ x: 0, y: 0 });
+  const [repos, setRepos] = useState<Repo[]>([]);
   const [fetched, setFetched] = useState<boolean>(false);
 
   const { isSignedIn } = useAuth();
@@ -65,7 +70,7 @@ export function AISearch(props: NodeViewProps) {
 
   const [mentionableItems, setMentionableItems] = useState<MentionableItem[]>([
     { id: "1", name: "new_test.py" },
-    { id: "2", name: "generate_ast.py" },
+    { id: "2", name: "generate_ast.py " },
     { id: "3", name: "api.py" },
     { id: "4", name: "code_bert.py" },
     // ... more items
@@ -79,6 +84,7 @@ export function AISearch(props: NodeViewProps) {
   ) => {
     const { top, left } = getCaretCoordinates(textarea, position);
     const textareaRect = textarea.getBoundingClientRect();
+
     return {
       x: left + textareaRect.left - textarea.scrollLeft,
       y: top + textareaRect.top - textarea.scrollTop,
@@ -92,12 +98,13 @@ export function AISearch(props: NodeViewProps) {
     const selectionStart = e.target.selectionStart || 0;
     const textUpToCursor = value.substring(0, selectionStart);
 
-    // Use regex to find the last mention
+    // Use regex to find the last mention in textUpToCursor
     const mentionRegex = /@([^\s@]*)$/;
     const mentionMatch = textUpToCursor.match(mentionRegex);
 
     if (mentionMatch) {
       const mentionText = mentionMatch[1]; // Text after '@'
+
       setMentionQuery(mentionText);
 
       // Filter mentionable items
@@ -158,12 +165,12 @@ export function AISearch(props: NodeViewProps) {
     }
   };
 
-  const onChange = (content: string) => {
+  const onChange = (content: string) => [
     update({
       id: documentId,
       content,
-    });
-  };
+    }),
+  ];
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -176,8 +183,8 @@ export function AISearch(props: NodeViewProps) {
     setLoading(true);
     setStreamedResponse("");
 
-    const nodeStart = props.getPos();
-    const nodeEnd = nodeStart + props.node.nodeSize;
+    // Capture the insertion position before deleting the node
+    const insertPosition = editor.state.selection.from;
 
     try {
       const response = await fetch("https://api.notepod.co/apirun", {
@@ -201,28 +208,73 @@ export function AISearch(props: NodeViewProps) {
       const reader = response.body.getReader();
       const decoder = new TextDecoder("utf-8");
       let done = false;
+
+      // Initialize variables for buffering
       let accumulatedContent = "";
+      let buffer = "";
 
       while (!done) {
         const { value, done: readerDone } = await reader.read();
         done = readerDone;
         if (value) {
           const chunk = decoder.decode(value, { stream: true });
-          accumulatedContent += chunk;
+          console.log("Received chunk:", chunk);
+
+          // Append the new chunk to the buffer
+          buffer += chunk;
+
+          // Check if the buffer contains a complete block
+          let blockDelimiter = buffer.lastIndexOf("\n\n");
+          if (blockDelimiter !== -1) {
+            // Extract the complete block
+            const completeBlock = buffer.substring(0, blockDelimiter + 2);
+            buffer = buffer.substring(blockDelimiter + 2); // Keep the rest in the buffer
+
+            // Append the complete block to the accumulated content
+            accumulatedContent += completeBlock;
+
+            // Render the accumulated content to HTML
+            const htmlContent = markdownIt.render(accumulatedContent);
+
+            // Replace the existing content in the editor with the new content
+            console.log("CURRENT POS", editor.state.selection.from);
+            editor
+              .chain()
+              .focus()
+              .deleteRange({
+                from: insertPosition,
+                // to: insertPosition + 1
+                to: editor.state.selection.from,
+              })
+              .insertContentAt(insertPosition, htmlContent)
+              .run();
+
+            // Optionally, update the editor's state
+            onChange(editor.getHTML());
+          }
         }
       }
 
-      // Once the streaming is complete, render the entire accumulated content
-      const htmlContent = markdownIt.render(accumulatedContent);
+      // After the stream ends, process any remaining content
+      if (buffer.length > 0) {
+        accumulatedContent += buffer;
+        const htmlContent = markdownIt.render(accumulatedContent);
 
-      editor
-        .chain()
-        .focus()
-        .deleteRange({ from: nodeStart, to: nodeEnd })
-        .insertContentAt(nodeStart, htmlContent)
-        .run();
+        editor
+          .chain()
+          .focus()
+          .deleteRange({
+            from: insertPosition,
+            // to: insertPosition
+            to: editor.state.selection.from,
+          })
+          .insertContentAt(insertPosition, htmlContent)
+          .run();
 
-      onChange(editor.getHTML());
+        onChange(editor.getHTML());
+      }
+
+      deleteNode();
     } catch (error) {
       toast.error("AI Request Failed");
       console.error("Error during fetch:", error);
@@ -288,13 +340,14 @@ export function AISearch(props: NodeViewProps) {
                   "bg-transparent",
                   "text-black/90 dark:text-white/90",
                   "placeholder:text-default-700/50 dark:placeholder:text-white/60",
-                  "pb-8",
+                  "pb-8", // Increased padding-right to accommodate the dropdown and button
                 ],
                 innerWrapper: "bg-transparent",
                 inputWrapper: [
                   "shadow-xl",
                   "bg-default-300/50 outline outline-default-500",
                   "dark:bg-default/60",
+                  // "backdrop-blur-xl",
                   "backdrop-saturate-200",
                   "hover:bg-default-200/70",
                   "dark:hover:bg-default/70",
@@ -306,6 +359,8 @@ export function AISearch(props: NodeViewProps) {
             />
 
             <Select
+              // label={undefined}
+
               placeholder="gpt-4o"
               selectedKeys={new Set([selectedModel])}
               defaultSelectedKeys={new Set(["gpt-4o"])}
@@ -314,11 +369,13 @@ export function AISearch(props: NodeViewProps) {
                 const value = Array.from(keys).join("");
                 setSelectedModel(value);
               }}
+              // selected
               size="sm"
               variant="underlined"
               classNames={{
                 base: "absolute bottom-2 right-20 w-36 outline-b outline-muted-foreground",
                 listboxWrapper: "max-h-[200px]",
+                // mainWrapper: "bg-purple-500",
               }}
             >
               <SelectItem key="gpt-3.5" value="gpt-3.5">
@@ -330,6 +387,7 @@ export function AISearch(props: NodeViewProps) {
               <SelectItem key="deepseek" value="deepseek">
                 Deepseek V2
               </SelectItem>
+
               <SelectItem key="o1-preview" value="o1-preview">
                 o1-preview 🚀
               </SelectItem>
@@ -338,6 +396,7 @@ export function AISearch(props: NodeViewProps) {
               </SelectItem>
             </Select>
 
+            {/* Submit Button */}
             <Button
               color="secondary"
               type="submit"
@@ -349,6 +408,7 @@ export function AISearch(props: NodeViewProps) {
           </div>
         </form>
 
+        {/* Always render the suggestions dropdown */}
         <div
           className={`absolute z-10 bg-white dark:bg-black border border-gray-300 rounded-2xl
             shadow-md overflow-auto transition-opacity duration-200 ${
@@ -357,7 +417,7 @@ export function AISearch(props: NodeViewProps) {
                 : "opacity-0 scale-95 pointer-events-none"
             }`}
           style={{
-            top: 40,
+            top: 40, // Adjust as needed
             left: caretCoordinates.x - 520,
             width: "150px",
             maxHeight: "160px",
@@ -366,16 +426,19 @@ export function AISearch(props: NodeViewProps) {
           <div className="p-2">
             {suggestions.length > 0 &&
               suggestions.map((item, index) => (
-                <div className="rounded-lg text-sm h-fit" key={item.id}>
+                <div className="rounded-lg text-sm h-fit">
                   <div
+                    key={item.id}
                     className={`p-1.5 cursor-pointer rounded-lg flex gap-1 items-center ${
                       index === selectedSuggestionIndex
-                        ? "dark:bg-[#222222] bg-[#D4D4D8] transition-all duration-200"
+                        ? "dark:bg-[#222222] bg-[#D4D4D8] transition-all \
+                      duration-200 "
                         : ""
                     }`}
                     onClick={() => handleSuggestionClick(item)}
                     onMouseEnter={() => setSelectedSuggestionIndex(index)}
                   >
+                    {/* <HamburgerMenuIcon className="h-3 w-3" /> */}
                     <IconBrandPython className="h-3 w-3" />
                     {item.name}
                   </div>
@@ -388,9 +451,10 @@ export function AISearch(props: NodeViewProps) {
           <div>
             <div
               className="text-sm font-medium
-                        bg-gradient-to-r bg-clip-text text-transparent
+                        bg-gradient-to-r bg-clip-text  text-transparent
                         from-indigo-500 via-purple-400 to-indigo-500 p-2
-                        animate-text"
+                        animate-text
+                        "
             >
               Thinking...
             </div>

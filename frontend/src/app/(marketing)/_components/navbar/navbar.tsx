@@ -107,6 +107,9 @@ export default function Navbar() {
             className="flex text-text-color pl-[10px] pr-[10px] text-sm font-light rounded-full hover:text-muted-foreground transition cursor-pointer"
             // size="sm"
             // variant="light"
+            onClick={() => {
+              window.open("https://www.github.com/kavjeydev/notepod", "_blank");
+            }}
           >
             Product
           </div>
@@ -125,6 +128,12 @@ export default function Navbar() {
             className="flex text-text-color pl-[10px] pr-[10px] text-sm rounded-full hover:text-muted-foreground cursor-pointer"
             // size="sm"
             // variant="light"
+            onClick={() => {
+              window.open(
+                "https://www.notepod.co/preview/j5728h2krz2t96pcbfdra1gfv17692me",
+                "_blank",
+              );
+            }}
           >
             Documentation
           </div>
