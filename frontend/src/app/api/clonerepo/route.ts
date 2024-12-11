@@ -92,7 +92,7 @@ export async function POST(request: Request) {
 
     console.log("repos", repos);
 
-    const cloneResponse = await fetch("http://0.0.0.0:8000/clonerepo", {
+    const cloneResponse = await fetch("https://api.notepod.co/clonerepo", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
