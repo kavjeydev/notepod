@@ -11,7 +11,7 @@ import sqlite3
 import tempfile
 import time
 from threading import Lock
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import constants
 import faiss
@@ -19,10 +19,10 @@ import git
 import numpy as np
 import openai
 import tiktoken
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 from starlette.concurrency import iterate_in_threadpool, run_in_threadpool
 from tenacity import retry, stop_after_attempt, wait_random_exponential
 
@@ -91,9 +91,103 @@ class RepoData:
         self.lock = Lock()
 
 
+class RepoInfo(BaseModel):
+    repo_url: str
+    username: str
+    token: str
+    private: bool
+
+
 # Global repository cache and its lock
 repo_cache: Dict[str, RepoData] = {}
 repo_cache_lock = Lock()
+
+
+import hashlib
+import logging
+
+# clone_repo.py
+import os
+import shutil
+import tempfile
+from typing import Optional
+
+import git  # Ensure GitPython is installed: pip install GitPython
+
+# Configure logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+
+def clone_github_repo_private(
+    repo_url: str,
+    clone_dir_base: Optional[str] = None,
+    username: Optional[str] = None,
+    token: Optional[str] = None,
+) -> str:
+    """
+    Clone the GitHub repository into a unique, writable directory.
+    Supports cloning private repositories using HTTPS with authentication.
+
+    Args:
+        repo_url (str): URL of the GitHub repository to clone.
+        clone_dir_base (str, optional): Base directory for cloning. Defaults to system temp directory.
+        username (str, optional): GitHub username. Required if cloning a private repo.
+        token (str, optional): GitHub Personal Access Token or OAuth token. Required if cloning a private repo.
+
+    Returns:
+        str: Path to the cloned repository.
+
+    Raises:
+        ValueError: If username or token is missing when cloning a private repository.
+        Exception: If cloning fails due to git errors.
+    """
+    if clone_dir_base is None:
+        clone_dir_base = tempfile.gettempdir()
+
+    # Generate a unique hash for the repository URL to create a unique directory
+    repo_hash = hashlib.sha256(repo_url.encode()).hexdigest()[:10]
+    clone_dir = os.path.join(clone_dir_base, repo_hash)
+
+    if os.path.exists(clone_dir):
+        logger.info(
+            f"Repository already exists in {clone_dir}. Removing it for a fresh clone."
+        )
+        try:
+            shutil.rmtree(clone_dir)
+            logger.info(f"Removed existing repository in {clone_dir}")
+        except Exception as e:
+            logger.error(f"Error removing directory {clone_dir}: {e}")
+            raise e  # Re-raise exception after logging
+
+    # Modify the repo_url to include authentication if credentials are provided
+    if username and token:
+        if repo_url.startswith("https://github.com/"):
+            # Insert the credentials into the URL
+            # Example: https://username:token@github.com/owner/repo.git
+            auth_url = repo_url.replace(
+                "https://github.com/", f"https://{username}:{token}@github.com/"
+            )
+            logger.debug(f"Authenticated repo URL: {auth_url}")
+        else:
+            raise ValueError(
+                "Unsupported repo_url format. Expected URL to start with 'https://github.com/'"
+            )
+    else:
+        auth_url = repo_url
+
+    try:
+        logger.info(f"Cloning repository from {repo_url} into {clone_dir}")
+        git.Repo.clone_from(auth_url, clone_dir)
+        logger.info(f"Cloned repository into {clone_dir}")
+    except git.exc.GitCommandError as e:
+        logger.error(f"Git command failed: {e}")
+        raise e  # Re-raise exception after logging
+    except Exception as e:
+        logger.error(f"Error cloning repository: {e}")
+        raise e  # Re-raise exception after logging
+
+    return clone_dir
 
 
 @timing_decorator
@@ -471,6 +565,61 @@ def initialize_codebase(
         raise e
 
 
+def initialize_codebase_private(
+    repo_url,
+    embedding_model="text-embedding-3-small",
+    clone_dir_base=None,
+    username=None,
+    token=None,
+):
+    global repo_cache
+    openai.api_key = constants.OPENAI_API_KEY
+    openai.base_url = "https://api.openai.com/v1/"
+    # Acquire the cache lock to check if the repository is already initialized
+    with repo_cache_lock:
+        if repo_url in repo_cache:
+            logger.info(f"Repository {repo_url} is already initialized.")
+            return
+        else:
+            logger.info(f"Initializing repository {repo_url}.")
+            # Add a placeholder to indicate that initialization is in progress
+            repo_cache[repo_url] = None
+
+    try:
+        # Clone the repository
+        repo_path = clone_github_repo_private(
+            repo_url, clone_dir_base=clone_dir_base, username=username, token=token
+        )
+
+        # Parse the codebase and create chunks
+        code_chunks = read_files(repo_path)
+
+        # Generate embeddings for the chunks
+        embeddings = get_embeddings(code_chunks, model=embedding_model)
+
+        # Store embeddings in a FAISS vector store
+        faiss_index = store_in_faiss(embeddings)
+
+        # Create RepoData and add it to the cache
+        repo_data = RepoData(faiss_index=faiss_index, code_chunks=code_chunks)
+
+        with repo_cache_lock:
+            repo_cache[repo_url] = repo_data
+
+        logger.info(f"Repository {repo_url} initialized successfully.")
+        # openai.api_key = constants.DEEPSEEK_KEY
+        # openai.base_url = "https://api.deepseek.com/v1/"
+
+    except Exception as e:
+        # Remove the placeholder in case of failure
+        # openai.api_key = constants.DEEPSEEK_KEY
+        # openai.base_url = "https://api.deepseek.com/v1/"
+        with repo_cache_lock:
+            del repo_cache[repo_url]
+        logger.error(f"Error initializing repository {repo_url}: {e}", exc_info=True)
+        raise e
+
+
 def query_codebase(
     question,
     repoUrl,
@@ -499,6 +648,7 @@ def query_codebase(
 
     if repo_data is None:
         # Initialize the repository outside the lock to prevent blocking
+        return "Codebase has not been initialized."
         initialize_codebase(repoUrl, embedding_model, clone_dir_base=None)
 
         # Re-acquire the cache lock to get the updated repo_data
@@ -647,6 +797,27 @@ async def test_stream():
             await asyncio.sleep(1)
 
     return StreamingResponse(event_generator(), media_type="text/plain")
+
+
+@app.post("/clonerepo")
+async def clone_repo(cloneItem: RepoInfo):
+    # cloneItem = await request.json()
+    print("ITEM CLONE", cloneItem.private)
+
+    repoUrl = cloneItem.repo_url
+    embedding_model = "text-embedding-3-small"
+    initialize_codebase_private(
+        repoUrl,
+        embedding_model,
+        clone_dir_base=None,
+        token=cloneItem.token,
+        username=cloneItem.username,
+    )
+
+    with repo_cache_lock:
+        repo_data = repo_cache.get(repoUrl)
+        if not isinstance(repo_data, RepoData):
+            raise ValueError(f"Failed to initialize repository {repoUrl}.")
 
 
 # async def respond(queryItem: QueryItem):

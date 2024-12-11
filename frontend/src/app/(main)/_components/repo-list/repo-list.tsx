@@ -15,6 +15,8 @@ interface Repo {
   full_name: string;
   html_url: string;
   description: string;
+  private: boolean;
+
   // Add other fields as needed
 }
 interface GithubRepoParams {
@@ -41,17 +43,19 @@ const GitHubRepos = ({ params }: GithubRepoParams) => {
   const githubRepoUrlPattern =
     /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/;
 
-  const writeGitHub = async (repo: string) => {
+  const writeGitHub = async (repo: any) => {
+    // console.log(repo);
+    const repo_url = repo.html_url;
     if (!document) {
       return null;
     }
-    if (!githubRepoUrlPattern.test(repo)) {
+    if (!githubRepoUrlPattern.test(repo_url)) {
       toast.error("Repository not valid.");
       return;
     }
     setGithubRepo({
       id: document?._id,
-      repoName: repo,
+      repoName: repo_url,
     });
 
     try {
@@ -62,15 +66,30 @@ const GitHubRepos = ({ params }: GithubRepoParams) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          repoName: repo,
+          repoName: repo_url,
         }),
       });
 
-      setAlreadySetRepo(repo);
+      setAlreadySetRepo(repo_url);
 
       toast.success("Repository set!");
     } catch {
       toast.error("Not valid repo.");
+    }
+
+    try {
+      const response = await fetch("/api/clonerepo", {
+        //"http://18.116.61.111/apirun", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          repoInfo: repo,
+        }),
+      });
+    } catch {
+      toast.error("Repo not initialized.");
     }
   };
 
@@ -96,7 +115,7 @@ const GitHubRepos = ({ params }: GithubRepoParams) => {
       }
 
       const repoData: Repo[] = await response.json();
-      console.log("User Repos:", repoData);
+      // console.log("User Repos:", repoData);
       setRepos(repoData);
     } catch (err) {
       console.error("Error during fetch:", err);
@@ -118,6 +137,8 @@ const GitHubRepos = ({ params }: GithubRepoParams) => {
   if (document === null) {
     return null;
   }
+
+  // console.log(repos);
 
   return (
     <div className="p-0">
@@ -200,7 +221,7 @@ const GitHubRepos = ({ params }: GithubRepoParams) => {
               <Button
                 className="h-8 w-20 dark:bg-maincolor bg-third text-white text-xs dark:hover:bg-maincolor/80 hover:bg-third/70 hover:text-white"
                 variant="ghost"
-                onClick={() => writeGitHub(repo.html_url)}
+                onClick={() => writeGitHub(repo)}
               >
                 <FolderSyncIcon />
                 Sync

@@ -4,7 +4,7 @@ import {
   ReactNodeViewRenderer,
   NodeViewProps,
 } from "@tiptap/react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Node } from "@tiptap/core";
 import React from "react";
 import MarkdownIt from "markdown-it";
@@ -16,6 +16,7 @@ import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { IconBrandPython } from "@tabler/icons-react";
 import { Tooltip } from "@nextui-org/react";
 import GitHubRepos from "../repo-list/repo-list";
+import { useAuth } from "@clerk/clerk-react";
 
 export interface QueryProps {
   query: string;
@@ -26,6 +27,14 @@ export interface QueryProps {
 interface MentionableItem {
   id: string;
   name: string;
+}
+
+interface Repo {
+  id: number;
+  full_name: string;
+  html_url: string;
+  description: string;
+  // Add other fields as needed
 }
 
 export function AISearch(props: NodeViewProps) {
@@ -53,6 +62,11 @@ export function AISearch(props: NodeViewProps) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(0);
   const [caretCoordinates, setCaretCoordinates] = useState({ x: 0, y: 0 });
+  const [repos, setRepos] = useState<Repo[]>([]);
+  const [fetched, setFetched] = useState<boolean>(false);
+
+  const { isSignedIn } = useAuth();
+  const [error, setError] = useState<string | null>(null);
 
   const [mentionableItems, setMentionableItems] = useState<MentionableItem[]>([
     { id: "1", name: "new_test.py" },
@@ -173,7 +187,7 @@ export function AISearch(props: NodeViewProps) {
     const insertPosition = editor.state.selection.from;
 
     try {
-      const response = await fetch("https://api.notepod.co/apirun", {
+      const response = await fetch("http://0.0.0.0:8000/apirun", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -198,7 +212,7 @@ export function AISearch(props: NodeViewProps) {
       // Initialize variables for buffering
       let accumulatedContent = "";
       let buffer = "";
-      deleteNode();
+
       while (!done) {
         const { value, done: readerDone } = await reader.read();
         done = readerDone;
@@ -256,6 +270,8 @@ export function AISearch(props: NodeViewProps) {
 
         onChange(editor.getHTML());
       }
+
+      deleteNode();
     } catch (error) {
       toast.error("AI Request Failed");
       console.error("Error during fetch:", error);
@@ -299,7 +315,7 @@ export function AISearch(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper>
-      <div>
+      <div className="relative">
         <form
           className="flex flex-col w-full flex-wrap md:flex-nowrap gap-4"
           onSubmit={handleSubmit}
@@ -382,7 +398,7 @@ export function AISearch(props: NodeViewProps) {
               color="secondary"
               type="submit"
               size="sm"
-              className="absolute bottom-2 right-2 bg-maincolor text-white"
+              className="absolute bottom-2 right-2 dark:bg-maincolor bg-third text-white"
             >
               Submit
             </Button>
@@ -398,8 +414,8 @@ export function AISearch(props: NodeViewProps) {
                 : "opacity-0 scale-95 pointer-events-none"
             }`}
           style={{
-            top: caretCoordinates.y - 50, // Adjust as needed
-            left: caretCoordinates.x - 540,
+            top: 40, // Adjust as needed
+            left: caretCoordinates.x - 520,
             width: "150px",
             maxHeight: "160px",
           }}
