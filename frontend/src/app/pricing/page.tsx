@@ -95,21 +95,25 @@ export default function PricingPage() {
                   Free
                 </h1>
                 <div className="flex flex-col gap-2 mt-7">
-                  <div className="flex gap-3">
-                    <Check className="dark:text-maincolor text-third" />
-                    <p className="text-muted-foreground">Benefit 1</p>
+                  <div className="flex gap-3 items-center">
+                    <Check className="dark:text-maincolor text-third h-4 w-4" />
+                    <p className="text-muted-foreground">One user</p>
                   </div>
-                  <div className="flex gap-3">
-                    <Check className="dark:text-maincolor text-third" />
-                    <p className="text-muted-foreground">Benefit 2</p>
+                  <div className="flex gap-3 items-center">
+                    <Check className="dark:text-maincolor text-third h-4 w-4" />
+                    <p className="text-muted-foreground">
+                      Block rich text editor
+                    </p>
                   </div>
-                  <div className="flex gap-3">
-                    <Check className="dark:text-maincolor text-third" />
-                    <p className="text-muted-foreground">Benefit 3</p>
+                  <div className="flex gap-3 items-center">
+                    <Check className="dark:text-maincolor text-third h-4 w-4" />
+                    <p className="text-muted-foreground">50K tokens / month</p>
                   </div>
-                  <div className="flex gap-3">
-                    <X className="text-muted-foreground" />
-                    <p className="text-muted-foreground">Benefit 4</p>
+                  <div className="flex gap-3 items-center">
+                    <X className="text-muted-foreground h-4 w-4" />
+                    <p className="text-muted-foreground">
+                      AI powered responses
+                    </p>
                   </div>
                 </div>
                 <div
@@ -126,7 +130,12 @@ export default function PricingPage() {
             border dark:border-maincolor border-third"
             >
               <CardHeader className="flex gap-2 pb-0 pt-1 px-6 flex-col items-start">
-                <h1 className="font-medium text-2xl  ">Startup 🪄</h1>
+                <div className="flex justify-between w-full items-center">
+                  <h1 className="font-medium text-2xl  ">Startup 🪄</h1>
+                  <Badge className="font-medium text-sm dark:bg-maincolor/30 bg-third/15 pointer-events-none h-6 text-black dark:text-white">
+                    Most Popular
+                  </Badge>
+                </div>
                 <p className="text-muted-foreground text-md">
                   For individuals and small teams looking to learn quickly.
                 </p>
@@ -154,23 +163,24 @@ export default function PricingPage() {
                   )}
                 </h1>
                 <div className="flex flex-col gap-2 mt-7">
-                  <div className="flex gap-3">
-                    <Check className="dark:text-maincolor text-third" />
-                    <p className="text-muted-foreground">Benefit 1</p>
+                  <div className="flex gap-3 items-center">
+                    <Check className="dark:text-maincolor text-third h-4 w-4" />
+                    <p className="text-muted-foreground">All Free benefits</p>
                   </div>
-                  <div className="flex gap-3">
-                    <Check className="dark:text-maincolor text-third" />
-                    <p className="text-muted-foreground">Benefit 2</p>
+                  <div className="flex gap-3 items-center">
+                    <Check className="dark:text-maincolor text-third h-4 w-4" />
+                    <p className="text-muted-foreground">2M tokens / month</p>
                   </div>
-                  <div className="flex gap-3">
-                    <Check className="dark:text-maincolor text-third" />
+                  <div className="flex gap-3 items-center">
+                    <Check className="dark:text-maincolor text-third h-4 w-4" />
                     <p className="text-muted-foreground">Benefit 3</p>
                   </div>
-                  <div className="flex gap-3">
-                    <X className="text-muted-foreground" />
-                    <p className="text-muted-foreground">Benefit 4</p>
+                  <div className="flex gap-3 items-center">
+                    <X className="text-muted-foreground h-4 w-4" />
+                    <p className="text-muted-foreground ">Premium AI models</p>
                   </div>
                 </div>
+
                 <div
                   className=" flex items-center justify-center w-full mt-8 h-12 bg-third text-white dark:bg-maincolor
                 rounded-xl cursor-pointer hover:bg-third/80 dark:hover:bg-maincolor/80 transition-all duration-200"
@@ -210,20 +220,20 @@ export default function PricingPage() {
                   )}
                 </h1>
                 <div className="flex flex-col gap-2 mt-7">
-                  <div className="flex gap-3">
-                    <Check className="dark:text-maincolor text-third" />
+                  <div className="flex gap-3 items-center">
+                    <Check className="dark:text-maincolor text-third h-4 w-4" />
                     <p className="text-muted-foreground">Benefit 1</p>
                   </div>
-                  <div className="flex gap-3">
-                    <Check className="dark:text-maincolor text-third" />
+                  <div className="flex gap-3 items-center">
+                    <Check className="dark:text-maincolor text-third h-4 w-4" />
                     <p className="text-muted-foreground">Benefit 2</p>
                   </div>
-                  <div className="flex gap-3">
-                    <Check className="dark:text-maincolor text-third" />
+                  <div className="flex gap-3 items-center">
+                    <Check className="dark:text-maincolor text-third h-4 w-4" />
                     <p className="text-muted-foreground">Benefit 3</p>
                   </div>
-                  <div className="flex gap-3">
-                    <X className="text-muted-foreground" />
+                  <div className="flex gap-3 items-center">
+                    <X className="text-muted-foreground h-4 w-4" />
                     <p className="text-muted-foreground">Benefit 4</p>
                   </div>
                 </div>
@@ -251,20 +261,20 @@ export default function PricingPage() {
                 </CardHeader>
                 <CardBody className="overflow-visible px-6 py-2">
                   <div className="flex flex-col gap-2 mt-7">
-                    <div className="flex gap-3">
-                      <Check className="dark:text-maincolor text-third" />
+                    <div className="flex gap-3 items-center">
+                      <Check className="dark:text-maincolor text-third h-4 w-4" />
                       <p className="text-muted-foreground">Benefit 1</p>
                     </div>
-                    <div className="flex gap-3">
-                      <Check className="dark:text-maincolor text-third" />
+                    <div className="flex gap-3 items-center">
+                      <Check className="dark:text-maincolor text-third h-4 w-4" />
                       <p className="text-muted-foreground">Benefit 2</p>
                     </div>
-                    <div className="flex gap-3">
-                      <Check className="dark:text-maincolor text-third" />
+                    <div className="flex gap-3 items-center">
+                      <Check className="dark:text-maincolor text-third h-4 w-4" />
                       <p className="text-muted-foreground">Benefit 3</p>
                     </div>
-                    <div className="flex gap-3">
-                      <X className="text-muted-foreground" />
+                    <div className="flex gap-3 items-center">
+                      <X className="text-muted-foreground h-4 w-4" />
                       <p className="text-muted-foreground">Benefit 4</p>
                     </div>
                   </div>
