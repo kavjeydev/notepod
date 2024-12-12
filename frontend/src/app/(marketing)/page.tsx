@@ -128,6 +128,7 @@ export default function Home() {
           <BentoDemo />
         </div> */}
       <MarqueeDemo />
+
       {/* <TiltCard>
           <div className="bg-red-500 w-full h-96">Hello</div>
         </TiltCard> */}

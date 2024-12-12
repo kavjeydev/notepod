@@ -16,6 +16,8 @@ import { useRouter } from "next/navigation";
 import { FloatingDockDemo } from "../floating-dock/floating-dock";
 import { PartyPopper, X } from "lucide-react";
 import { useState } from "react";
+import { IconBrandGithub } from "@tabler/icons-react";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
 
 const space = Space_Grotesk({
   subsets: ["latin"],
@@ -111,7 +113,10 @@ export default function Navbar() {
               window.open("https://www.github.com/kavjeydev/notepod", "_blank");
             }}
           >
-            Product
+            <div className="flex gap-2 items-center justify-center">
+              <GitHubLogoIcon />
+              Github
+            </div>
           </div>
           <div
             className="flex text-text-color pl-[10px] pr-[10px] text-sm rounded-full
@@ -142,7 +147,7 @@ export default function Navbar() {
             // size="sm"
             // variant="light"
             onClick={() => {
-              router.push("/community");
+              window.open("/community", "_blank");
             }}
           >
             <span className="text-text-color font-bold">Community ⤴</span>
@@ -170,7 +175,7 @@ export default function Navbar() {
                 <Button
                   color="primary"
                   radius="md"
-                  className="bg-maincolor text-white"
+                  className="bg-third dark:bg-maincolor text-white"
                 >
                   Sign Up
                 </Button>
