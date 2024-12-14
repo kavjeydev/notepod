@@ -173,7 +173,9 @@ export default function PricingPage() {
                   </div>
                   <div className="flex gap-3 items-center">
                     <Check className="dark:text-maincolor text-third h-4 w-4" />
-                    <p className="text-muted-foreground">Benefit 3</p>
+                    <p className="text-muted-foreground">
+                      Up to 10 repositories
+                    </p>
                   </div>
                   <div className="flex gap-3 items-center">
                     <X className="text-muted-foreground h-4 w-4" />
@@ -205,14 +207,14 @@ export default function PricingPage() {
                 >
                   {annual ? (
                     <div>
-                      $36{" "}
+                      $66{" "}
                       <span className="text-sm text-muted-foreground font-thin">
                         /per month
                       </span>
                     </div>
                   ) : (
                     <div>
-                      $54{" "}
+                      $99{" "}
                       <span className="text-sm text-muted-foreground font-thin">
                         /per month
                       </span>
@@ -222,19 +224,23 @@ export default function PricingPage() {
                 <div className="flex flex-col gap-2 mt-7">
                   <div className="flex gap-3 items-center">
                     <Check className="dark:text-maincolor text-third h-4 w-4" />
-                    <p className="text-muted-foreground">Benefit 1</p>
+                    <p className="text-muted-foreground">
+                      All Startup benefits
+                    </p>
                   </div>
                   <div className="flex gap-3 items-center">
                     <Check className="dark:text-maincolor text-third h-4 w-4" />
-                    <p className="text-muted-foreground">Benefit 2</p>
+                    <p className="text-muted-foreground">100M tokens / month</p>
                   </div>
                   <div className="flex gap-3 items-center">
                     <Check className="dark:text-maincolor text-third h-4 w-4" />
-                    <p className="text-muted-foreground">Benefit 3</p>
+                    <p className="text-muted-foreground">o1 model access</p>
                   </div>
                   <div className="flex gap-3 items-center">
-                    <X className="text-muted-foreground h-4 w-4" />
-                    <p className="text-muted-foreground">Benefit 4</p>
+                    <Check className="dark:text-maincolor text-third h-4 w-4" />
+                    <p className="text-muted-foreground">
+                      Unlimited repositories
+                    </p>
                   </div>
                 </div>
                 <div
@@ -253,7 +259,15 @@ export default function PricingPage() {
             <div className="flex gap-2">
               <div className="flex flex-col gap w-3/5">
                 <CardHeader className="flex gap-2 pb-0 pt-1 px-6 flex-col items-start">
-                  <h1 className="font-medium text-2xl  ">Lifetime</h1>
+                  <div className="w-full flex justify-between">
+                    <h1 className="font-medium text-2xl  ">Lifetime</h1>
+                    <Badge
+                      className="dark:bg-maincolor/20 dark:text-purple-400
+                text-third bg-third/15 font-thin pointer-events-none"
+                    >
+                      Limited Time ⌛
+                    </Badge>
+                  </div>
                   <p className="text-muted-foreground text-md">
                     Get all the benefits in the pro tier for a one-time payment.
                   </p>
@@ -263,19 +277,25 @@ export default function PricingPage() {
                   <div className="flex flex-col gap-2 mt-7">
                     <div className="flex gap-3 items-center">
                       <Check className="dark:text-maincolor text-third h-4 w-4" />
-                      <p className="text-muted-foreground">Benefit 1</p>
+                      <p className="text-muted-foreground">
+                        All Startup benefits
+                      </p>
                     </div>
                     <div className="flex gap-3 items-center">
                       <Check className="dark:text-maincolor text-third h-4 w-4" />
-                      <p className="text-muted-foreground">Benefit 2</p>
+                      <p className="text-muted-foreground">
+                        100M tokens / month
+                      </p>
                     </div>
                     <div className="flex gap-3 items-center">
                       <Check className="dark:text-maincolor text-third h-4 w-4" />
-                      <p className="text-muted-foreground">Benefit 3</p>
+                      <p className="text-muted-foreground">o1 model access</p>
                     </div>
                     <div className="flex gap-3 items-center">
-                      <X className="text-muted-foreground h-4 w-4" />
-                      <p className="text-muted-foreground">Benefit 4</p>
+                      <Check className="dark:text-maincolor text-third h-4 w-4" />
+                      <p className="text-muted-foreground">
+                        Unlimited repositories
+                      </p>
                     </div>
                   </div>
                 </CardBody>
