@@ -44,7 +44,6 @@ export default function CommunityPage() {
           <CommunityCard document={document} />
         ))}
       </div>
-      <Speech />
     </div>
   );
 }
