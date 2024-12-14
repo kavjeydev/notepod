@@ -132,7 +132,10 @@ export default function PricingPage() {
               <CardHeader className="flex gap-2 pb-0 pt-1 px-6 flex-col items-start">
                 <div className="flex justify-between w-full items-center">
                   <h1 className="font-medium text-2xl  ">Startup 🪄</h1>
-                  <Badge className="font-medium text-sm dark:bg-maincolor/30 bg-third/15 pointer-events-none h-6 text-black dark:text-white">
+                  <Badge
+                    className="dark:bg-maincolor/20 dark:text-purple-400
+                text-third bg-third/15 font-thin pointer-events-none"
+                  >
                     Most Popular
                   </Badge>
                 </div>
