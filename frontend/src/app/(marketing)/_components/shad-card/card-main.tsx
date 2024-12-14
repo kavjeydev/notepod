@@ -1,10 +1,12 @@
 import {
   ArrowRight,
   BellRing,
+  Book,
   CircleArrowOutUpRight,
   Clock,
   Clock1,
   DollarSign,
+  Rocket,
   Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -21,6 +23,7 @@ import { motion } from "framer-motion";
 import { AISearchMock } from "../mock-ai-search/mock-ai-search";
 import { Badge } from "@/components/ui/badge";
 import IconCloud from "@/components/ui/icon-cloud";
+import { useRouter } from "next/navigation";
 
 const slugs = [
   "typescript",
@@ -78,6 +81,7 @@ const arrowVariants = {
 };
 
 export function CardDemo({ className, ...props }: CardProps) {
+  const router = useRouter();
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-4">
@@ -90,10 +94,13 @@ export function CardDemo({ className, ...props }: CardProps) {
           {...props}
         >
           <CardHeader>
-            <div className="flex gap-2 w-full ">
+            <div className="flex gap-2 w-full cursor-pointer">
               <Badge
                 className="w-fit h-8 pl-4 pr-4 bg-black dark:bg-white
  text-white dark:text-black"
+                onClick={() => {
+                  router.push("/documents");
+                }}
               >
                 <Clock className="w-4 h-4 mr-2 fill-third dark:fill-maincolor text-black dark:text-white" />
                 Try it yourself
@@ -101,6 +108,9 @@ export function CardDemo({ className, ...props }: CardProps) {
               <Badge
                 className="w-fit h-8 bg-black dark:bg-white
  text-white dark:text-black"
+                onClick={() => {
+                  router.push("/documents");
+                }}
               >
                 <CircleArrowOutUpRight className="h-4 w-4" />
               </Badge>
@@ -150,14 +160,8 @@ export function CardDemo({ className, ...props }: CardProps) {
                 className="w-fit h-8 pl-4 pr-4 bg-black dark:bg-white
  text-white dark:text-black"
               >
-                <Clock className="w-4 h-4 mr-2 fill-third dark:fill-maincolor text-black dark:text-white" />
-                Try it yourself
-              </Badge>
-              <Badge
-                className="w-fit h-8 bg-black dark:bg-white
- text-white dark:text-black"
-              >
-                <CircleArrowOutUpRight className="h-4 w-4" />
+                <Rocket className="w-4 h-4 mr-2 fill-third dark:fill-maincolor text-black dark:text-white" />
+                AI with Pro
               </Badge>
             </div>
             <CardTitle className="pt-8">Write</CardTitle>
@@ -205,14 +209,8 @@ export function CardDemo({ className, ...props }: CardProps) {
                 className="w-fit h-8 pl-4 pr-4 bg-black dark:bg-white
  text-white dark:text-black"
               >
-                <Clock className="w-4 h-4 mr-2 fill-third dark:fill-maincolor text-black dark:text-white" />
-                Try it yourself
-              </Badge>
-              <Badge
-                className="w-fit h-8 bg-black dark:bg-white
- text-white dark:text-black"
-              >
-                <CircleArrowOutUpRight className="h-4 w-4" />
+                <Book className="w-4 h-4 mr-2 fill-third dark:fill-maincolor text-black dark:text-white" />
+                Share your work
               </Badge>
             </div>
             <CardTitle className="pt-8">Publish</CardTitle>
@@ -222,7 +220,7 @@ export function CardDemo({ className, ...props }: CardProps) {
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="relative">
-              <AISearchMock />
+              <div className="bg-[url('/book.jpg')] w-full h-[11.9rem] bg-center bg-cover bg-no-repeat rounded-lg"></div>
             </div>
           </CardContent>
           {/* <CardFooter className="relative flex flex-col h-full">
@@ -255,10 +253,13 @@ export function CardDemo({ className, ...props }: CardProps) {
           {...props}
         >
           <CardHeader>
-            <div className="flex gap-2 w-full ">
+            <div className="flex gap-2 w-full cursor-pointer">
               <Badge
                 className="w-fit h-8 pl-4 pr-4 bg-black dark:bg-white
  text-white dark:text-black"
+                onClick={() => {
+                  router.push("/pricing");
+                }}
               >
                 <Zap className="w-4 h-4 mr-2 fill-third dark:fill-maincolor text-black dark:text-white" />
                 View Pricing
@@ -266,6 +267,9 @@ export function CardDemo({ className, ...props }: CardProps) {
               <Badge
                 className="w-fit h-8 bg-black dark:bg-white
  text-white dark:text-black"
+                onClick={() => {
+                  router.push("/pricing");
+                }}
               >
                 <CircleArrowOutUpRight className="h-4 w-4" />
               </Badge>

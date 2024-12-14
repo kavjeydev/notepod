@@ -4,9 +4,8 @@ import {
   ReactNodeViewRenderer,
   NodeViewProps,
 } from "@tiptap/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Node } from "@tiptap/core";
-import React from "react";
 import MarkdownIt from "markdown-it";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
@@ -17,6 +16,11 @@ import { IconBrandPython } from "@tabler/icons-react";
 import { Tooltip } from "@nextui-org/react";
 import GitHubRepos from "../repo-list/repo-list";
 import { useAuth } from "@clerk/clerk-react";
+import { Mic, MicOff } from "lucide-react";
+import React, { useEffect } from "react";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 
 export interface QueryProps {
   query: string;
@@ -53,7 +57,7 @@ export function AISearch(props: NodeViewProps) {
 
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  const document = useQuery(api.documents.getById, {
+  const documentConvex = useQuery(api.documents.getById, {
     documentId: documentId,
   });
 
@@ -77,6 +81,23 @@ export function AISearch(props: NodeViewProps) {
   ]);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const toggle = () => {
+    SpeechRecognition.startListening();
+  };
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key == "1" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        toggle();
+      }
+    };
+
+    document.addEventListener("keydown", down);
+    return () => {
+      document.removeEventListener("keydown", down);
+    };
+  }, [toggle]);
 
   const calculateCaretCoordinates = (
     textarea: HTMLInputElement,
@@ -194,7 +215,7 @@ export function AISearch(props: NodeViewProps) {
         },
         body: JSON.stringify({
           query: codeQuery,
-          repoUrl: document?.githubRepo,
+          repoUrl: documentConvex?.githubRepo,
           model: selectedModel,
         }),
       });

@@ -17,6 +17,12 @@ import { Sidebar } from "@/app/(main)/_components/Sidebar";
 import { useSidebar } from "@/app/(main)/hooks/useSidebar";
 import { useBlockEditor } from "@/app/(main)/hooks/useBlockEditor";
 import Toolbar from "@/components/toolbar";
+import { Mic, Mic2, MicOff } from "lucide-react";
+import React from "react";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
+import Speech from "@/app/(marketing)/_components/speech/speech";
 
 interface DocumentIdPageProps {
   params: {
@@ -30,8 +36,15 @@ interface QueryProps {
 }
 
 export default function DocumentIdPage({ params }: DocumentIdPageProps) {
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
+
   const ydoc = useMemo(() => new YDoc(), []);
-  const document = useQuery(api.documents.getById, {
+  const documentConvex = useQuery(api.documents.getById, {
     documentId: params.documentId,
   });
   const leftSidebar = useSidebar();
@@ -39,28 +52,28 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   const setGithubRepo = useMutation(api.documents.setGithubRepo);
 
   const setGitHub = (repo: string) => {
-    if (!document) {
+    if (!documentConvex) {
       return null;
     }
 
     setGithubRepo({
-      id: document?._id,
+      id: documentConvex?._id,
       repoName: repo,
     });
   };
 
-  if (document === undefined) {
+  if (documentConvex === undefined) {
     return <div>Loading</div>;
   }
 
-  if (document === null) {
+  if (documentConvex === null) {
     return null;
   }
 
   return (
     <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-lightlightbg dark:bg-darkbg pb-5 overscroll-contain">
       {/* <div className="flex h-[10vh] max-h-[100%] overflow-hidden"></div> */}
-
+      {/* <Speech /> */}
       <div className="flex flex-col mx-auto items-center">
         {/* <Toolbar initialData={document} /> */}
         <BlockEditor
@@ -74,7 +87,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
         <div className="fixed bottom-2">
           <SetGithubRepo
             params={{
-              documentId: document._id,
+              documentId: documentConvex._id,
             }}
           />
         </div>

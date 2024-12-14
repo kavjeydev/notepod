@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 
 import { useAuth } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
+import Speech from "@/app/(marketing)/_components/speech/speech";
 
 export default function CommunityPage() {
   const [searchQuery, setSearchQuery] = useState();
@@ -38,11 +39,12 @@ export default function CommunityPage() {
   return (
     <div className="overflow-scroll max-h-[100vh] min-h-[100vh] bg-lightlightbg dark:bg-darkdarkbg pb-5">
       <CommunityNavbar />
-      <div className="pr-12 pl-12 pt-1 pb-1 flex gap-2 flex-wrap-reverse mt-20">
+      <div className="pr-12 pl-12 pt-1 pb-1 flex gap-2 flex-wrap mt-20">
         {results.map((document) => (
           <CommunityCard document={document} />
         ))}
       </div>
+      <Speech />
     </div>
   );
 }
