@@ -648,7 +648,7 @@ def query_codebase(
 
     if repo_data is None:
         # Initialize the repository outside the lock to prevent blocking
-        return "Codebase has not been initialized."
+        # return "Codebase has not been initialized."
         initialize_codebase(repoUrl, embedding_model, clone_dir_base=None)
 
         # Re-acquire the cache lock to get the updated repo_data
@@ -675,6 +675,8 @@ def query_codebase(
 
     # Combine relevant chunks into context
     context = "\n".join([chunk[1] for chunk in relevant_chunks])
+
+    print(context, question)
 
     # Generate a response using OpenAI
     # openai.api_key = constants.DEEPSEEK_KEY
@@ -716,7 +718,7 @@ def query_codebase(
                 content = getattr(delta, "content", "")
                 if content:
                     # Yield content for SSE
-                    print("CONTENT", content)
+                    # print("CONTENT", content)
                     yield f"{content}"
                 # No need for await asyncio.sleep(0) here
         except Exception as e:
@@ -802,7 +804,7 @@ async def test_stream():
 @app.post("/clonerepo")
 async def clone_repo(cloneItem: RepoInfo):
     # cloneItem = await request.json()
-    print("ITEM CLONE", cloneItem.private)
+    # print("ITEM CLONE", cloneItem.private)
 
     repoUrl = cloneItem.repo_url
     embedding_model = "text-embedding-3-small"
