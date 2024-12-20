@@ -104,7 +104,6 @@ def read_files(repo_path):
                     ".ts",
                     ".html",
                     ".css",
-                    ".md",
                     ".cpp",
                     ".jsx",
                     ".tsx",
@@ -318,7 +317,10 @@ def query_codebase(
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a technical documentation expert. Given a codebase, answer questions and write expert documentation in markdown format. Respond naturally. Use Markdown headings, lists, tables, and other formatting as appropriate. Do not enclose the entire response in a code block.",
+                    "content": "You are a technical documentation expert. Given a codebase, answer questions \
+                    and write expert documentation in markdown format. Respond naturally. Use Markdown headings, \
+                        lists, tables, and other formatting as appropriate. Do not enclose the entire response in a \
+                            code block. IGNORE any README files. Interpret the code itself to write documentation.",
                 },
                 {
                     "role": "user",

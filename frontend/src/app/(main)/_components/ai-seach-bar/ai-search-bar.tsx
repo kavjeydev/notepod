@@ -4,23 +4,16 @@ import {
   ReactNodeViewRenderer,
   NodeViewProps,
 } from "@tiptap/react";
-import { useCallback, useRef, useState } from "react";
-import { Node } from "@tiptap/core";
+import { useCallback, useRef, useState, useEffect } from "react";
+import { Node as TiptapNode } from "@tiptap/core"; // renamed import
 import MarkdownIt from "markdown-it";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import getCaretCoordinates from "textarea-caret";
 import { toast } from "sonner";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { IconBrandPython } from "@tabler/icons-react";
-import { Tooltip } from "@nextui-org/react";
-import GitHubRepos from "../repo-list/repo-list";
 import { useAuth } from "@clerk/clerk-react";
-import { Mic, MicOff } from "lucide-react";
-import React, { useEffect } from "react";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
+import SpeechRecognition from "react-speech-recognition";
 
 export interface QueryProps {
   query: string;
@@ -38,7 +31,6 @@ interface Repo {
   full_name: string;
   html_url: string;
   description: string;
-  // Add other fields as needed
 }
 
 export function AISearch(props: NodeViewProps) {
@@ -56,6 +48,8 @@ export function AISearch(props: NodeViewProps) {
   const documentId = extension.options.documentId;
 
   const formRef = useRef<HTMLFormElement | null>(null);
+  const nodeRef = useRef<HTMLDivElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const documentConvex = useQuery(api.documents.getById, {
     documentId: documentId,
@@ -77,27 +71,33 @@ export function AISearch(props: NodeViewProps) {
     { id: "2", name: "generate_ast.py " },
     { id: "3", name: "api.py" },
     { id: "4", name: "code_bert.py" },
-    // ... more items
   ]);
 
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-
-  const toggle = () => {
-    SpeechRecognition.startListening();
-  };
   useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key == "1" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        toggle();
-      }
-    };
+    // Focus the textarea when the component mounts
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, []);
 
-    document.addEventListener("keydown", down);
+  // Click outside to delete node
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target;
+      if (
+        target instanceof Node &&
+        nodeRef.current &&
+        !nodeRef.current.contains(target)
+      ) {
+        deleteNode();
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("keydown", down);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [toggle]);
+  }, [deleteNode]);
 
   const calculateCaretCoordinates = (
     textarea: HTMLInputElement,
@@ -230,7 +230,6 @@ export function AISearch(props: NodeViewProps) {
       const decoder = new TextDecoder("utf-8");
       let done = false;
 
-      // Initialize variables for buffering
       let accumulatedContent = "";
       let buffer = "";
 
@@ -239,7 +238,6 @@ export function AISearch(props: NodeViewProps) {
         done = readerDone;
         if (value) {
           const chunk = decoder.decode(value, { stream: true });
-          console.log("Received chunk:", chunk);
 
           // Append the new chunk to the buffer
           buffer += chunk;
@@ -251,26 +249,20 @@ export function AISearch(props: NodeViewProps) {
             const completeBlock = buffer.substring(0, blockDelimiter + 2);
             buffer = buffer.substring(blockDelimiter + 2); // Keep the rest in the buffer
 
-            // Append the complete block to the accumulated content
             accumulatedContent += completeBlock;
 
-            // Render the accumulated content to HTML
             const htmlContent = markdownIt.render(accumulatedContent);
 
-            // Replace the existing content in the editor with the new content
-            console.log("CURRENT POS", editor.state.selection.from);
             editor
               .chain()
               .focus()
               .deleteRange({
                 from: insertPosition,
-                // to: insertPosition + 1
                 to: editor.state.selection.from,
               })
               .insertContentAt(insertPosition, htmlContent)
               .run();
 
-            // Optionally, update the editor's state
             onChange(editor.getHTML());
           }
         }
@@ -286,7 +278,6 @@ export function AISearch(props: NodeViewProps) {
           .focus()
           .deleteRange({
             from: insertPosition,
-            // to: insertPosition
             to: editor.state.selection.from,
           })
           .insertContentAt(insertPosition, htmlContent)
@@ -338,7 +329,7 @@ export function AISearch(props: NodeViewProps) {
   );
 
   return (
-    <NodeViewWrapper>
+    <NodeViewWrapper ref={nodeRef}>
       <div className="relative">
         <form
           className="flex flex-col w-full flex-wrap md:flex-nowrap gap-4"
@@ -361,14 +352,13 @@ export function AISearch(props: NodeViewProps) {
                   "bg-transparent",
                   "text-black/90 dark:text-white/90",
                   "placeholder:text-default-700/50 dark:placeholder:text-white/60",
-                  "pb-8", // Increased padding-right to accommodate the dropdown and button
+                  "pb-8",
                 ],
                 innerWrapper: "bg-transparent",
                 inputWrapper: [
                   "shadow-xl",
                   "bg-default-300/50 outline outline-default-500",
                   "dark:bg-default/60",
-                  // "backdrop-blur-xl",
                   "backdrop-saturate-200",
                   "hover:bg-default-200/70",
                   "dark:hover:bg-default/70",
@@ -380,8 +370,6 @@ export function AISearch(props: NodeViewProps) {
             />
 
             <Select
-              // label={undefined}
-
               placeholder="gpt-4o"
               selectedKeys={new Set([selectedModel])}
               defaultSelectedKeys={new Set(["gpt-4o"])}
@@ -390,13 +378,11 @@ export function AISearch(props: NodeViewProps) {
                 const value = Array.from(keys).join("");
                 setSelectedModel(value);
               }}
-              // selected
               size="sm"
               variant="underlined"
               classNames={{
                 base: "absolute bottom-2 right-20 w-36 outline-b outline-muted-foreground",
                 listboxWrapper: "max-h-[200px]",
-                // mainWrapper: "bg-purple-500",
               }}
             >
               <SelectItem key="gpt-3.5" value="gpt-3.5">
@@ -408,7 +394,6 @@ export function AISearch(props: NodeViewProps) {
               <SelectItem key="deepseek" value="deepseek">
                 Deepseek V2
               </SelectItem>
-
               <SelectItem key="o1-preview" value="o1-preview">
                 o1-preview 🚀
               </SelectItem>
@@ -417,7 +402,6 @@ export function AISearch(props: NodeViewProps) {
               </SelectItem>
             </Select>
 
-            {/* Submit Button */}
             <Button
               color="secondary"
               type="submit"
@@ -429,7 +413,6 @@ export function AISearch(props: NodeViewProps) {
           </div>
         </form>
 
-        {/* Always render the suggestions dropdown */}
         <div
           className={`absolute z-10 bg-white dark:bg-black border border-gray-300 rounded-2xl
             shadow-md overflow-auto transition-opacity duration-200 ${
@@ -438,7 +421,7 @@ export function AISearch(props: NodeViewProps) {
                 : "opacity-0 scale-95 pointer-events-none"
             }`}
           style={{
-            top: 40, // Adjust as needed
+            top: 40,
             left: caretCoordinates.x - 520,
             width: "150px",
             maxHeight: "160px",
@@ -447,19 +430,16 @@ export function AISearch(props: NodeViewProps) {
           <div className="p-2">
             {suggestions.length > 0 &&
               suggestions.map((item, index) => (
-                <div className="rounded-lg text-sm h-fit">
+                <div className="rounded-lg text-sm h-fit" key={item.id}>
                   <div
-                    key={item.id}
                     className={`p-1.5 cursor-pointer rounded-lg flex gap-1 items-center ${
                       index === selectedSuggestionIndex
-                        ? "dark:bg-[#222222] bg-[#D4D4D8] transition-all \
-                      duration-200 "
+                        ? "dark:bg-[#222222] bg-[#D4D4D8] transition-all duration-200"
                         : ""
                     }`}
                     onClick={() => handleSuggestionClick(item)}
                     onMouseEnter={() => setSelectedSuggestionIndex(index)}
                   >
-                    {/* <HamburgerMenuIcon className="h-3 w-3" /> */}
                     <IconBrandPython className="h-3 w-3" />
                     {item.name}
                   </div>
@@ -472,10 +452,9 @@ export function AISearch(props: NodeViewProps) {
           <div>
             <div
               className="text-sm font-medium
-                        bg-gradient-to-r bg-clip-text  text-transparent
+                        bg-gradient-to-r bg-clip-text text-transparent
                         from-indigo-500 via-purple-400 to-indigo-500 p-2
-                        animate-text
-                        "
+                        animate-text"
             >
               Thinking...
             </div>
@@ -494,7 +473,7 @@ declare module "@tiptap/core" {
   }
 }
 
-const ReactComponentExtension = Node.create({
+const ReactComponentExtension = TiptapNode.create({
   name: "reactComponent",
   group: "block",
   atom: true,
@@ -505,6 +484,7 @@ const ReactComponentExtension = Node.create({
       documentId: null,
     };
   },
+
   parseHTML() {
     return [
       {

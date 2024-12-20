@@ -60,18 +60,20 @@ export const TextMenu = ({ editor }: TextMenuProps) => {
       updateDelay={100}
     >
       <Toolbar.Wrapper>
-        {/* <AIDropdown
-          onCompleteSentence={commands.onCompleteSentence}
-          onEmojify={commands.onEmojify}
-          onFixSpelling={commands.onFixSpelling}
-          onMakeLonger={commands.onMakeLonger}
-          onMakeShorter={commands.onMakeShorter}
-          onSimplify={commands.onSimplify}
-          onTldr={commands.onTldr}
-          onTone={commands.onTone}
-          onTranslate={commands.onTranslate}
-        /> */}
-        {/* <Toolbar.Divider /> */}
+        <AIDropdown
+          onCompleteSentence={() => {
+            console.log("test");
+          }}
+          onEmojify={() => {}}
+          onFixSpelling={() => {}}
+          onMakeLonger={() => {}}
+          onMakeShorter={() => {}}
+          onSimplify={() => {}}
+          onTldr={() => {}}
+          onTone={() => {}}
+          onTranslate={() => {}}
+        />
+        <Toolbar.Divider />
         <MemoContentTypePicker options={blockOptions} />
         <MemoFontFamilyPicker
           onChange={commands.onSetFont}

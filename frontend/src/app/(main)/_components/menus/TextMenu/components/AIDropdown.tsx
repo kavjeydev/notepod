@@ -41,13 +41,14 @@ export const AIDropdown = ({
 
   return (
     <Dropdown.Root>
-      <Dropdown.Trigger asChild disabled className="z-[99999]">
+      <Dropdown.Trigger asChild className="z-[0]">
         <Toolbar.Button
-          className="text-purple-500 hover:text-purple-600 active:text-purple-600 dark:text-purple-400 dark:hover:text-purple-300 dark:active:text-purple-400 text-xs"
+          className="text-third dark:text-maincolor hover:text-orange-300 active:text-maincolor/70 dark:hover:text-purple-300
+          dark:active:text-purple-400 text-xs"
           activeClassname="text-purple-600 hover:text-purple-600 dark:text-purple-400 dark:hover:text-purple-200"
         >
           <Icon name="Sparkles" className="mr-1" />
-          AI Tools
+          {/* AI Tools */}
           <Icon name="ChevronDown" className="w-2 h-2 ml-1" />
         </Toolbar.Button>
       </Dropdown.Trigger>
@@ -55,14 +56,14 @@ export const AIDropdown = ({
         <Surface className="p-2 min-w-[10rem]">
           <Dropdown.Item onClick={onSimplify}>
             <DropdownButton>
-              <Icon name="CircleSlash" />
-              Simplify
+              <Icon name="Pencil" />
+              Continue writing
             </DropdownButton>
           </Dropdown.Item>
           <Dropdown.Item onClick={onFixSpelling}>
             <DropdownButton>
-              <Icon name="Eraser" />
-              Fix spelling & grammar
+              <Icon name="Brain" />
+              Explain
             </DropdownButton>
           </Dropdown.Item>
           <Dropdown.Item onClick={onMakeShorter}>

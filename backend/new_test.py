@@ -247,11 +247,12 @@ def read_files(repo_path):
                     ".ts",
                     ".html",
                     ".css",
-                    ".md",
+                    # ".md",
                     ".cpp",
                     ".jsx",
                     ".tsx",
                     ".txt",
+                    ".swift",
                 )
             ):
                 file_path = os.path.join(root, file)

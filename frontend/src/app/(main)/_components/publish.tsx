@@ -39,7 +39,7 @@ export default function Publish({ initialData }: PublishProps) {
 
   const signedURL = getSignedURL()
     .then((result) => {
-      console.log(result);
+      // console.log(result);
       if (result.error !== undefined) {
         console.error("error");
         return;
